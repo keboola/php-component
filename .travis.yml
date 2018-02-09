@@ -1,0 +1,17 @@
+sudo: false
+
+language: bash
+
+services:
+  - docker
+
+jobs:
+  include:
+    - stage: build
+      before-script:
+        - docker -v
+        - docker-compose  -v
+      script:
+        # build
+        - docker build -t tests-ci .
+        - docker run tests-ci composer ci

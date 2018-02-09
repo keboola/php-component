@@ -1,0 +1,56 @@
+{
+    "name": "keboola/php-docker-application",
+    "license": "MIT",
+    "type": "project",
+    "description": "Keboola PHP docker application",
+    "keywords": [
+        "keboola",
+        "docker",
+        "application"
+    ],
+    "authors": [
+        {
+            "name": "Tomáš Fejfar",
+            "email": "tomas.fejfar@keboola.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Keboola\\DockerApplication\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Keboola\\DockerApplication\\Tests\\": "tests/"
+        }
+    },
+    "require": {
+        "php": "~7.1"
+    },
+    "require-dev": {
+        "jakub-onderka/php-parallel-lint": "~0.9",
+        "phpstan/phpstan-shim": "~0.9",
+        "phpunit/phpunit": "~6.5",
+        "slevomat/coding-standard": "~4.0",
+        "squizlabs/php_codesniffer": "~3.2"
+    },
+    "scripts": {
+        "tests": "phpunit",
+        "phpstan": "phpstan analyse src tests --no-progress",
+        "phpcs": "phpcs --extensions=php .",
+        "phplint": "parallel-lint -j 10 --exclude vendor .",
+        "build": [
+            "@phplint",
+            "@phpcs",
+            "@phpstan",
+            "@tests"
+        ],
+        "ci": [
+            "@composer validate --no-check-all --strict",
+            "@build"
+        ]
+    },
+    "config": {
+        "sort-packages": true
+    }
+}
