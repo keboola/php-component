@@ -37,7 +37,7 @@
     },
     "scripts": {
         "tests": "phpunit",
-        "phpstan": "phpstan analyse src tests --no-progress",
+        "phpstan": "phpstan analyse --no-progress --level=max src tests ",
         "phpcs": "phpcs --extensions=php .",
         "phplint": "parallel-lint -j 10 --exclude vendor .",
         "build": [
