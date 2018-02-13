@@ -4,23 +4,13 @@
     <exclude-pattern>vendor/</exclude-pattern>
     <config name="installed_paths" value="vendor/slevomat/coding-standard/"/>
     <rule ref="vendor/slevomat/coding-standard/SlevomatCodingStandard/ruleset.xml">
-        <
-    </rule>
-    <rule ref="SlevomatCodingStandard.Files.TypeNameMatchesFileName">
-        <properties>
-            <property name="rootNamespaces" type="array" value="
-				src => Keboola\DockerApplication,
-				tests => Keboola\DockerApplication\Tests,
-			"/>
-        </properties>
-    </rule>
-    <rule ref="SlevomatCodingStandard.Types.EmptyLinesAroundTypeBraces">
-        <properties>
-            <property name="linesCountAfterOpeningBrace" value="0"/>
-            <property name="linesCountBeforeClosingBrace" value="0"/>
-        </properties>
-    </rule>
-    <rule ref="SlevomatCodingStandard.Namespaces.FullyQualifiedClassNameInAnnotation">
-
+        <!-- empty lines cannot be set up this way in phpstorm :/ -->
+        <exclude name="SlevomatCodingStandard.Types.EmptyLinesAroundTypeBraces"/>
+        <!-- FQCNs in annotations and exceptions don't add too much value -->
+        <exclude name="SlevomatCodingStandard.Namespaces.FullyQualifiedClassNameInAnnotation"/>
+        <!-- Too extreme to allow using only of some namespaces -->
+        <exclude name="SlevomatCodingStandard.Namespaces.ReferenceUsedNamesOnly"/>
+        <!-- Requires further setup in regards to namespaces -->
+        <exclude name="SlevomatCodingStandard.Files.TypeNameMatchesFileName"/>
     </rule>
 </ruleset>
