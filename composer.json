@@ -26,7 +26,8 @@
     },
     "require": {
         "php": "~7.1",
-        "symfony/config": "~4.0"
+        "symfony/config": "~4.0",
+        "symfony/serializer": "~4.0"
     },
     "require-dev": {
         "jakub-onderka/php-parallel-lint": "~0.9",
