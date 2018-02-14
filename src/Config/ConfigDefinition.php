@@ -3,6 +3,7 @@
 namespace Keboola\DockerApplication\Config;
 
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
+use Symfony\Component\Config\Definition\Builder\NodeDefinition;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 
@@ -16,6 +17,7 @@ class ConfigDefinition implements ConfigurationInterface
     public function getConfigTreeBuilder(): TreeBuilder
     {
         $treeBuilder = new TreeBuilder();
+        /** @var ArrayNodeDefinition $rootNode */
         $rootNode = $this->getRootDefinition($treeBuilder);
 
         // @formatter:off
@@ -26,14 +28,24 @@ class ConfigDefinition implements ConfigurationInterface
         return $treeBuilder;
     }
 
-    protected function getParametersDefinition(): ArrayNodeDefinition
+    /**
+     * @return ArrayNodeDefinition|NodeDefinition
+     */
+    protected function getParametersDefinition()
     {
         $builder = new TreeBuilder();
-        return $builder->root('parameters');
+        $parametersNode = $builder->root('parameters');
+        $parametersNode->ignoreExtraKeys(false);
+        return $parametersNode;
     }
 
-    protected function getRootDefinition(TreeBuilder $treeBuilder): ArrayNodeDefinition
+    /**
+     * @param TreeBuilder $treeBuilder
+     * @return ArrayNodeDefinition|NodeDefinition
+     */
+    protected function getRootDefinition(TreeBuilder $treeBuilder)
     {
+        /** @var ArrayNodeDefinition $rootNode */
         $rootNode = $treeBuilder->root('root');
         $rootNode->ignoreExtraKeys(false);
         return $rootNode;
