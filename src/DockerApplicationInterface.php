@@ -31,55 +31,58 @@ interface DockerApplicationInterface
     ): void;
 
     /**
-     * @return mixed[]
+     * @return mixed
      */
-    public function getParameters(): array;
-
-    public function getAction(): string;
+    public function getParameters();
 
     /**
-     * @return string[]
+     * @return mixed
      */
-    public function getAuthorization(): array;
+    public function getAction();
 
     /**
-     * @return string[]
+     * @return mixed
      */
-    public function getInputFiles(): array;
+    public function getAuthorization();
+
+    /**
+     * @return mixed
+     */
+    public function getInputFiles();
 
     /**
      * @param string $fileName
-     * @return string[]
+     * @return mixed
      */
-    public function getFileManifest(string $fileName): array;
+    public function getFileManifest(string $fileName);
 
     /**
-     * @return string[][]
+     * @return mixed
      */
-    public function getExpectedOutputFiles(): array;
+    public function getExpectedOutputFiles();
 
     /**
-     * @return string[][]
+     * @return mixed[]
      */
-    public function getInputTables(): array;
+    public function getInputTables();
 
     /**
      * @param string $tableName
-     * @return string[]
+     * @return mixed
      */
-    public function getTableManifest(string $tableName): array;
+    public function getTableManifest(string $tableName);
 
     /**
-     * @return string[][]
+     * @return mixed[]
      */
-    public function getExpectedOutputTables(): array;
+    public function getExpectedOutputTables();
 
     public function getDataDir(): string;
 
     /**
-     * @return string[]
+     * @return mixed
      */
-    public function getOAuthApiData(): array;
+    public function getOAuthApiData();
 
     public function getOAuthApiAppSecret(): string;
 
