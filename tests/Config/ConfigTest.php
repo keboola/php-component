@@ -70,4 +70,82 @@ class ConfigTest extends TestCase
         $config = new Config(['yetNonexistentKey' => 'value']);
         $this->assertSame(['yetNonexistentKey' => 'value'], $config->getData());
     }
+
+    public function testGettersWillNotFailIfKeyIsMissing(): void
+    {
+        $config = new Config([
+            'lorem' => [
+                'ipsum' => [
+                    'dolores' => 'value',
+                ],
+            ],
+        ]);
+        $this->assertNull($config->getParameters());
+        $this->assertNull($config->getAction());
+        $this->assertNull($config->getAuthorization());
+        $this->assertNull($config->getImageParameters());
+        $this->assertNull($config->getStorage());
+        $this->assertNull($config->getKey('parameters', 'ipsum', 'dolor'));
+    }
+
+    public function testGettersWillGetKeyIfPresent(): void
+    {
+        $config = new Config([
+            'parameters' => [
+                'ipsum' => [
+                    'dolor' => 'value',
+                ],
+            ],
+            'action' => 'run',
+            'authorization' => [
+                '#secret' => 'x',
+            ],
+            'image_parameters' => ['param1' => 'value1'],
+            'storage' => [
+                'input' => [
+                    'tables' => [],
+                ],
+                'output' => [
+                    'files' => [],
+                ],
+            ],
+        ]);
+        $this->assertEquals(
+            [
+                'ipsum' => [
+                    'dolor' => 'value',
+                ],
+            ],
+            $config->getParameters()
+        );
+        $this->assertEquals(
+            'run',
+            $config->getAction()
+        );
+        $this->assertEquals(
+            [
+                '#secret' => 'x',
+            ],
+            $config->getAuthorization()
+        );
+        $this->assertEquals(
+            ['param1' => 'value1'],
+            $config->getImageParameters()
+        );
+        $this->assertEquals(
+            [
+                'input' => [
+                    'tables' => [],
+                ],
+                'output' => [
+                    'files' => [],
+                ],
+            ],
+            $config->getStorage()
+        );
+        $this->assertEquals(
+            'value',
+            $config->getKey('parameters', 'ipsum', 'dolor')
+        );
+    }
 }

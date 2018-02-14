@@ -5,32 +5,32 @@ namespace Keboola\DockerApplication\Config;
 interface ConfigInterface
 {
     /**
-     * @return mixed[]
+     * @return mixed[]|null
      */
-    public function getData(): array;
+    public function getData(): ?array;
 
     /**
-     * @return mixed[]
+     * @return mixed|null
      */
-    public function getParameters(): array;
+    public function getParameters();
 
     /**
-     * @return mixed[]
+     * @return mixed|null
      */
-    public function getStorage(): array;
+    public function getStorage();
 
     /**
-     * @return mixed[]
+     * @return mixed|null
      */
-    public function getImageParameters(): array;
+    public function getImageParameters();
 
     /**
-     * @return mixed[]
+     * @return mixed|null
      */
-    public function getAuthorization(): array;
+    public function getAuthorization();
 
     /**
-     * @return mixed[]
+     * @return mixed|null
      */
-    public function getAction(): array;
+    public function getAction();
 }

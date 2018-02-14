@@ -44,58 +44,43 @@ class Config implements ConfigInterface
     }
 
     /**
-     * @return mixed[]
+     * @return mixed|null
      */
-    public function getParameters(): array
+    public function getParameters()
     {
-        if (!array_key_exists('parameters', $this->config)) {
-            return [];
-        }
-        return $this->config['parameters'];
+        return $this->getKey('parameters');
     }
 
     /**
-     * @return mixed[]
+     * @return mixed|null
      */
-    public function getStorage(): array
+    public function getStorage()
     {
-        if (!array_key_exists('storage', $this->config)) {
-            return [];
-        }
-        return $this->config['storage'];
+        return $this->getKey('storage');
     }
 
     /**
-     * @return mixed[]
+     * @return mixed|null
      */
-    public function getImageParameters(): array
+    public function getImageParameters()
     {
-        if (!array_key_exists('image_parameters', $this->config)) {
-            return [];
-        }
-        return $this->config['image_parameters'];
+        return $this->getKey('image_parameters');
     }
 
     /**
-     * @return mixed[]
+     * @return mixed|null
      */
-    public function getAuthorization(): array
+    public function getAuthorization()
     {
-        if (!array_key_exists('authorization', $this->config)) {
-            return [];
-        }
-        return $this->config['authorization'];
+        return $this->getKey('authorization');
     }
 
     /**
-     * @return mixed[]
+     * @return mixed|null
      */
-    public function getAction(): array
+    public function getAction()
     {
-        if (!array_key_exists('action', $this->config)) {
-            return [];
-        }
-        return $this->config['action'];
+        return $this->getKey('action');
     }
 
     /**
@@ -104,5 +89,22 @@ class Config implements ConfigInterface
     public function getData(): array
     {
         return $this->config;
+    }
+
+    /**
+     * @param string ...$keys
+     * @return mixed
+     */
+    public function getKey(string ...$keys)
+    {
+        $config = $this->config;
+        $pointer = &$config;
+        foreach ($keys as $key) {
+            if (!array_key_exists($key, $pointer)) {
+                return null;
+            }
+            $pointer = &$pointer[$key];
+        }
+        return $pointer;
     }
 }
