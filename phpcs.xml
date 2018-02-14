@@ -20,4 +20,9 @@
         <!-- We don't want to use yoda comparison -->
         <exclude name="SlevomatCodingStandard.ControlStructures.RequireYodaComparison" />
     </rule>
+    <rule ref="SlevomatCodingStandard.Namespaces.UnusedUses">
+        <properties>
+            <property name="searchAnnotations" value="true" />
+        </properties>
+    </rule>
 </ruleset>
