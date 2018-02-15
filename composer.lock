@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "563666be7663fbcdff7f9162b9ede274",
+    "content-hash": "ed48eec3a97fe09302b9fb75bf21d651",
     "packages": [
         {
             "name": "symfony/config",

@@ -27,6 +27,7 @@
     "require": {
         "php": "~7.1",
         "symfony/config": "~4.0",
+        "symfony/filesystem": "~4.0",
         "symfony/finder": "~4.0",
         "symfony/serializer": "~4.0"
     },
