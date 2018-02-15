@@ -44,46 +44,6 @@ class Config implements ConfigInterface
     }
 
     /**
-     * @return mixed|null
-     */
-    public function getParameters()
-    {
-        return $this->getKey('parameters');
-    }
-
-    /**
-     * @return mixed|null
-     */
-    public function getStorage()
-    {
-        return $this->getKey('storage');
-    }
-
-    /**
-     * @return mixed|null
-     */
-    public function getImageParameters()
-    {
-        return $this->getKey('image_parameters');
-    }
-
-    /**
-     * @return mixed|null
-     */
-    public function getAuthorization()
-    {
-        return $this->getKey('authorization');
-    }
-
-    /**
-     * @return mixed|null
-     */
-    public function getAction()
-    {
-        return $this->getKey('action');
-    }
-
-    /**
      * @return mixed[]
      */
     public function getData(): array
@@ -95,7 +55,7 @@ class Config implements ConfigInterface
      * @param string ...$keys
      * @return mixed
      */
-    public function getKey(string ...$keys)
+    public function getValueOrNull(string ...$keys)
     {
         $config = $this->config;
         $pointer = &$config;
@@ -106,5 +66,63 @@ class Config implements ConfigInterface
             $pointer = &$pointer[$key];
         }
         return $pointer;
+    }
+
+    /**
+     * @return mixed|null
+     */
+    public function getParameters()
+    {
+        return $this->getValueOrNull('parameters');
+    }
+
+    /**
+     * @return mixed|null
+     */
+    public function getStorage()
+    {
+        return $this->getValueOrNull('storage');
+    }
+
+    /**
+     * @return mixed|null
+     */
+    public function getImageParameters()
+    {
+        return $this->getValueOrNull('image_parameters');
+    }
+
+    /**
+     * @return mixed|null
+     */
+    public function getAuthorization()
+    {
+        return $this->getValueOrNull('authorization');
+    }
+
+    /**
+     * @return mixed|null
+     */
+    public function getAction()
+    {
+        return $this->getValueOrNull('action');
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getOAuthApiData()
+    {
+        // TODO: Implement getOAuthApiData() method.
+    }
+
+    public function getOAuthApiAppSecret(): string
+    {
+        // TODO: Implement getOAuthApiAppSecret() method.
+    }
+
+    public function getOAuthApiAppKey(): string
+    {
+        // TODO: Implement getOAuthApiAppKey() method.
     }
 }

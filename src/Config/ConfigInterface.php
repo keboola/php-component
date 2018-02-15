@@ -10,27 +10,8 @@ interface ConfigInterface
     public function getData(): ?array;
 
     /**
-     * @return mixed|null
+     * @param string ...$keys
+     * @return mixed
      */
-    public function getParameters();
-
-    /**
-     * @return mixed|null
-     */
-    public function getStorage();
-
-    /**
-     * @return mixed|null
-     */
-    public function getImageParameters();
-
-    /**
-     * @return mixed|null
-     */
-    public function getAuthorization();
-
-    /**
-     * @return mixed|null
-     */
-    public function getAction();
+    public function getValueOrNull(string ...$keys);
 }
