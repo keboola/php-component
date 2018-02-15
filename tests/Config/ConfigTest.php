@@ -85,7 +85,7 @@ class ConfigTest extends TestCase
         $this->assertNull($config->getAuthorization());
         $this->assertNull($config->getImageParameters());
         $this->assertNull($config->getStorage());
-        $this->assertNull($config->getKey('parameters', 'ipsum', 'dolor'));
+        $this->assertNull($config->getValueOrNull('parameters', 'ipsum', 'dolor'));
     }
 
     public function testGettersWillGetKeyIfPresent(): void
@@ -145,7 +145,7 @@ class ConfigTest extends TestCase
         );
         $this->assertEquals(
             'value',
-            $config->getKey('parameters', 'ipsum', 'dolor')
+            $config->getValueOrNull('parameters', 'ipsum', 'dolor')
         );
     }
 }
