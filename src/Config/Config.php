@@ -2,9 +2,11 @@
 
 namespace Keboola\DockerApplication\Config;
 
+use InvalidArgumentException;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 use Symfony\Component\Config\Definition\Processor;
 use function array_key_exists;
+use function implode;
 
 class Config implements ConfigInterface
 {
@@ -52,16 +54,32 @@ class Config implements ConfigInterface
     }
 
     /**
-     * @param string ...$keys
+     * @param string[] $keys
      * @return mixed
      */
-    public function getValueOrNull(string ...$keys)
+    public function getValueOrNull(array $keys)
+    {
+        try {
+            return $this->getValue($keys);
+        } catch (InvalidArgumentException $e) {
+            return null;
+        }
+    }
+
+    /**
+     * @param string[] $keys
+     * @return mixed
+     */
+    public function getValue(array $keys)
     {
         $config = $this->config;
         $pointer = &$config;
         foreach ($keys as $key) {
             if (!array_key_exists($key, $pointer)) {
-                return null;
+                throw new InvalidArgumentException(sprintf(
+                    'Key "%s" does not exist',
+                    implode('.', $keys)
+                ));
             }
             $pointer = &$pointer[$key];
         }
@@ -73,7 +91,7 @@ class Config implements ConfigInterface
      */
     public function getParameters()
     {
-        return $this->getValueOrNull('parameters');
+        return $this->getValueOrNull(['parameters']);
     }
 
     /**
@@ -81,7 +99,7 @@ class Config implements ConfigInterface
      */
     public function getStorage()
     {
-        return $this->getValueOrNull('storage');
+        return $this->getValueOrNull(['storage']);
     }
 
     /**
@@ -89,7 +107,7 @@ class Config implements ConfigInterface
      */
     public function getImageParameters()
     {
-        return $this->getValueOrNull('image_parameters');
+        return $this->getValueOrNull(['image_parameters']);
     }
 
     /**
@@ -97,7 +115,7 @@ class Config implements ConfigInterface
      */
     public function getAuthorization()
     {
-        return $this->getValueOrNull('authorization');
+        return $this->getValueOrNull(['authorization']);
     }
 
     /**
@@ -105,7 +123,39 @@ class Config implements ConfigInterface
      */
     public function getAction()
     {
-        return $this->getValueOrNull('action');
+        return $this->getValueOrNull(['action']);
+    }
+
+    /**
+     * @return mixed[]
+     */
+    public function getInputFiles()
+    {
+        return $this->getValueOrNull(['storage', 'input', 'files']);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getExpectedOutputFiles()
+    {
+        return $this->getValueOrNull(['storage', 'output', 'files']);
+    }
+
+    /**
+     * @return mixed[]
+     */
+    public function getInputTables()
+    {
+        return $this->getValueOrNull(['storage', 'input', 'tables']);
+    }
+
+    /**
+     * @return mixed[]
+     */
+    public function getExpectedOutputTables()
+    {
+        return $this->getValueOrNull(['storage', 'output', 'tables']);
     }
 
     /**
@@ -113,16 +163,16 @@ class Config implements ConfigInterface
      */
     public function getOAuthApiData()
     {
-        // TODO: Implement getOAuthApiData() method.
+        return $this->getValueOrNull(['oauth_api', 'credentials', '#data']);
     }
 
     public function getOAuthApiAppSecret(): string
     {
-        // TODO: Implement getOAuthApiAppSecret() method.
+        return $this->getValueOrNull(['oauth_api', 'credentials', '#appSecret']);
     }
 
     public function getOAuthApiAppKey(): string
     {
-        // TODO: Implement getOAuthApiAppKey() method.
+        return $this->getValueOrNull(['oauth_api', 'credentials', 'appKey']);
     }
 }

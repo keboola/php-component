@@ -68,6 +68,7 @@ class ManifestManager
         string $destination,
         array $primaryKeyColumns = []
     ): void {
+        $fileName = $this->ensureTableExtension($fileName);
         $manifestName = self::getManifestFilename($fileName);
         $manifest = [
             'destination' => $destination,
@@ -86,7 +87,7 @@ class ManifestManager
     public function getFileManifest(string $fileName): array
     {
         $baseDir = FilesystemUtils::pathFromSegments($this->dataDir, 'in', 'files');
-        return $this->getManifestInternal($fileName, $baseDir);
+        return $this->loadManifest($fileName, $baseDir);
     }
 
     /**
@@ -95,11 +96,9 @@ class ManifestManager
      */
     public function getTableManifest(string $tableName)
     {
-        if (substr($tableName, -4) !== '.csv') {
-            $tableName .= '.csv';
-        }
+        $tableName = $this->ensureTableExtension($tableName);
         $baseDir = FilesystemUtils::pathFromSegments($this->dataDir, 'in', 'tables');
-        return $this->getManifestInternal($tableName, $baseDir);
+        return $this->loadManifest($tableName, $baseDir);
     }
 
     /**
@@ -107,7 +106,7 @@ class ManifestManager
      * @param string $baseDir
      * @return mixed[]
      */
-    private function getManifestInternal(string $fileName, string $baseDir): array
+    private function loadManifest(string $fileName, string $baseDir): array
     {
         if (!FilesystemUtils::isPathInDirectory($fileName, $baseDir)) {
             $fs = new Filesystem();
@@ -124,5 +123,13 @@ class ManifestManager
 
         $decoder = new JsonEncoder();
         return $decoder->decode(file_get_contents(self::getManifestFilename($fileName)), JsonEncoder::FORMAT);
+    }
+
+    private function ensureTableExtension(string $tableName): string
+    {
+        if (substr($tableName, -4) !== '.csv') {
+            $tableName .= '.csv';
+        }
+        return $tableName;
     }
 }

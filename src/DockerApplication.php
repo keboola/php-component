@@ -29,6 +29,7 @@ class DockerApplication
         ?ManifestManager $manifestManager = null
     ) {
         $this->setEnvironment();
+
         if (!$dataDir) {
             $dataDir = getenv('KBC_DATADIR') === false ? '/data/' : (string)getenv('KBC_DATADIR');
         }
@@ -78,39 +79,6 @@ class DockerApplication
         $this->dataDir = rtrim($dataDir, '/') . '/';
     }
 
-    /**
-     * @return mixed
-     */
-    public function getExpectedOutputFiles()
-    {
-        // TODO: Implement getExpectedOutputFiles() method.
-    }
-
-    /**
-     * @return mixed[]
-     */
-    public function getInputTables()
-    {
-        return $this->getConfig()->getValueOrNull('storage', 'input', 'tables');
-    }
-
-    /**
-     * @param string $tableName
-     * @return mixed
-     */
-    public function getTableManifest(string $tableName)
-    {
-        // TODO: Implement getTableManifest() method.
-    }
-
-    /**
-     * @return mixed[]
-     */
-    public function getExpectedOutputTables()
-    {
-        // TODO: Implement getExpectedOutputTables() method.
-    }
-
     public function getDataDir(): string
     {
         return $this->dataDir;
@@ -124,5 +92,10 @@ class DockerApplication
     public function getManifestManager(): ManifestManager
     {
         return $this->manifestManager;
+    }
+
+    public function run(): void
+    {
+        // to be implemented in subclass
     }
 }
