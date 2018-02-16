@@ -10,8 +10,14 @@ interface ConfigInterface
     public function getData(): ?array;
 
     /**
-     * @param string ...$keys
+     * @param string[] $keys
      * @return mixed
      */
-    public function getValueOrNull(string ...$keys);
+    public function getValueOrNull(array $keys);
+
+    /**
+     * @param string[] $keys
+     * @return mixed
+     */
+    public function getValue(array $keys);
 }

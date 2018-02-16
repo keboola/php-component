@@ -20,11 +20,6 @@ class ConfigDefinition implements ConfigurationInterface
         /** @var ArrayNodeDefinition $rootNode */
         $rootNode = $this->getRootDefinition($treeBuilder);
 
-        // @formatter:off
-        $rootNode
-            ->children()
-                ->append($this->getParametersDefinition());
-        // @formatter:on
         return $treeBuilder;
     }
 
@@ -48,6 +43,14 @@ class ConfigDefinition implements ConfigurationInterface
         /** @var ArrayNodeDefinition $rootNode */
         $rootNode = $treeBuilder->root('root');
         $rootNode->ignoreExtraKeys(false);
+
+        // @formatter:off
+        $rootNode
+            ->children()
+                ->append($this->getParametersDefinition());
+        // @formatter:on
+
+
         return $rootNode;
     }
 }
