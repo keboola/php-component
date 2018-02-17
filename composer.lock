@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "ed48eec3a97fe09302b9fb75bf21d651",
+    "content-hash": "1c93bb1f9bf0f432be6cba9d2b3e87aa",
     "packages": [
         {
             "name": "symfony/config",
@@ -244,6 +244,58 @@
         }
     ],
     "packages-dev": [
+        {
+            "name": "devedge/sami-github",
+            "version": "1.0.5",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/ppetermann/sami-github.git",
+                "reference": "1cf1927e7b5de2913ae78c5a8f26d4e0c745d0d6"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/ppetermann/sami-github/zipball/1cf1927e7b5de2913ae78c5a8f26d4e0c745d0d6",
+                "reference": "1cf1927e7b5de2913ae78c5a8f26d4e0c745d0d6",
+                "shasum": ""
+            },
+            "require-dev": {
+                "sami/sami": "~1.1"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Phine\\Sami\\GitHub": "test/source"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Kevin Herrera",
+                    "email": "kevin@herrera.io",
+                    "homepage": "http://kevin.herrera.io"
+                },
+                {
+                    "name": "Peter Petermann",
+                    "email": "ppetermann80@googlemail.com",
+                    "homepage": "https://devedge.eu"
+                }
+            ],
+            "description": "A Sami theme for GitHub Markdown formatted documentation. (this is a fork of phine/sami-github)",
+            "homepage": "https://github.com/ppetermann/sami-github",
+            "keywords": [
+                "github",
+                "sami"
+            ],
+            "time": "2015-12-02T15:37:46+00:00"
+        },
         {
             "name": "doctrine/instantiator",
             "version": "1.1.0",

@@ -32,6 +32,7 @@
         "symfony/serializer": "~4.0"
     },
     "require-dev": {
+        "devedge/sami-github": "~1.0",
         "jakub-onderka/php-parallel-lint": "~0.9",
         "phpstan/phpstan-shim": "~0.9",
         "phpunit/phpunit": "~6.5",
