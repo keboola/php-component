@@ -95,10 +95,7 @@ class DockerApplication
         // to be implemented in subclass
     }
 
-    /**
-     * @return mixed
-     */
-    protected function getConfigClass()
+    protected function getConfigClass(): string
     {
         return Config::class;
     }
