@@ -20,8 +20,8 @@ return new Sami($iterator, array(
     'theme'                => 'github',
     //'versions'             => $versions,
     'title'                => 'php-docker-application',
-    'build_dir'            => __DIR__.'/../build/docs/%version%',
-    'cache_dir'            => __DIR__.'/../cache/docs/%version%',
+    'build_dir'            => __DIR__.'/../docs/',
+    'cache_dir'            => __DIR__.'/../cache/',
     // use a custom theme directory
     'template_dirs'        => array(__DIR__.'/../vendor/devedge/sami-github/'),
     'default_opened_level' => 2,

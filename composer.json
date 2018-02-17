@@ -53,6 +53,12 @@
         "ci": [
             "@composer validate --no-check-all --strict",
             "@build"
+        ],
+        "generate-docs": [
+            "sami update ./doc/SamiConfig.php",
+            "git add -A",
+            "git commit -m \"Updated docs\"",
+            "git subtree push --prefix build/docs/master origin gh-pages"
         ]
     },
     "config": {

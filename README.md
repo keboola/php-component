@@ -78,4 +78,4 @@ try {
 }
 ```
 
-See documentation [in doc directory](https://github.com/keboola/python-docker-application/tree/master/doc) for full list of available functions. See [development guide](http://developers.keboola.com/extend/custom-science/python/) for help with KBC integration.
+See documentation [in doc directory](https://github.com/keboola/python-docker-application/tree/master/doc) for full list of available functions. See [development guide](https://developers.keboola.com/extend/docker/quick-start/) for help with KBC integration.
