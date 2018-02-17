@@ -6,7 +6,6 @@ use ErrorException;
 use Keboola\DockerApplication\Config\Config;
 use Keboola\DockerApplication\Config\ConfigDefinition;
 use Keboola\DockerApplication\Manifest\ManifestManager;
-use Symfony\Component\Config\Definition\ConfigurationInterface;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use const DIRECTORY_SEPARATOR;
 use function file_get_contents;
@@ -24,9 +23,7 @@ class DockerApplication
     private $manifestManager;
 
     public function __construct(
-        ?string $dataDir = null,
-        ?Config $config = null,
-        ?ManifestManager $manifestManager = null
+        ?string $dataDir = null
     ) {
         $this->setEnvironment();
 
@@ -34,16 +31,8 @@ class DockerApplication
             $dataDir = getenv('KBC_DATADIR') === false ? '/data/' : (string)getenv('KBC_DATADIR');
         }
         $this->setDataDir($dataDir);
-
-        if (!$config) {
-            $this->loadConfig();
-        }
-        $this->config = $config;
-
-        if (!$manifestManager) {
-            $manifestManager = new ManifestManager($dataDir);
-        }
-        $this->manifestManager = $manifestManager;
+        $this->loadConfig();
+        $this->setManifestManager($dataDir);
     }
 
     public function setEnvironment(): void
@@ -64,12 +53,16 @@ class DockerApplication
         $jsonContents = file_get_contents($this->dataDir . 'config.json');
         $jsonEncoder = new JsonEncoder();
         $configClass = $this->getConfigClass();
-        return new $configClass($jsonEncoder->decode($jsonContents, JsonEncoder::FORMAT), $this->getConfigDefinition());
+        $configDefinitionClass = $this->getConfigDefinitionClass();
+        $this->config = new $configClass(
+            $jsonEncoder->decode($jsonContents, JsonEncoder::FORMAT),
+            new $configDefinitionClass()
+        );
     }
 
-    protected function getConfigDefinition(): ConfigurationInterface
+    protected function getConfigDefinitionClass(): string
     {
-        return new ConfigDefinition();
+        return ConfigDefinition::class;
     }
 
     public function setDataDir(string $dataDir): void
@@ -106,5 +99,13 @@ class DockerApplication
     protected function getConfigClass()
     {
         return Config::class;
+    }
+
+    /**
+     * @param null|string $dataDir
+     */
+    protected function setManifestManager(?string $dataDir): void
+    {
+        $this->manifestManager = new ManifestManager($dataDir);
     }
 }
