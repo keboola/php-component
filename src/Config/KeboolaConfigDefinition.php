@@ -14,7 +14,7 @@ use Symfony\Component\Config\Definition\ConfigurationInterface;
  * otherwise. Usually your code requires some parameters, so it's easiest to extend this
  * class and just override `getParametersDefinition()` method.
  */
-class ConfigDefinition implements ConfigurationInterface
+class KeboolaConfigDefinition implements ConfigurationInterface
 {
     /**
      * Generates the configuration tree builder.

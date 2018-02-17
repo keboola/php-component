@@ -8,7 +8,7 @@ use Symfony\Component\Config\Definition\Processor;
 use function array_key_exists;
 use function implode;
 
-class Config implements ConfigInterface
+class KeboolaConfig implements ConfigInterface
 {
     /** @var mixed[] */
     protected $config;
@@ -41,7 +41,7 @@ class Config implements ConfigInterface
     private function getConfigDefinition(): ConfigurationInterface
     {
         if ($this->configDefinition === null) {
-            $this->configDefinition = new ConfigDefinition();
+            $this->configDefinition = new KeboolaConfigDefinition();
         }
         return $this->configDefinition;
     }
