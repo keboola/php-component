@@ -8,9 +8,9 @@ use PHPUnit\Framework\TestCase;
 class FilesystemUtilsTest extends TestCase
 {
     /**
-     * @dataProvider providePathsAndDirectoriesForNormalizePath
+     * @dataProvider providePathsAndDirectoriesForIsPathInDirectory
      */
-    public function testNormalizePathWithinDirectory(bool $expected, string $path, string $directory): void
+    public function testIsPathInDirectory(bool $expected, string $path, string $directory): void
     {
         $this->assertSame(
             $expected,
@@ -21,7 +21,7 @@ class FilesystemUtilsTest extends TestCase
     /**
      * @return string[][]
      */
-    public function providePathsAndDirectoriesForNormalizePath(): array
+    public function providePathsAndDirectoriesForIsPathInDirectory(): array
     {
         return [
             'is in directory' => [

@@ -7,6 +7,13 @@ use Symfony\Component\Config\Definition\Builder\NodeDefinition;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 
+/**
+ * ConfigDefinition specifies the bare minimum of what should a config contain.
+ * It's a best practice to extend it and define all parameters required by your code.
+ * That way you can be sure that your code has all the data it needs and it can fail fast
+ * otherwise. Usually your code requires some parameters, so it's easiest to extend this
+ * class and just override `getParametersDefinition()` method.
+ */
 class ConfigDefinition implements ConfigurationInterface
 {
     /**
@@ -24,6 +31,8 @@ class ConfigDefinition implements ConfigurationInterface
     }
 
     /**
+     * Definition of parameters section.
+     *
      * @return ArrayNodeDefinition|NodeDefinition
      */
     protected function getParametersDefinition()
@@ -35,6 +44,8 @@ class ConfigDefinition implements ConfigurationInterface
     }
 
     /**
+     * Root definition to be overridden in special cases
+     *
      * @param TreeBuilder $treeBuilder
      * @return ArrayNodeDefinition|NodeDefinition
      */
@@ -49,7 +60,6 @@ class ConfigDefinition implements ConfigurationInterface
             ->children()
                 ->append($this->getParametersDefinition());
         // @formatter:on
-
 
         return $rootNode;
     }

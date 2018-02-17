@@ -17,7 +17,8 @@ class Config implements ConfigInterface
     private $configDefinition;
 
     /**
-     * @param mixed[] $config
+     * @param mixed[] $config Configuration array
+     * @param null|ConfigurationInterface $configDefinition (optional) Custom class to validate the config
      */
     public function __construct(
         array $config,
@@ -46,6 +47,8 @@ class Config implements ConfigInterface
     }
 
     /**
+     * Returns all the data in config as associative array
+     *
      * @return mixed[]
      */
     public function getData(): array
@@ -54,7 +57,9 @@ class Config implements ConfigInterface
     }
 
     /**
-     * @param string[] $keys
+     * Returns value by key or null if the value is not present in the config
+     *
+     * @param string[] $keys key is specified as array, so `some.key` would be `['some', 'key']`
      * @return mixed
      */
     public function getValueOrNull(array $keys)
@@ -67,6 +72,8 @@ class Config implements ConfigInterface
     }
 
     /**
+     * Returns value by key. If value is not present exception is thrown.
+     *
      * @param string[] $keys
      * @return mixed
      */
@@ -87,6 +94,8 @@ class Config implements ConfigInterface
     }
 
     /**
+     * Returns `parameters` section of the config
+     *
      * @return mixed|null
      */
     public function getParameters()
@@ -95,6 +104,8 @@ class Config implements ConfigInterface
     }
 
     /**
+     * Returns `storage` section of the config
+     *
      * @return mixed|null
      */
     public function getStorage()
@@ -103,6 +114,8 @@ class Config implements ConfigInterface
     }
 
     /**
+     * Returns `image_parameters` section of the config
+     *
      * @return mixed|null
      */
     public function getImageParameters()
@@ -111,6 +124,8 @@ class Config implements ConfigInterface
     }
 
     /**
+     * Returns `authorization` section of the config
+     *
      * @return mixed|null
      */
     public function getAuthorization()
@@ -119,6 +134,8 @@ class Config implements ConfigInterface
     }
 
     /**
+     * Returns `action` section of the config
+     *
      * @return mixed|null
      */
     public function getAction()
@@ -127,35 +144,51 @@ class Config implements ConfigInterface
     }
 
     /**
-     * @return mixed[]
+     * @return mixed[][]
      */
-    public function getInputFiles()
+    public function getInputFiles(): array
     {
-        return $this->getValueOrNull(['storage', 'input', 'files']);
+        $files = $this->getValueOrNull(['storage', 'input', 'files']);
+        if ($files === null) {
+            return [];
+        }
+        return $files;
     }
 
     /**
-     * @return mixed
+     * @return mixed[][]
      */
-    public function getExpectedOutputFiles()
+    public function getExpectedOutputFiles(): array
     {
-        return $this->getValueOrNull(['storage', 'output', 'files']);
+        $files = $this->getValueOrNull(['storage', 'output', 'files']);
+        if ($files === null) {
+            return [];
+        }
+        return $files;
     }
 
     /**
-     * @return mixed[]
+     * @return mixed[][]
      */
-    public function getInputTables()
+    public function getInputTables(): array
     {
-        return $this->getValueOrNull(['storage', 'input', 'tables']);
+        $tables = $this->getValueOrNull(['storage', 'input', 'tables']);
+        if ($tables === null) {
+            return [];
+        }
+        return $tables;
     }
 
     /**
-     * @return mixed[]
+     * @return mixed[][]
      */
-    public function getExpectedOutputTables()
+    public function getExpectedOutputTables(): array
     {
-        return $this->getValueOrNull(['storage', 'output', 'tables']);
+        $tables = $this->getValueOrNull(['storage', 'output', 'tables']);
+        if ($tables === null) {
+            return [];
+        }
+        return $tables;
     }
 
     /**
