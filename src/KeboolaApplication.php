@@ -3,8 +3,8 @@
 namespace Keboola\DockerApplication;
 
 use ErrorException;
-use Keboola\DockerApplication\Config\Config;
-use Keboola\DockerApplication\Config\ConfigDefinition;
+use Keboola\DockerApplication\Config\KeboolaConfig;
+use Keboola\DockerApplication\Config\KeboolaConfigDefinition;
 use Keboola\DockerApplication\Manifest\ManifestManager;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use const DIRECTORY_SEPARATOR;
@@ -12,9 +12,9 @@ use function error_reporting;
 use function file_get_contents;
 use function strtr;
 
-class DockerApplication
+class KeboolaApplication
 {
-    /** @var Config */
+    /** @var KeboolaConfig */
     private $config;
 
     /** @var string */
@@ -64,7 +64,7 @@ class DockerApplication
 
     protected function getConfigDefinitionClass(): string
     {
-        return ConfigDefinition::class;
+        return KeboolaConfigDefinition::class;
     }
 
     public function setDataDir(string $dataDir): void
@@ -80,7 +80,7 @@ class DockerApplication
         return $this->dataDir;
     }
 
-    public function getConfig(): Config
+    public function getConfig(): KeboolaConfig
     {
         return $this->config;
     }
@@ -97,7 +97,7 @@ class DockerApplication
 
     protected function getConfigClass(): string
     {
-        return Config::class;
+        return KeboolaConfig::class;
     }
 
     /**
