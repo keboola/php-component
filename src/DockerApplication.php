@@ -50,7 +50,7 @@ class DockerApplication
         });
     }
 
-    protected function loadConfig(): Config
+    protected function loadConfig(): void
     {
         $jsonContents = file_get_contents($this->dataDir . 'config.json');
         $jsonEncoder = new JsonEncoder();
