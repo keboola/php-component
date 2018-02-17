@@ -2,7 +2,7 @@
 
 require_once '../vendor/autoload.php';
 
-$application = new Keboola\DockerApplication\DockerApplication();
+$application = new Keboola\DockerApplication\KeboolaApplication();
 
 
 
