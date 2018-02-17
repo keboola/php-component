@@ -8,6 +8,7 @@ use Keboola\DockerApplication\Config\ConfigDefinition;
 use Keboola\DockerApplication\Manifest\ManifestManager;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use const DIRECTORY_SEPARATOR;
+use function error_reporting;
 use function file_get_contents;
 use function strtr;
 
@@ -37,6 +38,7 @@ class DockerApplication
 
     public function setEnvironment(): void
     {
+        error_reporting(E_ALL);
         set_error_handler(function ($errno, $errstr, $errfile, $errline, array $errcontext): bool {
             if (!(error_reporting() & $errno)) {
                 // respect error_reporting() level
