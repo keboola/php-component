@@ -63,7 +63,8 @@ class DockerApplication
     {
         $jsonContents = file_get_contents($this->dataDir . 'config.json');
         $jsonEncoder = new JsonEncoder();
-        return new Config($jsonEncoder->decode($jsonContents, JsonEncoder::FORMAT), $this->getConfigDefinition());
+        $configClass = $this->getConfigClass();
+        return new $configClass($jsonEncoder->decode($jsonContents, JsonEncoder::FORMAT), $this->getConfigDefinition());
     }
 
     protected function getConfigDefinition(): ConfigurationInterface
@@ -97,5 +98,13 @@ class DockerApplication
     public function run(): void
     {
         // to be implemented in subclass
+    }
+
+    /**
+     * @return mixed
+     */
+    protected function getConfigClass()
+    {
+        return Config::class;
     }
 }
