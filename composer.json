@@ -55,10 +55,7 @@
             "@build"
         ],
         "generate-docs": [
-            "sami update ./doc/SamiConfig.php",
-            "git add -A",
-            "git commit -m \"Updated docs\"",
-            "git subtree push --prefix build/docs/master origin gh-pages"
+            "sami update ./.sami-config.php",
         ]
     },
     "config": {
