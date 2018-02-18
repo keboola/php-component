@@ -55,7 +55,7 @@
             "@build"
         ],
         "generate-docs": [
-            "sami update ./.sami-config.php",
+            "sami update ./.sami-config.php"
         ]
     },
     "config": {
