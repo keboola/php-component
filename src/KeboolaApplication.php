@@ -23,16 +23,14 @@ class KeboolaApplication
     /** @var ManifestManager */
     private $manifestManager;
 
-    public function __construct(
-        ?string $dataDir = null
-    ) {
+    public function __construct() {
         $this->setEnvironment();
 
-        if (!$dataDir) {
-            $dataDir = getenv('KBC_DATADIR') === false ? '/data/' : (string)getenv('KBC_DATADIR');
-        }
+        $dataDir = getenv('KBC_DATADIR') === false ? '/data/' : (string)getenv('KBC_DATADIR');
         $this->setDataDir($dataDir);
+
         $this->loadConfig();
+
         $this->setManifestManager($dataDir);
     }
 
