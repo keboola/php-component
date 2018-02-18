@@ -5,6 +5,7 @@ namespace Keboola\DockerApplication;
 use ErrorException;
 use Keboola\DockerApplication\Config\KeboolaConfig;
 use Keboola\DockerApplication\Config\KeboolaConfigDefinition;
+use Keboola\DockerApplication\FilesystemUtils\FilesystemUtils;
 use Keboola\DockerApplication\Manifest\ManifestManager;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use const DIRECTORY_SEPARATOR;
@@ -31,9 +32,14 @@ class KeboolaApplication
 
         $this->loadConfig();
 
-        $this->setManifestManager($dataDir);
+        $this->loadManifestManager($dataDir);
     }
 
+    /**
+     * Prepares environment. Sets error reporting for the app to fail on any
+     * error, warning or notice. If your code emits notices and cannot be
+     * fixed, you can set `error_reporting` in `$application->run()` method.
+     */
     public function setEnvironment(): void
     {
         error_reporting(E_ALL);
@@ -48,6 +54,10 @@ class KeboolaApplication
         });
     }
 
+    /**
+     * Automatically loads configuration from datadir, instantiates specified
+     * config class and validates it with specified confing definition class
+     */
     protected function loadConfig(): void
     {
         $jsonContents = file_get_contents($this->dataDir . 'config.json');
@@ -60,17 +70,20 @@ class KeboolaApplication
         );
     }
 
+    /**
+     * Override this method if you have custom config definition class. This
+     * allows you to validate and require config parameters and fail fast if
+     * there is a missing parameter.
+     */
     protected function getConfigDefinitionClass(): string
     {
         return KeboolaConfigDefinition::class;
     }
 
-    public function setDataDir(string $dataDir): void
+    protected function setDataDir(string $dataDir): void
     {
-        // make sure it's platform independent
-        $dataDir = strtr($dataDir, [DIRECTORY_SEPARATOR => '/']);
-
-        $this->dataDir = rtrim($dataDir, '/') . '/';
+        $dataDir = FilesystemUtils::platformIndependentPath($dataDir);
+        $this->dataDir = FilesystemUtils::addTrailingSlash($dataDir);
     }
 
     public function getDataDir(): string
@@ -88,21 +101,30 @@ class KeboolaApplication
         return $this->manifestManager;
     }
 
+    /**
+     * This is the main method for your code to run in. You have the `Config`
+     * and `ManifestManager` ready as well as environment set up.
+     */
     public function run(): void
     {
         // to be implemented in subclass
     }
 
+    /**
+     * Class of created config. It's useful if you want to implment getters for
+     * parameters in your config. It's prefferable to accessing configuration
+     * keys as arrays.
+     */
     protected function getConfigClass(): string
     {
         return KeboolaConfig::class;
     }
 
     /**
-     * @param null|string $dataDir
+     * Loads manifest manager with application's datadir
      */
-    protected function setManifestManager(?string $dataDir): void
+    protected function loadManifestManager(): void
     {
-        $this->manifestManager = new ManifestManager($dataDir);
+        $this->manifestManager = new ManifestManager($this->dataDir);
     }
 }
