@@ -7,7 +7,7 @@ use Symfony\Component\Finder\Finder;
 $iterator = Finder::create()
     ->files()
     ->name('*.php')
-    ->in($dir = __DIR__ . '/../src')
+    ->in($dir = __DIR__ . '/src')
 ;
 
 /*$versions = GitVersionCollection::create($dir)
@@ -20,9 +20,9 @@ return new Sami($iterator, array(
     'theme'                => 'github',
     //'versions'             => $versions,
     'title'                => 'php-docker-application',
-    'build_dir'            => __DIR__.'/../docs/',
-    'cache_dir'            => __DIR__.'/../cache/',
+    'build_dir'            => __DIR__ . '/docs/',
+    'cache_dir'            => __DIR__ . '/cache/',
     // use a custom theme directory
-    'template_dirs'        => array(__DIR__.'/../vendor/devedge/sami-github/'),
+    'template_dirs'        => array(__DIR__.'/vendor/devedge/sami-github/'),
     'default_opened_level' => 2,
 ));
