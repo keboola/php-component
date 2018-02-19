@@ -3,7 +3,6 @@
 namespace Keboola\DockerApplication\Manifest;
 
 use InvalidArgumentException;
-use Keboola\DockerApplication\FilesystemUtils\FilesystemUtils;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use const PATHINFO_EXTENSION;
@@ -86,7 +85,7 @@ class ManifestManager
      */
     public function getFileManifest(string $fileName): array
     {
-        $baseDir = FilesystemUtils::pathFromSegments($this->dataDir, 'in', 'files');
+        $baseDir = implode('/', [$this->dataDir, 'in', 'files']);
         return $this->loadManifest($fileName, $baseDir);
     }
 
@@ -97,7 +96,8 @@ class ManifestManager
     public function getTableManifest(string $tableName)
     {
         $tableName = $this->ensureTableExtension($tableName);
-        $baseDir = FilesystemUtils::pathFromSegments($this->dataDir, 'in', 'tables');
+        $baseDir = implode('/', [$this->dataDir, 'in', 'tables']);
+
         return $this->loadManifest($tableName, $baseDir);
     }
 
@@ -108,7 +108,8 @@ class ManifestManager
      */
     private function loadManifest(string $fileName, string $baseDir): array
     {
-        if (!FilesystemUtils::isPathInDirectory($fileName, $baseDir)) {
+        $isPathInDirectory = strpos($fileName, $baseDir) === 0;
+        if (!$isPathInDirectory) {
             $fs = new Filesystem();
             if ($fs->isAbsolutePath($fileName)) {
                 throw new InvalidArgumentException(sprintf(
@@ -118,7 +119,7 @@ class ManifestManager
                 ));
             }
 
-            $fileName = FilesystemUtils::pathFromSegments($baseDir, $fileName);
+            $fileName = implode('/', [$baseDir, $fileName]);
         }
 
         $decoder = new JsonEncoder();
