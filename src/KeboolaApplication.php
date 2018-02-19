@@ -5,7 +5,6 @@ namespace Keboola\DockerApplication;
 use ErrorException;
 use Keboola\DockerApplication\Config\KeboolaConfig;
 use Keboola\DockerApplication\Config\KeboolaConfigDefinition;
-use Keboola\DockerApplication\FilesystemUtils\FilesystemUtils;
 use Keboola\DockerApplication\Manifest\ManifestManager;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use const DIRECTORY_SEPARATOR;
@@ -60,7 +59,7 @@ class KeboolaApplication
      */
     protected function loadConfig(): void
     {
-        $jsonContents = file_get_contents($this->dataDir . 'config.json');
+        $jsonContents = file_get_contents($this->dataDir . '/config.json');
         $jsonEncoder = new JsonEncoder();
         $configClass = $this->getConfigClass();
         $configDefinitionClass = $this->getConfigDefinitionClass();
@@ -80,10 +79,14 @@ class KeboolaApplication
         return KeboolaConfigDefinition::class;
     }
 
+    /**
+     * Data dir is set without the trailing slash
+     *
+     * @param string $dataDir
+     */
     protected function setDataDir(string $dataDir): void
     {
-        $dataDir = FilesystemUtils::platformIndependentPath($dataDir);
-        $this->dataDir = FilesystemUtils::addTrailingSlash($dataDir);
+        $this->dataDir = rtrim($dataDir, '/');
     }
 
     public function getDataDir(): string
