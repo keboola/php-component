@@ -6,6 +6,7 @@ use ErrorException;
 use Keboola\DockerApplication\Config\KeboolaConfig;
 use Keboola\DockerApplication\Config\KeboolaConfigDefinition;
 use Keboola\DockerApplication\Manifest\ManifestManager;
+use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use function error_reporting;
 use function file_get_contents;
@@ -62,10 +63,14 @@ class KeboolaApplication
         $jsonEncoder = new JsonEncoder();
         $configClass = $this->getConfigClass();
         $configDefinitionClass = $this->getConfigDefinitionClass();
-        $this->config = new $configClass(
-            $jsonEncoder->decode($jsonContents, JsonEncoder::FORMAT),
-            new $configDefinitionClass()
-        );
+        try {
+            $this->config = new $configClass(
+                $jsonEncoder->decode($jsonContents, JsonEncoder::FORMAT),
+                new $configDefinitionClass()
+            );
+        } catch (InvalidConfigurationException $e) {
+            throw new UserException($e->getMessage(), 0, $e);
+        }
     }
 
     /**
