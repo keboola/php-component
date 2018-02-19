@@ -67,7 +67,6 @@ class ManifestManager
         string $destination,
         array $primaryKeyColumns = []
     ): void {
-        $fileName = $this->ensureTableExtension($fileName);
         $manifestName = self::getManifestFilename($fileName);
         $manifest = [
             'destination' => $destination,
@@ -95,7 +94,6 @@ class ManifestManager
      */
     public function getTableManifest(string $tableName)
     {
-        $tableName = $this->ensureTableExtension($tableName);
         $baseDir = implode('/', [$this->dataDir, 'in', 'tables']);
 
         return $this->loadManifest($tableName, $baseDir);
@@ -124,13 +122,5 @@ class ManifestManager
 
         $decoder = new JsonEncoder();
         return $decoder->decode(file_get_contents(self::getManifestFilename($fileName)), JsonEncoder::FORMAT);
-    }
-
-    private function ensureTableExtension(string $tableName): string
-    {
-        if (substr($tableName, -4) !== '.csv') {
-            $tableName .= '.csv';
-        }
-        return $tableName;
     }
 }

@@ -64,6 +64,18 @@ class ManifestManagerTest extends TestCase
         unlink($manifestFilename);
     }
 
+    public function testWillWriteTableManifestWithoutExtension(): void
+    {
+        $manager = new ManifestManager('/data/');
+
+        $fileName = __DIR__ . '/fixtures/table';
+        $manager->writeTableManifest($fileName, 'destination-table', ['id', 'number']);
+
+        $manifestFilename = $fileName . '.manifest';
+        $this->assertJsonFileEqualsJsonFile(__DIR__ . '/fixtures/expected-table.manifest', $manifestFilename);
+        unlink($manifestFilename);
+    }
+
     public function testWillLoadFileManifest(): void
     {
         $manager = new ManifestManager(__DIR__ . '/fixtures/manifest-data-dir');
@@ -104,6 +116,6 @@ class ManifestManagerTest extends TestCase
                 'number',
             ],
         ];
-        $this->assertSame($expectedManifest, $manager->getTableManifest('people'));
+        $this->assertSame($expectedManifest, $manager->getTableManifest('products'));
     }
 }
