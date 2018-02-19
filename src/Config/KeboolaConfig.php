@@ -57,36 +57,26 @@ class KeboolaConfig implements ConfigInterface
     }
 
     /**
-     * Returns value by key or null if the value is not present in the config
-     *
-     * @param string[] $keys key is specified as array, so `some.key` would be `['some', 'key']`
-     * @return mixed
-     */
-    public function getValueOrNull(array $keys)
-    {
-        try {
-            return $this->getValue($keys);
-        } catch (InvalidArgumentException $e) {
-            return null;
-        }
-    }
-
-    /**
-     * Returns value by key. If value is not present exception is thrown.
+     * Returns value by key. You can supply default value for when the key is missing.
+     * Without default value exception is thrown for nonexistent keys.
      *
      * @param string[] $keys
+     * @param null $default
      * @return mixed
      */
-    public function getValue(array $keys)
+    public function getValue(array $keys, $default = null)
     {
         $config = $this->config;
         $pointer = &$config;
         foreach ($keys as $key) {
             if (!array_key_exists($key, $pointer)) {
-                throw new InvalidArgumentException(sprintf(
-                    'Key "%s" does not exist',
-                    implode('.', $keys)
-                ));
+                if ($default === null) {
+                    throw new InvalidArgumentException(sprintf(
+                        'Key "%s" does not exist',
+                        implode('.', $keys)
+                    ));
+                }
+                return $default;
             }
             $pointer = &$pointer[$key];
         }
@@ -96,51 +86,51 @@ class KeboolaConfig implements ConfigInterface
     /**
      * Returns `parameters` section of the config
      *
-     * @return mixed|null
+     * @return mixed[]
      */
     public function getParameters()
     {
-        return $this->getValueOrNull(['parameters']);
+        return $this->getValue(['parameters'], []);
     }
 
     /**
      * Returns `storage` section of the config
      *
-     * @return mixed|null
+     * @return mixed[]
      */
     public function getStorage()
     {
-        return $this->getValueOrNull(['storage']);
+        return $this->getValue(['storage'], []);
     }
 
     /**
      * Returns `image_parameters` section of the config
      *
-     * @return mixed|null
+     * @return mixed[]
      */
     public function getImageParameters()
     {
-        return $this->getValueOrNull(['image_parameters']);
+        return $this->getValue(['image_parameters'], []);
     }
 
     /**
      * Returns `authorization` section of the config
      *
-     * @return mixed|null
+     * @return mixed[]
      */
     public function getAuthorization()
     {
-        return $this->getValueOrNull(['authorization']);
+        return $this->getValue(['authorization'], []);
     }
 
     /**
      * Returns `action` section of the config
      *
-     * @return mixed|null
+     * @return string
      */
-    public function getAction()
+    public function getAction(): string
     {
-        return $this->getValueOrNull(['action']);
+        return $this->getValue(['action'], '');
     }
 
     /**
@@ -148,11 +138,7 @@ class KeboolaConfig implements ConfigInterface
      */
     public function getInputFiles(): array
     {
-        $files = $this->getValueOrNull(['storage', 'input', 'files']);
-        if ($files === null) {
-            return [];
-        }
-        return $files;
+        return $this->getValue(['storage', 'input', 'files'], []);
     }
 
     /**
@@ -160,11 +146,7 @@ class KeboolaConfig implements ConfigInterface
      */
     public function getExpectedOutputFiles(): array
     {
-        $files = $this->getValueOrNull(['storage', 'output', 'files']);
-        if ($files === null) {
-            return [];
-        }
-        return $files;
+        return $this->getValue(['storage', 'output', 'files'], []);
     }
 
     /**
@@ -172,11 +154,7 @@ class KeboolaConfig implements ConfigInterface
      */
     public function getInputTables(): array
     {
-        $tables = $this->getValueOrNull(['storage', 'input', 'tables']);
-        if ($tables === null) {
-            return [];
-        }
-        return $tables;
+        return $this->getValue(['storage', 'input', 'tables'], []);
     }
 
     /**
@@ -184,11 +162,7 @@ class KeboolaConfig implements ConfigInterface
      */
     public function getExpectedOutputTables(): array
     {
-        $tables = $this->getValueOrNull(['storage', 'output', 'tables']);
-        if ($tables === null) {
-            return [];
-        }
-        return $tables;
+        return $this->getValue(['storage', 'output', 'tables'], []);
     }
 
     /**
@@ -196,16 +170,16 @@ class KeboolaConfig implements ConfigInterface
      */
     public function getOAuthApiData()
     {
-        return $this->getValueOrNull(['oauth_api', 'credentials', '#data']);
+        return $this->getValue(['oauth_api', 'credentials', '#data'], '');
     }
 
     public function getOAuthApiAppSecret(): string
     {
-        return $this->getValueOrNull(['oauth_api', 'credentials', '#appSecret']);
+        return $this->getValue(['oauth_api', 'credentials', '#appSecret'], '');
     }
 
     public function getOAuthApiAppKey(): string
     {
-        return $this->getValueOrNull(['oauth_api', 'credentials', 'appKey']);
+        return $this->getValue(['oauth_api', 'credentials', 'appKey'], '');
     }
 }

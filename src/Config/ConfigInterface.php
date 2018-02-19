@@ -11,13 +11,8 @@ interface ConfigInterface
 
     /**
      * @param string[] $keys
+     * @param mixed $default
      * @return mixed
      */
-    public function getValueOrNull(array $keys);
-
-    /**
-     * @param string[] $keys
-     * @return mixed
-     */
-    public function getValue(array $keys);
+    public function getValue(array $keys, $default = null);
 }

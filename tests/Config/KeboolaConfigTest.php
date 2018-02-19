@@ -10,7 +10,7 @@ use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
 
-class ConfigTest extends TestCase
+class KeboolaConfigTest extends TestCase
 {
     public function testWillCreateConfigFromArray(): void
     {
@@ -80,12 +80,12 @@ class ConfigTest extends TestCase
                 ],
             ],
         ]);
-        $this->assertNull($config->getParameters());
-        $this->assertNull($config->getAction());
-        $this->assertNull($config->getAuthorization());
-        $this->assertNull($config->getImageParameters());
-        $this->assertNull($config->getStorage());
-        $this->assertNull($config->getValueOrNull(['parameters', 'ipsum', 'dolor']));
+        $this->assertSame([], $config->getParameters());
+        $this->assertSame('', $config->getAction());
+        $this->assertSame([], $config->getAuthorization());
+        $this->assertSame([], $config->getImageParameters());
+        $this->assertSame([], $config->getStorage());
+        $this->assertSame('', $config->getValue(['parameters', 'ipsum', 'dolor'], ''));
     }
 
     public function testGettersWillGetKeyIfPresent(): void
@@ -145,7 +145,7 @@ class ConfigTest extends TestCase
         );
         $this->assertEquals(
             'value',
-            $config->getValueOrNull(['parameters', 'ipsum', 'dolor'])
+            $config->getValue(['parameters', 'ipsum', 'dolor'])
         );
     }
 }
