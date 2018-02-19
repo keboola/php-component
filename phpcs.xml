@@ -25,4 +25,11 @@
             <property name="searchAnnotations" value="true" />
         </properties>
     </rule>
+    <rule ref="SlevomatCodingStandard.TypeHints.TypeHintDeclaration">
+        <properties>
+            <property name="usefulAnnotations" type="array" value="
+                @dataProvider
+            " />
+        </properties>
+    </rule>
 </ruleset>
