@@ -61,7 +61,7 @@ class KeboolaConfig implements ConfigInterface
      * Without default value exception is thrown for nonexistent keys.
      *
      * @param string[] $keys
-     * @param null $default
+     * @param mixed $default
      * @return mixed
      */
     public function getValue(array $keys, $default = null)
@@ -88,7 +88,7 @@ class KeboolaConfig implements ConfigInterface
      *
      * @return mixed[]
      */
-    public function getParameters()
+    public function getParameters(): array
     {
         return $this->getValue(['parameters'], []);
     }
@@ -98,7 +98,7 @@ class KeboolaConfig implements ConfigInterface
      *
      * @return mixed[]
      */
-    public function getStorage()
+    public function getStorage(): array
     {
         return $this->getValue(['storage'], []);
     }
@@ -108,7 +108,7 @@ class KeboolaConfig implements ConfigInterface
      *
      * @return mixed[]
      */
-    public function getImageParameters()
+    public function getImageParameters(): array
     {
         return $this->getValue(['image_parameters'], []);
     }
@@ -118,7 +118,7 @@ class KeboolaConfig implements ConfigInterface
      *
      * @return mixed[]
      */
-    public function getAuthorization()
+    public function getAuthorization(): array
     {
         return $this->getValue(['authorization'], []);
     }
