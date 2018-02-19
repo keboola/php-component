@@ -1,5 +1,4 @@
-<?php
-declare(strict_types = 1);
+<?php declare(strict_types = 1);
 
 namespace Keboola\DockerApplication\Tests\Manifest;
 
@@ -11,7 +10,7 @@ class ManifestManagerTest extends TestCase
     /**
      * @dataProvider provideFilenameForGetManifestFilename
      */
-    public function testGetManifestFilenanme(string $expected, string $filename): void
+    public function testGetManifestFilename(string $expected, string $filename): void
     {
         $this->assertSame(
             $expected,

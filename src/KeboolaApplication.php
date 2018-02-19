@@ -7,10 +7,8 @@ use Keboola\DockerApplication\Config\KeboolaConfig;
 use Keboola\DockerApplication\Config\KeboolaConfigDefinition;
 use Keboola\DockerApplication\Manifest\ManifestManager;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
-use const DIRECTORY_SEPARATOR;
 use function error_reporting;
 use function file_get_contents;
-use function strtr;
 
 class KeboolaApplication
 {
@@ -23,7 +21,8 @@ class KeboolaApplication
     /** @var ManifestManager */
     private $manifestManager;
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->setEnvironment();
 
         $dataDir = getenv('KBC_DATADIR') === false ? '/data/' : (string)getenv('KBC_DATADIR');
@@ -31,7 +30,7 @@ class KeboolaApplication
 
         $this->loadConfig();
 
-        $this->loadManifestManager($dataDir);
+        $this->loadManifestManager();
     }
 
     /**
