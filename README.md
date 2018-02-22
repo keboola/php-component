@@ -21,10 +21,11 @@ Create a subclass of `DockerApplication`.
 ```php
 <?php declare(strict_types = 1);
 
-// src/Application.php
-use Keboola\DockerApplication\DockerApplication;
+namespace MyComponent;
 
-class Application extends DockerApplication
+use Keboola\DockerApplication\KeboolaApplication;
+
+class Application extends KeboolaApplication
 {
     public function run(): void
     {
@@ -34,8 +35,8 @@ class Application extends DockerApplication
         // get value of customKey.customSubkey parameter and fail if missing
         $customParameter = $this->getConfig()->getValue(['parameters', 'customKey', 'customSubkey']);
 
-        // get value of customKey.customSubkey parameter or null
-        $customParameterOrNull = $this->getConfig()->getValueOrNull(['parameters', 'customKey', 'customSubkey']);
+        // get value with default value if not present
+        $customParameterOrNull = $this->getConfig()->getValue(['parameters', 'customKey'], 'someDefaultValue');
 
         // get manifest for input file
         $fileManifest = $this->getManifestManager()->getFileManifest('input-file.csv');
@@ -46,36 +47,35 @@ class Application extends DockerApplication
         // write manifest for output file
         $this->getManifestManager()->writeFileManifest('out-file.csv', ['tag1', 'tag2']);
 
-        // write manigest for output table
+        // write manifest for output table
         $this->getManifestManager()->writeTableManifest('data.csv', 'out.report', ['id']);
     }
 }
+
 ```
 
-Use this `run.php` template. 
+Use this `src/run.php` template. 
 
 ```php
-<?php
-// src/run.php
+<?php declare(strict_types = 1);
 
-require_once "vendor/autoload.php";
+require __DIR__ . '/../vendor/autoload.php';
 
 try {
-    $app = new Application();
+    $app = new MyComponent\Application();
     $app->run();
     exit(0);
-} catch (MyComponent\Exception\UserException $e) {
+} catch (\Keboola\DockerApplication\UserException $e) {
     echo $e->getMessage();
     exit(1);
-} catch(\Throwable $e) {
-    echo $e->getMessage();
-    echo "errFile:" . $e->getFile();
-    echo "errLine:" . $e->getLine();
-    echo "code:" . $e->getCode();
-    echo "trace :";
-    var_export($e->getTrace())
+} catch (\Throwable $e) {
+    echo get_class($e) . ':' . $e->getMessage();
+    echo "\nFile: " . $e->getFile();
+    echo "\nLine: " . $e->getLine();
+    echo "\nCode: " . $e->getCode();
+    echo "\nTrace: " . $e->getTraceAsString() . "\n";
     exit(2);
 }
 ```
 
-See documentation [in doc directory](https://github.com/keboola/python-docker-application/tree/master/doc) for full list of available functions. See [development guide](https://developers.keboola.com/extend/docker/quick-start/) for help with KBC integration.
+See [development guide](https://developers.keboola.com/extend/component/tutorial/) for help with KBC integration.

@@ -13,7 +13,7 @@ class KeboolaConfig implements ConfigInterface
     /** @var mixed[] */
     protected $config;
 
-    /** @var null|ConfigurationInterface */
+    /** @var ConfigurationInterface */
     private $configDefinition;
 
     /**
@@ -24,7 +24,7 @@ class KeboolaConfig implements ConfigInterface
         array $config,
         ?ConfigurationInterface $configDefinition = null
     ) {
-        $this->configDefinition = $configDefinition;
+        $this->setConfigDefinition($configDefinition);
         $this->setConfig($config);
     }
 
@@ -34,16 +34,16 @@ class KeboolaConfig implements ConfigInterface
     private function setConfig(array $config): void
     {
         $processor = new Processor();
-        $processedConfig = $processor->processConfiguration($this->getConfigDefinition(), [$config]);
+        $processedConfig = $processor->processConfiguration($this->configDefinition, [$config]);
         $this->config = $processedConfig;
     }
 
-    private function getConfigDefinition(): ConfigurationInterface
+    private function setConfigDefinition(?ConfigurationInterface $configDefinition): void
     {
-        if ($this->configDefinition === null) {
-            $this->configDefinition = new KeboolaConfigDefinition();
+        if ($configDefinition === null) {
+            $configDefinition = new KeboolaConfigDefinition();
         }
-        return $this->configDefinition;
+        $this->configDefinition = $configDefinition;
     }
 
     /**

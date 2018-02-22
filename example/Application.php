@@ -26,7 +26,7 @@ class Application extends KeboolaApplication
         // write manifest for output file
         $this->getManifestManager()->writeFileManifest('out-file.csv', ['tag1', 'tag2']);
 
-        // write manigest for output table
+        // write manifest for output table
         $this->getManifestManager()->writeTableManifest('data.csv', 'out.report', ['id']);
     }
 }

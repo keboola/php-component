@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php declare(strict_types = 1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
@@ -9,4 +9,11 @@ try {
 } catch (\Keboola\DockerApplication\UserException $e) {
     echo $e->getMessage();
     exit(1);
+} catch (\Throwable $e) {
+    echo get_class($e) . ':' . $e->getMessage();
+    echo "\nFile: " . $e->getFile();
+    echo "\nLine: " . $e->getLine();
+    echo "\nCode: " . $e->getCode();
+    echo "\nTrace: " . $e->getTraceAsString() . "\n";
+    exit(2);
 }
