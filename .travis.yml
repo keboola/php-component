@@ -1,17 +1,44 @@
 sudo: false
 
-language: bash
+language: php
 
-services:
-  - docker
+php:
+  - 7.1
+  - 7.2
+  - nightly
+
+env:
+  matrix:
+    - PREFER_LOWEST=""
+    - PREFER_LOWEST="--prefer-lowest --prefer-stable"
+
+matrix:
+  # report before nightly is finished
+  fast_finish: true
+  # nightly can fail
+  allow-failures:
+    - php: nightly
+
+before_script:
+  - composer update $PREFER_LOWEST
+
+script:
+  - composer ci
 
 jobs:
   include:
-    - stage: build
-      before-script:
+    - stage: keboola-docker-build
+      script:
         - docker -v
         - docker-compose  -v
-      script:
-        # build
         - docker build -t tests-ci .
         - docker run tests-ci composer ci
+
+stages:
+  - keboola-docker-build
+  - test
+
+
+cache:
+  directories:
+  - vendor
