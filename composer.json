@@ -10,8 +10,8 @@
     ],
     "authors": [
         {
-            "name": "Tomáš Fejfar",
-            "email": "tomas.fejfar@keboola.com"
+            "name": "Keboola",
+            "email": "devel@keboola.com"
         }
     ],
     "autoload": {
@@ -25,19 +25,19 @@
         }
     },
     "require": {
-        "php": "~7.1",
-        "symfony/config": "~4.0",
-        "symfony/filesystem": "~4.0",
-        "symfony/finder": "~4.0",
-        "symfony/serializer": "~4.0"
+        "php": "^7.1",
+        "symfony/config": "^4.0",
+        "symfony/filesystem": "^4.0",
+        "symfony/finder": "^4.0",
+        "symfony/serializer": "^4.0"
     },
     "require-dev": {
-        "devedge/sami-github": "~1.0",
-        "jakub-onderka/php-parallel-lint": "~0.9",
-        "phpstan/phpstan-shim": "~0.9",
-        "phpunit/phpunit": "~6.5",
-        "slevomat/coding-standard": "~4.0",
-        "squizlabs/php_codesniffer": "~3.2"
+        "devedge/sami-github": "^1.0",
+        "jakub-onderka/php-parallel-lint": "^0.9",
+        "phpstan/phpstan-shim": "^0.9",
+        "phpunit/phpunit": "^6.5",
+        "slevomat/coding-standard": "^4.0",
+        "squizlabs/php_codesniffer": "^3.2"
     },
     "scripts": {
         "tests": "phpunit",
