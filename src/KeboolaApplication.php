@@ -11,6 +11,10 @@ use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use function error_reporting;
 use function file_get_contents;
 
+/**
+ * This is the core class that does all the heavy lifting. By default you don't need to setup anything. There are some
+ * extension points for you to use if you want to customise the behavior.
+ */
 class KeboolaApplication
 {
     /** @var KeboolaConfig */

@@ -10,6 +10,9 @@ use function file_get_contents;
 use function file_put_contents;
 use function pathinfo;
 
+/**
+ * Handles everything related to generating and reading manifests for tables and files.
+ */
 class ManifestManager
 {
     /** @var string */

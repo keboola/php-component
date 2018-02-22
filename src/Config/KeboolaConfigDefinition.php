@@ -17,7 +17,7 @@ use Symfony\Component\Config\Definition\ConfigurationInterface;
 class KeboolaConfigDefinition implements ConfigurationInterface
 {
     /**
-     * Generates the configuration tree builder.
+     * Generates the configuration tree builder. You probably don't need to touch this.
      *
      * @return \Symfony\Component\Config\Definition\Builder\TreeBuilder The tree builder
      */
@@ -29,7 +29,7 @@ class KeboolaConfigDefinition implements ConfigurationInterface
     }
 
     /**
-     * Definition of parameters section.
+     * Definition of parameters section. Override in extending class to validate parameters sent to the component early.
      *
      * @return ArrayNodeDefinition|NodeDefinition
      */
