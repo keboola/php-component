@@ -34,7 +34,7 @@
     "require-dev": {
         "devedge/sami-github": "^1.0",
         "jakub-onderka/php-parallel-lint": "^0.9",
-        "phpstan/phpstan-shim": "^0.9",
+        "phpstan/phpstan-shim": "^0.9.1",
         "phpunit/phpunit": "^6.5",
         "slevomat/coding-standard": "^4.0",
         "squizlabs/php_codesniffer": "^3.2"
