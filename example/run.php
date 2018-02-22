@@ -1,5 +1,12 @@
-<?php declare(strict_types = 1);
+<?php declare(strict_types=1);
 
-require_once '../vendor/autoload.php';
+require __DIR__ . '/../vendor/autoload.php';
 
-$application = new Keboola\DockerApplication\KeboolaApplication();
+try {
+    $app = new MyComponent\Application();
+    $app->run();
+    exit(0);
+} catch (\Keboola\DockerApplication\UserException $e) {
+    echo $e->getMessage();
+    exit(1);
+}
