@@ -1,6 +1,7 @@
 <?php declare(strict_types = 1);
 
-// src/Application.php
+namespace MyComponent;
+
 use Keboola\DockerApplication\KeboolaApplication;
 
 class Application extends KeboolaApplication
@@ -13,8 +14,8 @@ class Application extends KeboolaApplication
         // get value of customKey.customSubkey parameter and fail if missing
         $customParameter = $this->getConfig()->getValue(['parameters', 'customKey', 'customSubkey']);
 
-        // get value of customKey.customSubkey parameter or null
-        $customParameterOrNull = $this->getConfig()->getValueOrNull(['parameters', 'customKey', 'customSubkey']);
+        // get value with default value if not present
+        $customParameterOrNull = $this->getConfig()->getValue(['parameters', 'customKey'], 'someDefaultValue');
 
         // get manifest for input file
         $fileManifest = $this->getManifestManager()->getFileManifest('input-file.csv');
