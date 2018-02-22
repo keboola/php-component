@@ -64,7 +64,7 @@ class ManifestManager
      */
     public function writeTableManifest(
         string $fileName,
-        string $destination,
+        string $destination = '',
         array $primaryKeyColumns = []
     ): void {
         $manifestName = self::getManifestFilename($fileName);

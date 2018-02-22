@@ -24,9 +24,7 @@ class KeboolaConfigDefinition implements ConfigurationInterface
     public function getConfigTreeBuilder(): TreeBuilder
     {
         $treeBuilder = new TreeBuilder();
-        /** @var ArrayNodeDefinition $rootNode */
-        $rootNode = $this->getRootDefinition($treeBuilder);
-
+        $this->getRootDefinition($treeBuilder);
         return $treeBuilder;
     }
 
