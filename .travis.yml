@@ -41,7 +41,6 @@ jobs:
         keep-history: true
         on:
           branch: master
-          tags: true
 
 stages:
   - test
