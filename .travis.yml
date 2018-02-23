@@ -33,7 +33,7 @@ jobs:
       script:
       - git branch
       - git tag
-      - git fetch origin master
+      - git fetch origin master:master
       - git fetch origin --tags
       - git branch
       - git tag
