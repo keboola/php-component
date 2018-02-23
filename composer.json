@@ -1,12 +1,12 @@
 {
-    "name": "keboola/php-docker-application",
+    "name": "keboola/php-component",
     "license": "MIT",
     "type": "project",
-    "description": "Keboola PHP docker application",
+    "description": "Helper classes for developing Keboola PHP components",
     "keywords": [
         "keboola",
         "docker",
-        "application"
+        "component"
     ],
     "authors": [
         {
@@ -16,12 +16,12 @@
     ],
     "autoload": {
         "psr-4": {
-            "Keboola\\DockerApplication\\": "src/"
+            "Keboola\\Component\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Keboola\\DockerApplication\\Tests\\": "tests/"
+            "Keboola\\Component\\Tests\\": "tests/"
         }
     },
     "require": {

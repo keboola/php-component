@@ -1,10 +1,10 @@
-PHP Docker application
+Keboola PHP Component
 -----------------
 
 [![Build Status](https://travis-ci.org/keboola/php-docker-application.svg?branch=master)](https://travis-ci.org/keboola/php-docker-application)
 [![Code Climate](https://codeclimate.com/github/keboola/php-docker-application/badges/gpa.svg)](https://codeclimate.com/github/keboola/php-docker-application)
 
-General library for php application running in KBC. The library provides function related to [Docker Runner](https://github.com/keboola/docker-bundle).
+General library for php component running in KBC. The library provides function related to [Docker Runner](https://github.com/keboola/docker-bundle).
 
 Installation
 ===============
@@ -16,16 +16,16 @@ composer install keboola/php-docker-application
 Usage
 ============
 
-Create a subclass of `DockerApplication`. 
+Create a subclass of `KeboolaComponent`. 
 
 ```php
 <?php declare(strict_types = 1);
 
 namespace MyComponent;
 
-use Keboola\DockerApplication\KeboolaApplication;
+use Keboola\Component\KeboolaComponent;
 
-class Application extends KeboolaApplication
+class Component extends KeboolaComponent
 {
     public function run(): void
     {
@@ -62,10 +62,10 @@ Use this `src/run.php` template.
 require __DIR__ . '/../vendor/autoload.php';
 
 try {
-    $app = new MyComponent\Application();
+    $app = new MyComponent\Component();
     $app->run();
     exit(0);
-} catch (\Keboola\DockerApplication\UserException $e) {
+} catch (\Keboola\Component\UserException $e) {
     echo $e->getMessage();
     exit(1);
 } catch (\Throwable $e) {
