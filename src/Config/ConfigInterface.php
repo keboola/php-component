@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace Keboola\DockerApplication\Config;
+namespace Keboola\Component\Config;
 
 interface ConfigInterface
 {

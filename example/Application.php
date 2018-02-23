@@ -2,9 +2,9 @@
 
 namespace MyComponent;
 
-use Keboola\DockerApplication\KeboolaApplication;
+use Keboola\Component\KeboolaComponent;
 
-class Application extends KeboolaApplication
+class Component extends KeboolaComponent
 {
     public function run(): void
     {

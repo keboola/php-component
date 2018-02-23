@@ -1,8 +1,8 @@
 <?php declare(strict_types = 1);
 
-namespace Keboola\DockerApplication\Tests\Manifest;
+namespace Keboola\Component\Tests\Manifest;
 
-use Keboola\DockerApplication\Manifest\ManifestManager;
+use Keboola\Component\Manifest\ManifestManager;
 use PHPUnit\Framework\TestCase;
 
 class ManifestManagerTest extends TestCase

@@ -3,10 +3,10 @@
 require __DIR__ . '/../vendor/autoload.php';
 
 try {
-    $app = new MyComponent\Application();
+    $app = new MyComponent\Component();
     $app->run();
     exit(0);
-} catch (\Keboola\DockerApplication\UserException $e) {
+} catch (\Keboola\Component\UserException $e) {
     echo $e->getMessage();
     exit(1);
 } catch (\Throwable $e) {

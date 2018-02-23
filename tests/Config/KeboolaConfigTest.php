@@ -1,9 +1,9 @@
 <?php declare(strict_types = 1);
 
-namespace Keboola\DockerApplication\Tests\Config;
+namespace Keboola\Component\Tests\Config;
 
-use Keboola\DockerApplication\Config\KeboolaConfig;
-use Keboola\DockerApplication\Config\KeboolaConfigDefinition;
+use Keboola\Component\Config\KeboolaConfig;
+use Keboola\Component\Config\KeboolaConfigDefinition;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;

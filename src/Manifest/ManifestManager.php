@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace Keboola\DockerApplication\Manifest;
+namespace Keboola\Component\Manifest;
 
 use InvalidArgumentException;
 use Symfony\Component\Filesystem\Filesystem;
