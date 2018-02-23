@@ -9,15 +9,15 @@ $iterator = Finder::create()
     ->name('*.php')
     ->in($dir = __DIR__ . '/src');
 
-/*$versions = GitVersionCollection::create($dir)
-//    ->addFromTags('v2.0.*')
-//    ->add('2.0', '2.0 branch')
-    ->add('master', 'master branch')
-;*/
+$versions = GitVersionCollection::create($dir)
+    ->addFromTags('*')
+    ->add('origin/master', 'master branch')
+;
 
 return new Sami($iterator, [
-    'title' => 'php-docker-application',
-    'build_dir' => __DIR__ . '/docs/',
-    'cache_dir' => __DIR__ . '/cache/',
+    'title' => 'Keboola PHP Component',
+    'versions'             => $versions,
+    'build_dir' => __DIR__ . '/docs/%version%/',
+    'cache_dir' => __DIR__ . '/cache/%version%/',
     'default_opened_level' => 2,
 ]);
