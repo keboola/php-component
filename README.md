@@ -77,5 +77,4 @@ try {
     exit(2);
 }
 ```
-
-See [development guide](https://developers.keboola.com/extend/component/tutorial/) for help with KBC integration.
+For more information, please refer to the [generated docs](https://keboola.github.io/php-docker-application/classes.html). See [development guide](https://developers.keboola.com/extend/component/tutorial/) for help with KBC integration.
