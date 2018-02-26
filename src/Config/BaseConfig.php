@@ -12,7 +12,7 @@ use function implode;
  * Offers basic abstraction over the JSON config. You can extend it and add your own getters for custom parameters.
  * It's then easier to use them then to remember under which key they are in the paramteres array.
  */
-class KeboolaConfig implements ConfigInterface
+class BaseConfig implements ConfigInterface
 {
     /** @var mixed[] */
     protected $config;
@@ -45,7 +45,7 @@ class KeboolaConfig implements ConfigInterface
     private function setConfigDefinition(?ConfigurationInterface $configDefinition): void
     {
         if ($configDefinition === null) {
-            $configDefinition = new KeboolaConfigDefinition();
+            $configDefinition = new BaseConfigDefinition();
         }
         $this->configDefinition = $configDefinition;
     }

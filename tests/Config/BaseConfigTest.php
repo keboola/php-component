@@ -2,26 +2,26 @@
 
 namespace Keboola\Component\Tests\Config;
 
-use Keboola\Component\Config\KeboolaConfig;
-use Keboola\Component\Config\KeboolaConfigDefinition;
+use Keboola\Component\Config\BaseConfig;
+use Keboola\Component\Config\BaseConfigDefinition;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
 
-class KeboolaConfigTest extends TestCase
+class BaseConfigTest extends TestCase
 {
     public function testWillCreateConfigFromArray(): void
     {
-        $config = new KeboolaConfig([]);
+        $config = new BaseConfig([]);
 
-        $this->assertInstanceOf(KeboolaConfig::class, $config);
+        $this->assertInstanceOf(BaseConfig::class, $config);
     }
 
     public function testCanOverrideParametersDefinition(): void
     {
-        $configDefinition = new class extends KeboolaConfigDefinition implements ConfigurationInterface
+        $configDefinition = new class extends BaseConfigDefinition implements ConfigurationInterface
         {
             protected function getParametersDefinition(): ArrayNodeDefinition
             {
@@ -41,12 +41,12 @@ class KeboolaConfigTest extends TestCase
         $this->expectException(InvalidConfigurationException::class);
         $this->expectExceptionMessage('The child node "requiredValue" at path "root.parameters" must be configured.');
 
-        $config = new KeboolaConfig(['parameters' => []], $configDefinition);
+        $config = new BaseConfig(['parameters' => []], $configDefinition);
     }
 
     public function testCanOverrideRootDefinition(): void
     {
-        $configDefinition = new class extends KeboolaConfigDefinition implements ConfigurationInterface
+        $configDefinition = new class extends BaseConfigDefinition implements ConfigurationInterface
         {
             protected function getRootDefinition(TreeBuilder $treeBuilder): ArrayNodeDefinition
             {
@@ -62,18 +62,18 @@ class KeboolaConfigTest extends TestCase
         $this->expectException(InvalidConfigurationException::class);
         $this->expectExceptionMessage('The child node "requiredRootNode" at path "root" must be configured.');
 
-        $config = new KeboolaConfig([], $configDefinition);
+        $config = new BaseConfig([], $configDefinition);
     }
 
     public function testIsForwardCompatible(): void
     {
-        $config = new KeboolaConfig(['yetNonexistentKey' => 'value']);
+        $config = new BaseConfig(['yetNonexistentKey' => 'value']);
         $this->assertSame(['yetNonexistentKey' => 'value'], $config->getData());
     }
 
     public function testGettersWillNotFailIfKeyIsMissing(): void
     {
-        $config = new KeboolaConfig([
+        $config = new BaseConfig([
             'lorem' => [
                 'ipsum' => [
                     'dolores' => 'value',
@@ -90,7 +90,7 @@ class KeboolaConfigTest extends TestCase
 
     public function testGettersWillGetKeyIfPresent(): void
     {
-        $config = new KeboolaConfig([
+        $config = new BaseConfig([
             'parameters' => [
                 'ipsum' => [
                     'dolor' => 'value',

@@ -3,8 +3,8 @@
 namespace Keboola\Component;
 
 use ErrorException;
-use Keboola\Component\Config\KeboolaConfig;
-use Keboola\Component\Config\KeboolaConfigDefinition;
+use Keboola\Component\Config\BaseConfig;
+use Keboola\Component\Config\BaseConfigDefinition;
 use Keboola\Component\Manifest\ManifestManager;
 use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
@@ -15,9 +15,9 @@ use function file_get_contents;
  * This is the core class that does all the heavy lifting. By default you don't need to setup anything. There are some
  * extension points for you to use if you want to customise the behavior.
  */
-class KeboolaComponent
+class BaseComponent
 {
-    /** @var KeboolaConfig */
+    /** @var BaseConfig */
     private $config;
 
     /** @var string */
@@ -84,7 +84,7 @@ class KeboolaComponent
      */
     protected function getConfigDefinitionClass(): string
     {
-        return KeboolaConfigDefinition::class;
+        return BaseConfigDefinition::class;
     }
 
     /**
@@ -102,7 +102,7 @@ class KeboolaComponent
         return $this->dataDir;
     }
 
-    public function getConfig(): KeboolaConfig
+    public function getConfig(): BaseConfig
     {
         return $this->config;
     }
@@ -128,7 +128,7 @@ class KeboolaComponent
      */
     protected function getConfigClass(): string
     {
-        return KeboolaConfig::class;
+        return BaseConfig::class;
     }
 
     /**
