@@ -1,0 +1,5 @@
+vendor/
+.idea/
+cache/
+docs/
+composer.lock
