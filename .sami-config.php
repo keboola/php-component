@@ -10,7 +10,7 @@ $iterator = Finder::create()
     ->in($dir = __DIR__ . '/src');
 
 $versions = GitVersionCollection::create($dir)
-    ->addFromTags('*')
+    ->addFromTags('*\.*')
     ->add('master', 'master branch')
 ;
 
