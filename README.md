@@ -145,4 +145,4 @@ If any constraint of config definition is not met a `UserException` is thrown. T
 
 ## More reading
 
-For more information, please refer to the [generated docs](https://keboola.github.io/php-component/classes.html). See [development guide](https://developers.keboola.com/extend/component/tutorial/) for help with KBC integration.
+For more information, please refer to the [generated docs](https://keboola.github.io/php-component/master/classes.html). See [development guide](https://developers.keboola.com/extend/component/tutorial/) for help with KBC integration.
