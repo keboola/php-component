@@ -31,6 +31,8 @@ jobs:
       before_script:
       - curl -O http://get.sensiolabs.org/sami.phar
       script:
+      - git fetch origin master:master
+      - git fetch origin --tags
       - php sami.phar update --force .sami-config.php
       deploy:
         provider: pages
