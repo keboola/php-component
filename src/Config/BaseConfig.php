@@ -174,16 +174,16 @@ class BaseConfig implements ConfigInterface
      */
     public function getOAuthApiData()
     {
-        return $this->getValue(['oauth_api', 'credentials', '#data'], '');
+        return $this->getValue(['authorization', 'oauth_api', 'credentials', '#data'], '');
     }
 
     public function getOAuthApiAppSecret(): string
     {
-        return $this->getValue(['oauth_api', 'credentials', '#appSecret'], '');
+        return $this->getValue(['authorization', 'oauth_api', 'credentials', '#appSecret'], '');
     }
 
     public function getOAuthApiAppKey(): string
     {
-        return $this->getValue(['oauth_api', 'credentials', 'appKey'], '');
+        return $this->getValue(['authorization', 'oauth_api', 'credentials', 'appKey'], '');
     }
 }
