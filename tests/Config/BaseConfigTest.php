@@ -83,6 +83,9 @@ class BaseConfigTest extends TestCase
         $this->assertSame([], $config->getParameters());
         $this->assertSame('', $config->getAction());
         $this->assertSame([], $config->getAuthorization());
+        $this->assertSame('', $config->getOAuthApiAppKey());
+        $this->assertSame('', $config->getOAuthApiAppSecret());
+        $this->assertSame('', $config->getOAuthApiData());
         $this->assertSame([], $config->getImageParameters());
         $this->assertSame([], $config->getStorage());
         $this->assertSame('', $config->getValue(['parameters', 'ipsum', 'dolor'], ''));
@@ -98,7 +101,13 @@ class BaseConfigTest extends TestCase
             ],
             'action' => 'run',
             'authorization' => [
-                '#secret' => 'x',
+                'oauth_api' => [
+                    'credentials' => [
+                        '#data' => 'value',
+                        '#appSecret' => 'secret',
+                        'appKey' => 'key',
+                    ],
+                ],
             ],
             'image_parameters' => ['param1' => 'value1'],
             'storage' => [
@@ -124,9 +133,27 @@ class BaseConfigTest extends TestCase
         );
         $this->assertEquals(
             [
-                '#secret' => 'x',
+                'oauth_api' => [
+                    'credentials' => [
+                        '#data' => 'value',
+                        '#appSecret' => 'secret',
+                        'appKey' => 'key',
+                    ],
+                ],
             ],
             $config->getAuthorization()
+        );
+        $this->assertEquals(
+            'value',
+            $config->getOAuthApiData()
+        );
+        $this->assertEquals(
+            'secret',
+            $config->getOAuthApiAppSecret()
+        );
+        $this->assertEquals(
+            'key',
+            $config->getOAuthApiAppKey()
         );
         $this->assertEquals(
             ['param1' => 'value1'],
