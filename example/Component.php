@@ -2,9 +2,7 @@
 
 namespace MyComponent;
 
-use Keboola\Component\BaseComponent;
-
-class Component extends BaseComponent
+class Component extends \Keboola\Component\BaseComponent
 {
     public function run(): void
     {

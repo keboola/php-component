@@ -16,13 +16,7 @@ composer install keboola/php-component
 Create a subclass of `BaseComponent`. 
 
 ```php
-<?php declare(strict_types = 1);
-
-namespace MyComponent;
-
-use Keboola\Component\BaseComponent;
-
-class Component extends BaseComponent
+class Component extends \Keboola\Component\BaseComponent
 {
     public function run(): void
     {
