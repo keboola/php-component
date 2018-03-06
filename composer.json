@@ -21,7 +21,8 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Keboola\\Component\\Tests\\": "tests/"
+            "Keboola\\Component\\Tests\\": "tests/",
+            "MyComponent\\": "example/"
         }
     },
     "require": {
@@ -41,9 +42,9 @@
     },
     "scripts": {
         "tests": "phpunit",
-        "phpstan": "phpstan analyse --no-progress --level=max src tests -c phpstan.neon",
-        "phpcs": "phpcs --extensions=php src tests",
-        "phpcbf": "phpcbf --extensions=php src tests",
+        "phpstan": "phpstan analyse --no-progress --level=max src tests example -c phpstan.neon",
+        "phpcs": "phpcs --extensions=php src tests example",
+        "phpcbf": "phpcbf --extensions=php src tests example",
         "phplint": "parallel-lint -j 10 --exclude vendor .",
         "build": [
             "@phplint",

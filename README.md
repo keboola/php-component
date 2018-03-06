@@ -16,13 +16,7 @@ composer install keboola/php-component
 Create a subclass of `BaseComponent`. 
 
 ```php
-<?php declare(strict_types = 1);
-
-namespace MyComponent;
-
-use Keboola\Component\BaseComponent;
-
-class Component extends BaseComponent
+class Component extends \Keboola\Component\BaseComponent
 {
     public function run(): void
     {
@@ -128,6 +122,8 @@ class MyConfigDefinition extends \Keboola\Component\Config\BaseConfigDefinition
     }
 }
 ```
+
+ *Note:* Your build may fail if you use PhpStan because of complicated type behavior of the `\Symfony\Component\Config\Definition\Builder\ExprBuilder::end()` method, so you may need to [ignore some errors](https://github.com/phpstan/phpstan#ignore-error-messages-with-regular-expressions). 
 
 Again you need to supply the new class name in your component
 

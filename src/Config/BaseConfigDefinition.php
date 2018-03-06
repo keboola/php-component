@@ -3,7 +3,6 @@
 namespace Keboola\Component\Config;
 
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
-use Symfony\Component\Config\Definition\Builder\NodeDefinition;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 
@@ -30,10 +29,8 @@ class BaseConfigDefinition implements ConfigurationInterface
 
     /**
      * Definition of parameters section. Override in extending class to validate parameters sent to the component early.
-     *
-     * @return ArrayNodeDefinition|NodeDefinition
      */
-    protected function getParametersDefinition()
+    protected function getParametersDefinition(): ArrayNodeDefinition
     {
         $builder = new TreeBuilder();
         /** @var ArrayNodeDefinition $parametersNode */
@@ -44,11 +41,8 @@ class BaseConfigDefinition implements ConfigurationInterface
 
     /**
      * Root definition to be overridden in special cases
-     *
-     * @param TreeBuilder $treeBuilder
-     * @return ArrayNodeDefinition|NodeDefinition
      */
-    protected function getRootDefinition(TreeBuilder $treeBuilder)
+    protected function getRootDefinition(TreeBuilder $treeBuilder): ArrayNodeDefinition
     {
         /** @var ArrayNodeDefinition $rootNode */
         $rootNode = $treeBuilder->root('root');

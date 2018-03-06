@@ -1,8 +1,12 @@
-<?php
+<?php declare(strict_types = 1);
+
+namespace MyComponent;
+
+use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 
 class MyConfigDefinition extends \Keboola\Component\Config\BaseConfigDefinition
 {
-    protected function getParametersDefinition()
+    protected function getParametersDefinition(): ArrayNodeDefinition
     {
         $parametersNode = parent::getParametersDefinition();
         $parametersNode
