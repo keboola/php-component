@@ -67,16 +67,34 @@ class ManifestManager
      * @param string $fileName
      * @param string $destination
      * @param string[] $primaryKeyColumns
+     * @param string $delimiter
+     * @param string $enclosure
+     * @param string[] $columns
+     * @param bool $incremental
+     * @param mixed[][] $metadata
+     * @param mixed[][] $columnMetadata
      */
     public function writeTableManifest(
         string $fileName,
         string $destination = '',
-        array $primaryKeyColumns = []
+        array $primaryKeyColumns = [],
+        string $delimiter = ',',
+        string $enclosure = '"',
+        array $columns = [],
+        bool $incremental = false,
+        array $metadata = [],
+        array $columnMetadata = []
     ): void {
         $manifestName = self::getManifestFilename($fileName);
         $manifest = [
             'destination' => $destination,
             'primary_key' => $primaryKeyColumns,
+            'delimiter' => $delimiter,
+            'enclosure' => $enclosure,
+            'columns' => $columns,
+            'incremental' => $incremental,
+            'metadata' => $metadata,
+            'column_metadata' => $columnMetadata,
         ];
         $encoder = new JsonEncoder();
         $manifestJson = $encoder->encode($manifest, JsonEncoder::FORMAT);
