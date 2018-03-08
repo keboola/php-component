@@ -39,13 +39,15 @@ class ManifestManager
      * @param bool $isPublic
      * @param bool $isPermanent
      * @param bool $notify
+     * @param bool $isEncrypted
      */
     public function writeFileManifest(
         string $fileName,
         array $fileTags = [],
         bool $isPublic = false,
         bool $isPermanent = true,
-        bool $notify = false
+        bool $notify = false,
+        bool $isEncrypted = false
     ): void {
         $manifestName = self::getManifestFilename($fileName);
         $manifest = [
@@ -53,6 +55,7 @@ class ManifestManager
             'is_public' => $isPublic,
             'tags' => $fileTags,
             'notify' => $notify,
+            'is_encrypted' => $isEncrypted,
         ];
         $encoder = new JsonEncoder();
         $manifestJson = $encoder->encode($manifest, JsonEncoder::FORMAT);

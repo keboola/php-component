@@ -44,7 +44,7 @@ class ManifestManagerTest extends TestCase
         $manager = new ManifestManager('/data/');
 
         $fileName = __DIR__ . '/fixtures/file.csv';
-        $manager->writeFileManifest($fileName, ['sometag'], false, false, true);
+        $manager->writeFileManifest($fileName, ['sometag'], false, false, true, false);
 
         $manifestFilename = $fileName . '.manifest';
         $this->assertJsonFileEqualsJsonFile(__DIR__ . '/fixtures/expected-file.manifest', $manifestFilename);
