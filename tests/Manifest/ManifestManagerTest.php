@@ -78,12 +78,12 @@ class ManifestManagerTest extends TestCase
             $fileName,
             'destination-table',
             ['id', 'number'],
-            ';',
-            '\'',
             ['id', 'number', 'other_column'],
             false,
             $metadata,
-            $columnMetadata
+            $columnMetadata,
+            ';',
+            '\''
         );
 
         $manifestFilename = $fileName . '.manifest';
@@ -118,12 +118,12 @@ class ManifestManagerTest extends TestCase
             $fileName,
             'destination-table',
             ['id', 'number'],
-            ';',
-            '\'',
             ['id', 'number', 'other_column'],
             false,
             $metadata,
-            $columnMetadata
+            $columnMetadata,
+            ';',
+            '\''
         );
 
         $manifestFilename = $fileName . '.manifest';

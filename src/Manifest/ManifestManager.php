@@ -67,23 +67,23 @@ class ManifestManager
      * @param string $fileName
      * @param string $destination
      * @param string[] $primaryKeyColumns
-     * @param string $delimiter
-     * @param string $enclosure
      * @param string[] $columns
      * @param bool $incremental
      * @param mixed[][] $metadata
      * @param mixed[][] $columnMetadata
+     * @param string $delimiter
+     * @param string $enclosure
      */
     public function writeTableManifest(
         string $fileName,
         string $destination = '',
         array $primaryKeyColumns = [],
-        string $delimiter = ',',
-        string $enclosure = '"',
         array $columns = [],
         bool $incremental = false,
         array $metadata = [],
-        array $columnMetadata = []
+        array $columnMetadata = [],
+        string $delimiter = ',',
+        string $enclosure = '"'
     ): void {
         $manifestName = self::getManifestFilename($fileName);
         $manifest = [
@@ -114,12 +114,12 @@ class ManifestManager
             $filename,
             $manifest['destination'] ?? '',
             $manifest['primary_key'] ?? [],
-            $manifest['delimiter'] ?? ',',
-            $manifest['enclosure'] ?? '"',
             $manifest['columns'] ?? [],
             $manifest['incremental'] ?? false,
             $manifest['metadata'] ?? [],
-            $manifest['column_metadata'] ?? []
+            $manifest['column_metadata'] ?? [],
+            $manifest['delimiter'] ?? ',',
+            $manifest['enclosure'] ?? '"'
         );
     }
 
