@@ -103,6 +103,27 @@ class ManifestManager
     }
 
     /**
+     * @param string $filename
+     * @param mixed[] $manifest
+     */
+    public function writeTableManifestFromArray(
+        string $filename,
+        array $manifest
+    ): void {
+        $this->writeTableManifest(
+            $filename,
+            $manifest['destination'] ?? '',
+            $manifest['primary_key'] ?? [],
+            $manifest['delimiter'] ?? ',',
+            $manifest['enclosure'] ?? '"',
+            $manifest['columns'] ?? [],
+            $manifest['incremental'] ?? false,
+            $manifest['metadata'] ?? [],
+            $manifest['column_metadata'] ?? []
+        );
+    }
+
+    /**
      * @param string $fileName
      * @return mixed[]
      */
