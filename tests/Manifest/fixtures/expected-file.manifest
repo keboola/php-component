@@ -4,5 +4,6 @@
     "tags": [
         "sometag"
     ],
-    "notify": true
+    "notify": true,
+    "is_encrypted": false
 }

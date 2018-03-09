@@ -39,13 +39,15 @@ class ManifestManager
      * @param bool $isPublic
      * @param bool $isPermanent
      * @param bool $notify
+     * @param bool $isEncrypted
      */
     public function writeFileManifest(
         string $fileName,
         array $fileTags = [],
         bool $isPublic = false,
         bool $isPermanent = true,
-        bool $notify = false
+        bool $notify = false,
+        bool $isEncrypted = false
     ): void {
         $manifestName = self::getManifestFilename($fileName);
         $manifest = [
@@ -53,6 +55,7 @@ class ManifestManager
             'is_public' => $isPublic,
             'tags' => $fileTags,
             'notify' => $notify,
+            'is_encrypted' => $isEncrypted,
         ];
         $encoder = new JsonEncoder();
         $manifestJson = $encoder->encode($manifest, JsonEncoder::FORMAT);
@@ -64,21 +67,60 @@ class ManifestManager
      * @param string $fileName
      * @param string $destination
      * @param string[] $primaryKeyColumns
+     * @param string[] $columns
+     * @param bool $incremental
+     * @param mixed[][] $metadata
+     * @param mixed[][] $columnMetadata
+     * @param string $delimiter
+     * @param string $enclosure
      */
     public function writeTableManifest(
         string $fileName,
         string $destination = '',
-        array $primaryKeyColumns = []
+        array $primaryKeyColumns = [],
+        array $columns = [],
+        bool $incremental = false,
+        array $metadata = [],
+        array $columnMetadata = [],
+        string $delimiter = ',',
+        string $enclosure = '"'
     ): void {
         $manifestName = self::getManifestFilename($fileName);
         $manifest = [
             'destination' => $destination,
             'primary_key' => $primaryKeyColumns,
+            'delimiter' => $delimiter,
+            'enclosure' => $enclosure,
+            'columns' => $columns,
+            'incremental' => $incremental,
+            'metadata' => $metadata,
+            'column_metadata' => $columnMetadata,
         ];
         $encoder = new JsonEncoder();
         $manifestJson = $encoder->encode($manifest, JsonEncoder::FORMAT);
 
         file_put_contents($manifestName, $manifestJson . "\n");
+    }
+
+    /**
+     * @param string $filename
+     * @param mixed[] $manifest
+     */
+    public function writeTableManifestFromArray(
+        string $filename,
+        array $manifest
+    ): void {
+        $this->writeTableManifest(
+            $filename,
+            $manifest['destination'] ?? '',
+            $manifest['primary_key'] ?? [],
+            $manifest['columns'] ?? [],
+            $manifest['incremental'] ?? false,
+            $manifest['metadata'] ?? [],
+            $manifest['column_metadata'] ?? [],
+            $manifest['delimiter'] ?? ',',
+            $manifest['enclosure'] ?? '"'
+        );
     }
 
     /**
