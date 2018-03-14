@@ -12,9 +12,10 @@ class ManifestManagerTest extends TestCase
      */
     public function testGetManifestFilename(string $expected, string $filename): void
     {
+        $manifestManager = new ManifestManager('/data');
         $this->assertSame(
             $expected,
-            ManifestManager::getManifestFilename($filename)
+            $manifestManager->getManifestFilename($filename)
         );
     }
 
@@ -208,7 +209,7 @@ class ManifestManagerTest extends TestCase
         }
 
         // cleanup
-        unlink(ManifestManager::getManifestFilename($generatedManifestFilename));
+        unlink($manager->getManifestFilename($generatedManifestFilename));
     }
 
     /**

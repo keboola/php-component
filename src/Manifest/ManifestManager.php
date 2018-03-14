@@ -23,7 +23,7 @@ class ManifestManager
         $this->dataDir = $dataDir;
     }
 
-    final public static function getManifestFilename(string $fileName): string
+    final public function getManifestFilename(string $fileName): string
     {
         $isAlreadyManifestFilename = pathinfo($fileName, PATHINFO_EXTENSION) === 'manifest';
         if ($isAlreadyManifestFilename) {
@@ -48,7 +48,7 @@ class ManifestManager
         bool $notify = false,
         bool $isEncrypted = false
     ): void {
-        $manifestName = self::getManifestFilename($fileName);
+        $manifestName = $this->getManifestFilename($fileName);
         $manifest = [
             'is_permanent' => $isPermanent,
             'is_public' => $isPublic,
@@ -84,7 +84,7 @@ class ManifestManager
         string $delimiter = ',',
         string $enclosure = '"'
     ): void {
-        $manifestName = self::getManifestFilename($fileName);
+        $manifestName = $this->getManifestFilename($fileName);
         $manifest = [
             'destination' => $destination,
             'primary_key' => $primaryKeyColumns,
@@ -165,6 +165,6 @@ class ManifestManager
         }
 
         $decoder = new JsonEncoder();
-        return $decoder->decode(file_get_contents(self::getManifestFilename($fileName)), JsonEncoder::FORMAT);
+        return $decoder->decode(file_get_contents($this->getManifestFilename($fileName)), JsonEncoder::FORMAT);
     }
 }
