@@ -48,7 +48,7 @@ class ManifestManager
         bool $notify = false,
         bool $isEncrypted = false
     ): void {
-        $manifestName = $this->getManifestFilename($fileName);
+        $tableManifestName = $this->getManifestFilename($fileName);
         $manifest = [
             'is_permanent' => $isPermanent,
             'is_public' => $isPublic,
@@ -56,7 +56,7 @@ class ManifestManager
             'notify' => $notify,
             'is_encrypted' => $isEncrypted,
         ];
-        $this->internalWriteManifest($manifestName, $manifest);
+        $this->internalWriteFileManifest($tableManifestName, $manifest);
     }
 
     /**
@@ -81,7 +81,7 @@ class ManifestManager
         string $delimiter = ',',
         string $enclosure = '"'
     ): void {
-        $manifestName = $this->getManifestFilename($fileName);
+        $tableManifestFilename = $this->getManifestFilename($fileName);
         $manifest = [
             'destination' => $destination,
             'primary_key' => $primaryKeyColumns,
@@ -92,7 +92,7 @@ class ManifestManager
             'metadata' => $metadata,
             'column_metadata' => $columnMetadata,
         ];
-        $this->internalWriteManifest($manifestName, $manifest);
+        $this->internalWriteTableManifest($tableManifestFilename, $manifest);
     }
 
     /**
@@ -172,5 +172,23 @@ class ManifestManager
         $manifestJson = $encoder->encode($manifestContents, JsonEncoder::FORMAT);
         $filesystem = new Filesystem();
         $filesystem->dumpFile($manifestAbsolutePath, $manifestJson . "\n");
+    }
+
+    /**
+     * @param string $tableManifestName
+     * @param mixed[] $manifestContents
+     */
+    private function internalWriteTableManifest(string $tableManifestAbsolutePath, array $manifestContents): void
+    {
+        $this->internalWriteManifest($tableManifestAbsolutePath, $manifestContents);
+    }
+
+    /**
+     * @param string $fileManifestName
+     * @param mixed[] $manifestContents
+     */
+    private function internalWriteFileManifest(string $fileManifestAbsolutePath, array $manifestContents): void
+    {
+        $this->internalWriteManifest($fileManifestAbsolutePath, $manifestContents);
     }
 }
