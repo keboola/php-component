@@ -7,7 +7,6 @@ use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use const PATHINFO_EXTENSION;
 use function file_get_contents;
-use function file_put_contents;
 use function pathinfo;
 
 /**
@@ -59,8 +58,8 @@ class ManifestManager
         ];
         $encoder = new JsonEncoder();
         $manifestJson = $encoder->encode($manifest, JsonEncoder::FORMAT);
-
-        file_put_contents($manifestName, $manifestJson . "\n");
+        $filesystem = new Filesystem();
+        $filesystem->dumpFile($manifestName, $manifestJson . "\n");
     }
 
     /**
@@ -98,8 +97,8 @@ class ManifestManager
         ];
         $encoder = new JsonEncoder();
         $manifestJson = $encoder->encode($manifest, JsonEncoder::FORMAT);
-
-        file_put_contents($manifestName, $manifestJson . "\n");
+        $filesystem = new Filesystem();
+        $filesystem->dumpFile($manifestName, $manifestJson . "\n");
     }
 
     /**
