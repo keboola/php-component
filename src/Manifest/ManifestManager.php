@@ -178,17 +178,17 @@ class ManifestManager
      * @param string $tableManifestName
      * @param mixed[] $manifestContents
      */
-    private function internalWriteTableManifest(string $tableManifestAbsolutePath, array $manifestContents): void
+    private function internalWriteTableManifest(string $tableManifestName, array $manifestContents): void
     {
-        $this->internalWriteManifest($tableManifestAbsolutePath, $manifestContents);
+        $this->internalWriteManifest($this->dataDir . '/out/tables/' . $tableManifestName, $manifestContents);
     }
 
     /**
      * @param string $fileManifestName
      * @param mixed[] $manifestContents
      */
-    private function internalWriteFileManifest(string $fileManifestAbsolutePath, array $manifestContents): void
+    private function internalWriteFileManifest(string $fileManifestName, array $manifestContents): void
     {
-        $this->internalWriteManifest($fileManifestAbsolutePath, $manifestContents);
+        $this->internalWriteManifest($this->dataDir . '/out/files/' . $fileManifestName, $manifestContents);
     }
 }

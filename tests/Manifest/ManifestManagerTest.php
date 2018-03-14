@@ -3,7 +3,10 @@
 namespace Keboola\Component\Tests\Manifest;
 
 use Keboola\Component\Manifest\ManifestManager;
+use Keboola\Temp\Temp;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\Serializer\Encoder\JsonEncoder;
+use function file_get_contents;
 
 class ManifestManagerTest extends TestCase
 {
@@ -42,21 +45,26 @@ class ManifestManagerTest extends TestCase
 
     public function testWillWriteFileManifest(): void
     {
-        $manager = new ManifestManager('/data/');
+        $temp = new Temp('testWillWriteFileManifest');
+        $dataDir = $temp->getTmpFolder();
+        $manager = new ManifestManager($dataDir);
+        $fileName = 'file.jpg';
 
-        $fileName = __DIR__ . '/fixtures/file.csv';
         $manager->writeFileManifest($fileName, ['sometag'], false, false, true, false);
 
-        $manifestFilename = $fileName . '.manifest';
-        $this->assertJsonFileEqualsJsonFile(__DIR__ . '/fixtures/expected-file.manifest', $manifestFilename);
-        unlink($manifestFilename);
+        $this->assertJsonFileEqualsJsonFile(
+            __DIR__ . '/fixtures/expected-file.manifest',
+            $dataDir . '/out/files/file.jpg.manifest'
+        );
     }
 
     public function testWillWriteTableManifest(): void
     {
-        $manager = new ManifestManager('/data/');
+        $temp = new Temp('testWillWriteTableManifest');
 
-        $fileName = __DIR__ . '/fixtures/table.csv';
+        $dataDir = $temp->getTmpFolder();
+        $manager = new ManifestManager($dataDir);
+
         $metadata = [
             [
                 'key' => 'an.arbitrary.key',
@@ -76,7 +84,7 @@ class ManifestManagerTest extends TestCase
             ],
         ];
         $manager->writeTableManifest(
-            $fileName,
+            'table.csv',
             'destination-table',
             ['id', 'number'],
             ['id', 'number', 'other_column'],
@@ -87,16 +95,18 @@ class ManifestManagerTest extends TestCase
             '\''
         );
 
-        $manifestFilename = $fileName . '.manifest';
-        $this->assertJsonFileEqualsJsonFile(__DIR__ . '/fixtures/expected-table.manifest', $manifestFilename);
-        unlink($manifestFilename);
+        $this->assertJsonFileEqualsJsonFile(
+            __DIR__ . '/fixtures/expected-table.manifest',
+            $dataDir . '/out/tables/table.csv.manifest'
+        );
     }
 
     public function testWillWriteTableManifestWithoutExtension(): void
     {
-        $manager = new ManifestManager('/data/');
+        $temp = new Temp('testWillWriteTableManifest');
+        $dataDir = $temp->getTmpFolder();
+        $manager = new ManifestManager($dataDir);
 
-        $fileName = __DIR__ . '/fixtures/table';
         $metadata = [
             [
                 'key' => 'an.arbitrary.key',
@@ -116,7 +126,7 @@ class ManifestManagerTest extends TestCase
             ],
         ];
         $manager->writeTableManifest(
-            $fileName,
+            'table-name',
             'destination-table',
             ['id', 'number'],
             ['id', 'number', 'other_column'],
@@ -127,9 +137,10 @@ class ManifestManagerTest extends TestCase
             '\''
         );
 
-        $manifestFilename = $fileName . '.manifest';
-        $this->assertJsonFileEqualsJsonFile(__DIR__ . '/fixtures/expected-table.manifest', $manifestFilename);
-        unlink($manifestFilename);
+        $this->assertJsonFileEqualsJsonFile(
+            __DIR__ . '/fixtures/expected-table.manifest',
+            $dataDir . '/out/tables/table-name.manifest'
+        );
     }
 
     public function testWillLoadFileManifest(): void
@@ -176,24 +187,26 @@ class ManifestManagerTest extends TestCase
     }
 
     /**
-     * @param string $tableName
+     * @param string $inTableName
      * @dataProvider provideTableNameForManifestReadWriteTest
      */
-    public function testReadAndWrittenManifestAreTheSame(string $tableName): void
+    public function testReadAndWrittenManifestAreTheSame(string $inTableName): void
     {
         $dataDir = __DIR__ . '/fixtures/manifest-data-dir';
-        $manifestDirectory = implode('/', [$dataDir, 'in', 'tables']);
-        $generatedTableName = $tableName . '-generated';
-        $generatedManifestFilename = $manifestDirectory . '/' . $generatedTableName;
+        $outTableName = $inTableName . '-generated';
         $manager = new ManifestManager($dataDir);
-        $manifest = $manager->getTableManifest($tableName);
 
+        $manifest = $manager->getTableManifest($inTableName);
         $manager->writeTableManifestFromArray(
-            $generatedManifestFilename,
+            $outTableName,
             $manifest
         );
-        $generatedManifest = $manager->getTableManifest($generatedTableName);
 
+        // this needs to be done by hand as there is no API to reading manifest of out tables
+        $encoder = new JsonEncoder();
+        $generatedManifestFilePath = $dataDir . '/out/tables/' . $manager->getManifestFilename($outTableName);
+        $generatedManifestContents = file_get_contents($generatedManifestFilePath);
+        $generatedManifest = $encoder->decode($generatedManifestContents, JsonEncoder::FORMAT);
         // generated manifest will include all fields due to default values
         $this->assertGreaterThanOrEqual(
             count($manifest),
@@ -209,7 +222,7 @@ class ManifestManagerTest extends TestCase
         }
 
         // cleanup
-        unlink($manager->getManifestFilename($generatedManifestFilename));
+        unlink($generatedManifestFilePath);
     }
 
     /**
