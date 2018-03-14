@@ -56,10 +56,7 @@ class ManifestManager
             'notify' => $notify,
             'is_encrypted' => $isEncrypted,
         ];
-        $encoder = new JsonEncoder();
-        $manifestJson = $encoder->encode($manifest, JsonEncoder::FORMAT);
-        $filesystem = new Filesystem();
-        $filesystem->dumpFile($manifestName, $manifestJson . "\n");
+        $this->internalWriteManifest($manifestName, $manifest);
     }
 
     /**
@@ -95,10 +92,7 @@ class ManifestManager
             'metadata' => $metadata,
             'column_metadata' => $columnMetadata,
         ];
-        $encoder = new JsonEncoder();
-        $manifestJson = $encoder->encode($manifest, JsonEncoder::FORMAT);
-        $filesystem = new Filesystem();
-        $filesystem->dumpFile($manifestName, $manifestJson . "\n");
+        $this->internalWriteManifest($manifestName, $manifest);
     }
 
     /**
@@ -166,5 +160,17 @@ class ManifestManager
 
         $decoder = new JsonEncoder();
         return $decoder->decode(file_get_contents($this->getManifestFilename($fileName)), JsonEncoder::FORMAT);
+    }
+
+    /**
+     * @param string $manifestAbsolutePath
+     * @param mixed[] $manifestContents
+     */
+    private function internalWriteManifest(string $manifestAbsolutePath, array $manifestContents): void
+    {
+        $encoder = new JsonEncoder();
+        $manifestJson = $encoder->encode($manifestContents, JsonEncoder::FORMAT);
+        $filesystem = new Filesystem();
+        $filesystem->dumpFile($manifestAbsolutePath, $manifestJson . "\n");
     }
 }
