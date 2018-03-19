@@ -7,7 +7,9 @@
 - [\#19](https://github.com/keboola/php-component/pull/19): path when writing manifests is now relative to `out/files` (or `out/tables` respectively). 
     - before: `$manager->writeTableManifest('/data/out/tables/table.csv', /*...*/)` 
     - after:`$manager->writeTableManifest('table.csv', /*...*/)`
-    
+
+**Feature:**
+- [\#20](https://github.com/keboola/php-component/pull/20): options object `WriteTableManifestOptions` to allow setting only some of the manifest parameters when writing manifest
 
 ## 2.1.0
 

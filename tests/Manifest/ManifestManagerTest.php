@@ -3,6 +3,7 @@
 namespace Keboola\Component\Tests\Manifest;
 
 use Keboola\Component\Manifest\ManifestManager;
+use Keboola\Component\Manifest\ManifestManager\Options\WriteTableManifestOptions;
 use Keboola\Temp\Temp;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
@@ -236,6 +237,71 @@ class ManifestManagerTest extends TestCase
             ],
             [
                 'full-featured',
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider provideWriteManifestOptions
+     * @param string $expected
+     * @param WriteTableManifestOptions $options
+     */
+    public function testWriteManifestFromOptions(string $expected, WriteTableManifestOptions $options): void
+    {
+        $temp = new Temp('testWriteManifestFromOptions');
+        $dataDir = $temp->getTmpFolder();
+        $manifestManager = new ManifestManager($dataDir);
+
+        $manifestManager->writeTableManifestFromOptions(
+            'my-table',
+            $options
+        );
+
+        $this->assertJsonFileEqualsJsonFile(
+            $expected,
+            $dataDir . '/out/tables/my-table.manifest'
+        );
+    }
+
+    /**
+     * @return mixed[][]
+     */
+    public function provideWriteManifestOptions(): array
+    {
+        return [
+            'writes only some' => [
+                __DIR__ . '/fixtures/expectedManifestForWriteFromOptionsSomeOptions.manifest',
+                (new WriteTableManifestOptions())
+                    ->setDelimiter('|')
+                    ->setEnclosure('_'),
+            ],
+            'write all options' => [
+                __DIR__ . '/fixtures/expectedManifestForWriteFromOptionsAllOptions.manifest',
+                (new WriteTableManifestOptions())
+                    ->setEnclosure('_')
+                    ->setDelimiter('|')
+                    ->setColumnMetadata([
+                        'column1' => [
+                            [
+                                'key' => 'yet.another.key',
+                                'value' => 'Some other value',
+                            ],
+                        ],
+                    ])
+                    ->setColumns(['id', 'number', 'other_column'])
+                    ->setDestination('my.table')
+                    ->setIncremental(true)
+                    ->setMetadata([
+                        [
+                            'key' => 'an.arbitrary.key',
+                            'value' => 'Some value',
+                        ],
+                        [
+                            'key' => 'another.arbitrary.key',
+                            'value' => 'A different value',
+                        ],
+                    ])
+                    ->setPrimaryKeyColumns(['id']),
             ],
         ];
     }
