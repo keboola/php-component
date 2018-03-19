@@ -4,10 +4,10 @@
 
 **Feature:**
 
-- \#12: more options when writing a manifest
-- \#12: new method `writeTableManifestFromArray()`
+- [\#12](https://github.com/keboola/php-component/pull/12): more options when writing a manifest
+- [\#12](https://github.com/keboola/php-component/pull/12): new method `writeTableManifestFromArray()`
 
 ## 2.0.0
 
 **BC break:**
-- \#10: Typehints added in `BaseConfigDefinition` which means previous implementation without typehints are not valid anymore. 
+- [\#10](https://github.com/keboola/php-component/pull/10): Typehints added in `BaseConfigDefinition` which means previous implementation without typehints are not valid anymore. 
