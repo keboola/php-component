@@ -8,7 +8,7 @@ General library for php component running in KBC. The library provides function 
 ## Installation
 
 ```
-composer install keboola/php-component
+composer require keboola/php-component
 ```
 
 ## Usage
