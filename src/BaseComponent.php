@@ -28,7 +28,7 @@ class BaseComponent
 
     public function __construct()
     {
-        $this->setEnvironment();
+        static::setEnvironment();
 
         $dataDir = getenv('KBC_DATADIR') === false ? '/data/' : (string)getenv('KBC_DATADIR');
         $this->setDataDir($dataDir);
@@ -43,7 +43,7 @@ class BaseComponent
      * error, warning or notice. If your code emits notices and cannot be
      * fixed, you can set `error_reporting` in `$application->run()` method.
      */
-    public function setEnvironment(): void
+    public static function setEnvironment(): void
     {
         error_reporting(E_ALL);
         set_error_handler(function ($errno, $errstr, $errfile, $errline, array $errcontext): bool {
