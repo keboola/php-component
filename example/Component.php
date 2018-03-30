@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace MyComponent;
 
+use Keboola\Component\Manifest\ManifestManager\Options\WriteTableManifestOptions;
+
 class Component extends \Keboola\Component\BaseComponent
 {
     public function run(): void
@@ -27,6 +29,11 @@ class Component extends \Keboola\Component\BaseComponent
         $this->getManifestManager()->writeFileManifest('out-file.csv', ['tag1', 'tag2']);
 
         // write manifest for output table
-        $this->getManifestManager()->writeTableManifest('data.csv', 'out.report', ['id']);
+        $this->getManifestManager()->writeTableManifestFromOptions(
+            'data.csv',
+            (new WriteTableManifestOptions())
+                ->setPrimaryKeyColumns(['id'])
+                ->setDestination('out.report')
+        );
     }
 }

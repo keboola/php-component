@@ -61,91 +61,6 @@ class ManifestManagerTest extends TestCase
         );
     }
 
-    public function testWillWriteTableManifest(): void
-    {
-        $temp = new Temp('testWillWriteTableManifest');
-
-        $dataDir = $temp->getTmpFolder();
-        $manager = new ManifestManager($dataDir);
-
-        $metadata = [
-            [
-                'key' => 'an.arbitrary.key',
-                'value' => 'Some value',
-            ],
-            [
-                'key' => 'another.arbitrary.key',
-                'value' => 'A different value',
-            ],
-        ];
-        $columnMetadata = [
-            'column1' => [
-                [
-                    'key' => 'yet.another.key',
-                    'value' => 'Some other value',
-                ],
-            ],
-        ];
-        $manager->writeTableManifest(
-            'table.csv',
-            'destination-table',
-            ['id', 'number'],
-            ['id', 'number', 'other_column'],
-            false,
-            $metadata,
-            $columnMetadata,
-            ';',
-            '\''
-        );
-
-        $this->assertJsonFileEqualsJsonFile(
-            __DIR__ . '/fixtures/expected-table.manifest',
-            $dataDir . '/out/tables/table.csv.manifest'
-        );
-    }
-
-    public function testWillWriteTableManifestWithoutExtension(): void
-    {
-        $temp = new Temp('testWillWriteTableManifest');
-        $dataDir = $temp->getTmpFolder();
-        $manager = new ManifestManager($dataDir);
-
-        $metadata = [
-            [
-                'key' => 'an.arbitrary.key',
-                'value' => 'Some value',
-            ],
-            [
-                'key' => 'another.arbitrary.key',
-                'value' => 'A different value',
-            ],
-        ];
-        $columnMetadata = [
-            'column1' => [
-                [
-                    'key' => 'yet.another.key',
-                    'value' => 'Some other value',
-                ],
-            ],
-        ];
-        $manager->writeTableManifest(
-            'table-name',
-            'destination-table',
-            ['id', 'number'],
-            ['id', 'number', 'other_column'],
-            false,
-            $metadata,
-            $columnMetadata,
-            ';',
-            '\''
-        );
-
-        $this->assertJsonFileEqualsJsonFile(
-            __DIR__ . '/fixtures/expected-table.manifest',
-            $dataDir . '/out/tables/table-name.manifest'
-        );
-    }
-
     public function testWillLoadFileManifest(): void
     {
         $manager = new ManifestManager(__DIR__ . '/fixtures/manifest-data-dir');
@@ -187,45 +102,6 @@ class ManifestManagerTest extends TestCase
             ],
         ];
         $this->assertSame($expectedManifest, $manager->getTableManifest('products'));
-    }
-
-    /**
-     * @param string $inTableName
-     * @dataProvider provideTableNameForManifestReadWriteTest
-     */
-    public function testReadAndWrittenManifestAreTheSame(string $inTableName): void
-    {
-        $dataDir = __DIR__ . '/fixtures/manifest-data-dir';
-        $outTableName = $inTableName . '-generated';
-        $manager = new ManifestManager($dataDir);
-
-        $manifest = $manager->getTableManifest($inTableName);
-        $manager->writeTableManifestFromArray(
-            $outTableName,
-            $manifest
-        );
-
-        // this needs to be done by hand as there is no API to reading manifest of out tables
-        $encoder = new JsonEncoder();
-        $generatedManifestFilePath = $dataDir . '/out/tables/' . $manager->getManifestFilename($outTableName);
-        $generatedManifestContents = file_get_contents($generatedManifestFilePath);
-        $generatedManifest = $encoder->decode($generatedManifestContents, JsonEncoder::FORMAT);
-        // generated manifest will include all fields due to default values
-        $this->assertGreaterThanOrEqual(
-            count($manifest),
-            count($generatedManifest)
-        );
-        foreach ($manifest as $key => $value) {
-            // every key from original must be preserved
-            $this->assertSame(
-                $manifest[$key],
-                $generatedManifest[$key],
-                sprintf('Key "%s" should be the same', $key)
-            );
-        }
-
-        // cleanup
-        unlink($generatedManifestFilePath);
     }
 
     /**
