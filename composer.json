@@ -38,8 +38,7 @@
         "keboola/php-temp": "^1.0",
         "phpstan/phpstan-shim": "^0.9.1",
         "phpunit/phpunit": "^6.5",
-        "slevomat/coding-standard": "4.4.6",
-        "squizlabs/php_codesniffer": "^3.2"
+        "keboola/coding-standard": "^1.0"
     },
     "scripts": {
         "tests": "phpunit",
