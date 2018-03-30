@@ -39,7 +39,7 @@ class Component extends \Keboola\Component\BaseComponent
         $this->getManifestManager()->writeFileManifest('out-file.csv', ['tag1', 'tag2']);
 
         // write manifest for output table
-        $this->getManifestManager()->writeTableManifestFromOptions(
+        $this->getManifestManager()->writeTableManifest(
             'data.csv',
             (new WriteTableManifestOptions())
                 ->setPrimaryKeyColumns(['id'])

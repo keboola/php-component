@@ -62,7 +62,7 @@ class ManifestManager
         $this->internalWriteFileManifest($tableManifestName, $manifest);
     }
 
-    public function writeTableManifestFromOptions(string $fileName, WriteTableManifestOptions $options): void
+    public function writeTableManifest(string $fileName, WriteTableManifestOptions $options): void
     {
         $manifestName = self::getManifestFilename($fileName);
 
