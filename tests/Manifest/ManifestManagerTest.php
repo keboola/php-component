@@ -5,11 +5,10 @@ declare(strict_types=1);
 namespace Keboola\Component\Tests\Manifest;
 
 use Keboola\Component\Manifest\ManifestManager;
+use Keboola\Component\Manifest\ManifestManager\Options\OutFileManifestOptions;
 use Keboola\Component\Manifest\ManifestManager\Options\WriteTableManifestOptions;
 use Keboola\Temp\Temp;
 use PHPUnit\Framework\TestCase;
-use Symfony\Component\Serializer\Encoder\JsonEncoder;
-use function file_get_contents;
 
 class ManifestManagerTest extends TestCase
 {
@@ -53,7 +52,15 @@ class ManifestManagerTest extends TestCase
         $manager = new ManifestManager($dataDir);
         $fileName = 'file.jpg';
 
-        $manager->writeFileManifest($fileName, ['sometag'], false, false, true, false);
+        $manager->writeFileManifest(
+            $fileName,
+            (new OutFileManifestOptions())
+                ->setTags(['sometag'])
+                ->setIsPublic(false)
+                ->setIsPermanent(false)
+                ->setNotify(true)
+                ->setIsEncrypted(false)
+        );
 
         $this->assertJsonFileEqualsJsonFile(
             __DIR__ . '/fixtures/expected-file.manifest',

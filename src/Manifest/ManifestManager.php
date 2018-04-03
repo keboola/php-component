@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Keboola\Component\Manifest;
 
 use InvalidArgumentException;
+use Keboola\Component\Manifest\ManifestManager\Options\OutFileManifestOptions;
 use Keboola\Component\Manifest\ManifestManager\Options\WriteTableManifestOptions;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
@@ -35,31 +36,12 @@ class ManifestManager
         return $fileName . '.manifest';
     }
 
-    /**
-     * @param string $fileName
-     * @param string[] $fileTags
-     * @param bool $isPublic
-     * @param bool $isPermanent
-     * @param bool $notify
-     * @param bool $isEncrypted
-     */
     public function writeFileManifest(
         string $fileName,
-        array $fileTags = [],
-        bool $isPublic = false,
-        bool $isPermanent = true,
-        bool $notify = false,
-        bool $isEncrypted = false
+        OutFileManifestOptions $options
     ): void {
         $tableManifestName = $this->getManifestFilename($fileName);
-        $manifest = [
-            'is_permanent' => $isPermanent,
-            'is_public' => $isPublic,
-            'tags' => $fileTags,
-            'notify' => $notify,
-            'is_encrypted' => $isEncrypted,
-        ];
-        $this->internalWriteFileManifest($tableManifestName, $manifest);
+        $this->internalWriteFileManifest($tableManifestName, $options->toArray());
     }
 
     public function writeTableManifest(string $fileName, WriteTableManifestOptions $options): void
