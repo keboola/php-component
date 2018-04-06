@@ -131,7 +131,7 @@ class ManifestManagerTest extends TestCase
      * @param string $expected
      * @param WriteTableManifestOptions $options
      */
-    public function testWriteManifest(string $expected, WriteTableManifestOptions $options): void
+    public function testWriteTableManifest(string $expected, WriteTableManifestOptions $options): void
     {
         $temp = new Temp('testWriteManifestFromOptions');
         $dataDir = $temp->getTmpFolder();
