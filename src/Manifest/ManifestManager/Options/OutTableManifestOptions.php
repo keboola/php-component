@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Keboola\Component\Manifest\ManifestManager\Options;
 
+use function array_keys;
+use function is_array;
+
 class OutTableManifestOptions
 {
     /** @var string */
@@ -96,11 +99,21 @@ class OutTableManifestOptions
     }
 
     /**
-     * @param mixed[][] $metadata
+     * @param mixed[] $metadata
      * @return OutTableManifestOptions
      */
     public function setMetadata(array $metadata): OutTableManifestOptions
     {
+        foreach ($metadata as $value) {
+            if (!is_array($value)) {
+                throw new OptionsValidationException('Each metadata item must be an array');
+            }
+            $keys = array_keys($value);
+            sort($keys);
+            if ($keys !== ['key', 'value']) {
+                throw new OptionsValidationException('Each metadata item must have only "key" and "value" keys');
+            }
+        }
         $this->metadata = $metadata;
         return $this;
     }

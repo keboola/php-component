@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Keboola\Component\Tests\Manifest\ManifestManager\Options;
 
+use Keboola\Component\Manifest\ManifestManager\Options\OptionsValidationException;
 use Keboola\Component\Manifest\ManifestManager\Options\OutTableManifestOptions;
 use PHPUnit\Framework\TestCase;
 
@@ -16,7 +17,7 @@ class OutTableManifestOptionsTest extends TestCase
      */
     public function testToArray(array $expected, OutTableManifestOptions $options): void
     {
-        $this->assertSame($expected, $options->toArray());
+        $this->assertEquals($expected, $options->toArray());
     }
 
     /**
@@ -86,11 +87,63 @@ class OutTableManifestOptionsTest extends TestCase
                             'value' => 'Some value',
                         ],
                         [
-                            'key' => 'another.arbitrary.key',
                             'value' => 'A different value',
+                            'key' => 'another.arbitrary.key',
                         ],
                     ])
                     ->setPrimaryKeyColumns(['id']),
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider provideInvalidOptions
+     */
+    public function testInvalidOptions(string $expectedExceptionMessage, callable $callWithInvalidArguments): void
+    {
+        $this->expectException(OptionsValidationException::class);
+        $this->expectExceptionMessage($expectedExceptionMessage);
+
+        $callWithInvalidArguments();
+    }
+
+    /**
+     * @return mixed[][]
+     */
+    public function provideInvalidOptions(): array
+    {
+        return [
+            [
+                'Each metadata item must be an array',
+                function (): void {
+                    (new OutTableManifestOptions())->setMetadata([
+                        'one',
+                        'two',
+                    ]);
+                },
+            ],
+            [
+                'Each metadata item must have only "key" and "value" keys',
+                function (): void {
+                    (new OutTableManifestOptions())->setMetadata([
+                        [
+                            'key' => 'my-key',
+                            'value' => 'my-value',
+                            'something' => 'my-value',
+                        ],
+                    ]);
+                },
+            ],
+            [
+                'Each metadata item must have only "key" and "value" keys',
+                function (): void {
+                    (new OutTableManifestOptions())->setMetadata([
+                        [
+                            'key' => 'my-key',
+                            'something' => 'my-value',
+                        ],
+                    ]);
+                },
             ],
         ];
     }
