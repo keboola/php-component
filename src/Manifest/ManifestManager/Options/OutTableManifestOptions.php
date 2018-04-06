@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Keboola\Component\Manifest\ManifestManager\Options;
 
-class WriteTableManifestOptions
+class OutTableManifestOptions
 {
     /** @var string */
     private $destination;
@@ -63,7 +63,7 @@ class WriteTableManifestOptions
         return $result;
     }
 
-    public function setDestination(string $destination): WriteTableManifestOptions
+    public function setDestination(string $destination): OutTableManifestOptions
     {
         $this->destination = $destination;
         return $this;
@@ -71,9 +71,9 @@ class WriteTableManifestOptions
 
     /**
      * @param string[] $primaryKeyColumns
-     * @return WriteTableManifestOptions
+     * @return OutTableManifestOptions
      */
-    public function setPrimaryKeyColumns(array $primaryKeyColumns): WriteTableManifestOptions
+    public function setPrimaryKeyColumns(array $primaryKeyColumns): OutTableManifestOptions
     {
         $this->primaryKeyColumns = $primaryKeyColumns;
         return $this;
@@ -81,15 +81,15 @@ class WriteTableManifestOptions
 
     /**
      * @param string[] $columns
-     * @return WriteTableManifestOptions
+     * @return OutTableManifestOptions
      */
-    public function setColumns(array $columns): WriteTableManifestOptions
+    public function setColumns(array $columns): OutTableManifestOptions
     {
         $this->columns = $columns;
         return $this;
     }
 
-    public function setIncremental(bool $incremental): WriteTableManifestOptions
+    public function setIncremental(bool $incremental): OutTableManifestOptions
     {
         $this->incremental = $incremental;
         return $this;
@@ -97,9 +97,9 @@ class WriteTableManifestOptions
 
     /**
      * @param mixed[][] $metadata
-     * @return WriteTableManifestOptions
+     * @return OutTableManifestOptions
      */
-    public function setMetadata(array $metadata): WriteTableManifestOptions
+    public function setMetadata(array $metadata): OutTableManifestOptions
     {
         $this->metadata = $metadata;
         return $this;
@@ -107,21 +107,21 @@ class WriteTableManifestOptions
 
     /**
      * @param mixed[][] $columnMetadata
-     * @return WriteTableManifestOptions
+     * @return OutTableManifestOptions
      */
-    public function setColumnMetadata(array $columnMetadata): WriteTableManifestOptions
+    public function setColumnMetadata(array $columnMetadata): OutTableManifestOptions
     {
         $this->columnMetadata = $columnMetadata;
         return $this;
     }
 
-    public function setDelimiter(string $delimiter): WriteTableManifestOptions
+    public function setDelimiter(string $delimiter): OutTableManifestOptions
     {
         $this->delimiter = $delimiter;
         return $this;
     }
 
-    public function setEnclosure(string $enclosure): WriteTableManifestOptions
+    public function setEnclosure(string $enclosure): OutTableManifestOptions
     {
         $this->enclosure = $enclosure;
         return $this;

@@ -6,7 +6,7 @@ namespace Keboola\Component\Tests\Manifest;
 
 use Keboola\Component\Manifest\ManifestManager;
 use Keboola\Component\Manifest\ManifestManager\Options\OutFileManifestOptions;
-use Keboola\Component\Manifest\ManifestManager\Options\WriteTableManifestOptions;
+use Keboola\Component\Manifest\ManifestManager\Options\OutTableManifestOptions;
 use Keboola\Temp\Temp;
 use PHPUnit\Framework\TestCase;
 
@@ -129,9 +129,9 @@ class ManifestManagerTest extends TestCase
     /**
      * @dataProvider provideWriteManifestOptions
      * @param string $expected
-     * @param WriteTableManifestOptions $options
+     * @param OutTableManifestOptions $options
      */
-    public function testWriteTableManifest(string $expected, WriteTableManifestOptions $options): void
+    public function testWriteTableManifest(string $expected, OutTableManifestOptions $options): void
     {
         $temp = new Temp('testWriteManifestFromOptions');
         $dataDir = $temp->getTmpFolder();
@@ -156,13 +156,13 @@ class ManifestManagerTest extends TestCase
         return [
             'writes only some' => [
                 __DIR__ . '/fixtures/expectedManifestForWriteFromOptionsSomeOptions.manifest',
-                (new WriteTableManifestOptions())
+                (new OutTableManifestOptions())
                     ->setDelimiter('|')
                     ->setEnclosure('_'),
             ],
             'write all options' => [
                 __DIR__ . '/fixtures/expectedManifestForWriteFromOptionsAllOptions.manifest',
-                (new WriteTableManifestOptions())
+                (new OutTableManifestOptions())
                     ->setEnclosure('_')
                     ->setDelimiter('|')
                     ->setColumnMetadata([

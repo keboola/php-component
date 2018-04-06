@@ -4,17 +4,17 @@ declare(strict_types=1);
 
 namespace Keboola\Component\Tests\Manifest\ManifestManager\Options;
 
-use Keboola\Component\Manifest\ManifestManager\Options\WriteTableManifestOptions;
+use Keboola\Component\Manifest\ManifestManager\Options\OutTableManifestOptions;
 use PHPUnit\Framework\TestCase;
 
-class WriteTableManifestOptionsTest extends TestCase
+class OutTableManifestOptionsTest extends TestCase
 {
     /**
      * @dataProvider provideOptions
      * @param mixed[] $expected
-     * @param WriteTableManifestOptions $options
+     * @param OutTableManifestOptions $options
      */
-    public function testToArray(array $expected, WriteTableManifestOptions $options): void
+    public function testToArray(array $expected, OutTableManifestOptions $options): void
     {
         $this->assertSame($expected, $options->toArray());
     }
@@ -31,7 +31,7 @@ class WriteTableManifestOptionsTest extends TestCase
                     'enclosure' => '_',
 
                 ],
-                (new WriteTableManifestOptions())
+                (new OutTableManifestOptions())
                     ->setDelimiter('|')
                     ->setEnclosure('_'),
             ],
@@ -66,7 +66,7 @@ class WriteTableManifestOptionsTest extends TestCase
                         ],
                     ],
                 ],
-                (new WriteTableManifestOptions())
+                (new OutTableManifestOptions())
                     ->setEnclosure('_')
                     ->setDelimiter('|')
                     ->setColumnMetadata([

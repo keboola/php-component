@@ -8,7 +8,10 @@
     - before: `$manager->writeTableManifest('/data/out/tables/table.csv', /*...*/)`
     - after:`$manager->writeTableManifest('table.csv', /*...*/)`
 - [\#23](https://github.com/keboola/php-component/pull/23): `BaseComponent::setEnvironment()` is now static to allow calling in tests bootstrap without instantiating the component itself.
-- [\#25](https://github.com/keboola/php-component/pull/25): Manifest methods for tables have been consolidated to one using the options object. `writeTableManifestFromOptions` method has been renamed to `writeTableManifest`. Also `writeFileManifest` now only supports options object instead of distinct parameters. 
+- [\#25](https://github.com/keboola/php-component/pull/25): Manifest methods for tables have been consolidated to one using the options object. 
+  - `writeTableManifestFromOptions` method has been renamed to `writeTableManifest`. 
+  - `writeFileManifest` now only supports options object instead of distinct parameters.
+  - `WriteTableManifestOptions` is renamed to `OutTableManifestOptions`
 
 **Feature:**
 - [\#20](https://github.com/keboola/php-component/pull/20): options object `WriteTableManifestOptions` to allow setting only some of the manifest parameters when writing manifest

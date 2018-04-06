@@ -45,7 +45,7 @@ class Component extends \Keboola\Component\BaseComponent
         // write manifest for output table
         $this->getManifestManager()->writeTableManifest(
             'data.csv',
-            (new WriteTableManifestOptions())
+            (new OutTableManifestOptions())
                 ->setPrimaryKeyColumns(['id'])
                 ->setDestination('out.report')
         );

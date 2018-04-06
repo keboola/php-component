@@ -6,7 +6,7 @@ namespace Keboola\Component\Manifest;
 
 use InvalidArgumentException;
 use Keboola\Component\Manifest\ManifestManager\Options\OutFileManifestOptions;
-use Keboola\Component\Manifest\ManifestManager\Options\WriteTableManifestOptions;
+use Keboola\Component\Manifest\ManifestManager\Options\OutTableManifestOptions;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use const PATHINFO_EXTENSION;
@@ -44,7 +44,7 @@ class ManifestManager
         $this->internalWriteFileManifest($tableManifestName, $options->toArray());
     }
 
-    public function writeTableManifest(string $fileName, WriteTableManifestOptions $options): void
+    public function writeTableManifest(string $fileName, OutTableManifestOptions $options): void
     {
         $manifestName = self::getManifestFilename($fileName);
 
