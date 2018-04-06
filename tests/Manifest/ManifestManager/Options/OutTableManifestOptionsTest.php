@@ -73,8 +73,8 @@ class OutTableManifestOptionsTest extends TestCase
                     ->setColumnMetadata([
                         'column1' => [
                             [
-                                'key' => 'yet.another.key',
                                 'value' => 'Some other value',
+                                'key' => 'yet.another.key',
                             ],
                         ],
                     ])
@@ -141,6 +141,54 @@ class OutTableManifestOptionsTest extends TestCase
                         [
                             'key' => 'my-key',
                             'something' => 'my-value',
+                        ],
+                    ]);
+                },
+            ],
+            [
+                'Each column metadata item must be an array',
+                function (): void {
+                    (new OutTableManifestOptions())->setColumnMetadata([
+                        'x',
+                    ]);
+                },
+            ],
+            [
+                'Each column metadata item must have string key',
+                function (): void {
+                    (new OutTableManifestOptions())->setColumnMetadata([
+                        ['x'],
+                    ]);
+                },
+            ],
+            [
+                'Column metadata item #0 for "column1" column must be an array, found "string"',
+                function (): void {
+                    (new OutTableManifestOptions())->setColumnMetadata([
+                        'column1' => ['x'],
+                    ]);
+                },
+            ],
+            [
+                'Column metadata item #0 for "column1" column must have only "key" and "value" keys',
+                function (): void {
+                    (new OutTableManifestOptions())->setColumnMetadata([
+                        'column1' => [
+                            ['some' => 'x'],
+                        ],
+                    ]);
+                },
+            ],
+            'Column metadata item has extra keys' => [
+                'Column metadata item #0 for "column1" column must have only "key" and "value" keys',
+                function (): void {
+                    (new OutTableManifestOptions())->setColumnMetadata([
+                        'column1' => [
+                            [
+                                'key' => 'x',
+                                'value' => 'y',
+                                'string' => 'is not',
+                            ],
                         ],
                     ]);
                 },

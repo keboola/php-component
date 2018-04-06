@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Keboola\Component\Manifest\ManifestManager\Options;
 
 use function array_keys;
+use function gettype;
 use function is_array;
 
 class OutTableManifestOptions
@@ -119,12 +120,39 @@ class OutTableManifestOptions
     }
 
     /**
-     * @param mixed[][] $columnMetadata
+     * @param mixed[] $columnsMetadata
      * @return OutTableManifestOptions
      */
-    public function setColumnMetadata(array $columnMetadata): OutTableManifestOptions
+    public function setColumnMetadata(array $columnsMetadata): OutTableManifestOptions
     {
-        $this->columnMetadata = $columnMetadata;
+        foreach ($columnsMetadata as $columnName => $columnMetadata) {
+            if (!is_array($columnMetadata)) {
+                throw new OptionsValidationException('Each column metadata item must be an array');
+            }
+            if (!is_string($columnName)) {
+                throw new OptionsValidationException('Each column metadata item must have string key');
+            }
+            foreach ($columnMetadata as $key => $oneKeyAndValue) {
+                if (!is_array($oneKeyAndValue)) {
+                    throw new OptionsValidationException(sprintf(
+                        'Column metadata item #%s for "%s" column must be an array, found "%s"',
+                        $key,
+                        $columnName,
+                        gettype($oneKeyAndValue)
+                    ));
+                }
+                $keys = array_keys($oneKeyAndValue);
+                sort($keys);
+                if ($keys !== ['key', 'value']) {
+                    throw new OptionsValidationException(sprintf(
+                        'Column metadata item #%s for "%s" column must have only "key" and "value" keys',
+                        $key,
+                        $columnName
+                    ));
+                }
+            }
+        }
+        $this->columnMetadata = $columnsMetadata;
         return $this;
     }
 
