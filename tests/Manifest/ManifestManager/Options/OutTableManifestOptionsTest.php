@@ -113,7 +113,7 @@ class OutTableManifestOptionsTest extends TestCase
     public function provideInvalidOptions(): array
     {
         return [
-            [
+            'non-array metadata' => [
                 'Each metadata item must be an array',
                 function (): void {
                     (new OutTableManifestOptions())->setMetadata([
@@ -122,7 +122,7 @@ class OutTableManifestOptionsTest extends TestCase
                     ]);
                 },
             ],
-            [
+            'metadata with extra key' => [
                 'Each metadata item must have only "key" and "value" keys',
                 function (): void {
                     (new OutTableManifestOptions())->setMetadata([
@@ -134,7 +134,7 @@ class OutTableManifestOptionsTest extends TestCase
                     ]);
                 },
             ],
-            [
+            'missing one of the metadata keys' => [
                 'Each metadata item must have only "key" and "value" keys',
                 function (): void {
                     (new OutTableManifestOptions())->setMetadata([
@@ -145,7 +145,7 @@ class OutTableManifestOptionsTest extends TestCase
                     ]);
                 },
             ],
-            [
+            'Column metadata is not array' => [
                 'Each column metadata item must be an array',
                 function (): void {
                     (new OutTableManifestOptions())->setColumnMetadata([
@@ -153,7 +153,7 @@ class OutTableManifestOptionsTest extends TestCase
                     ]);
                 },
             ],
-            [
+            'Column name is not a string' => [
                 'Each column metadata item must have string key',
                 function (): void {
                     (new OutTableManifestOptions())->setColumnMetadata([
@@ -161,7 +161,7 @@ class OutTableManifestOptionsTest extends TestCase
                     ]);
                 },
             ],
-            [
+            'Column metadata item is not an array' => [
                 'Column metadata item #0 for "column1" column must be an array, found "string"',
                 function (): void {
                     (new OutTableManifestOptions())->setColumnMetadata([
@@ -169,7 +169,7 @@ class OutTableManifestOptionsTest extends TestCase
                     ]);
                 },
             ],
-            [
+            'Column metadata item is missing required keys' => [
                 'Column metadata item #0 for "column1" column must have only "key" and "value" keys',
                 function (): void {
                     (new OutTableManifestOptions())->setColumnMetadata([
