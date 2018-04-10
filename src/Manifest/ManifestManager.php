@@ -5,7 +5,8 @@ declare(strict_types=1);
 namespace Keboola\Component\Manifest;
 
 use InvalidArgumentException;
-use Keboola\Component\Manifest\ManifestManager\Options\WriteTableManifestOptions;
+use Keboola\Component\Manifest\ManifestManager\Options\OutFileManifestOptions;
+use Keboola\Component\Manifest\ManifestManager\Options\OutTableManifestOptions;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use const PATHINFO_EXTENSION;
@@ -35,91 +36,15 @@ class ManifestManager
         return $fileName . '.manifest';
     }
 
-    /**
-     * @param string $fileName
-     * @param string[] $fileTags
-     * @param bool $isPublic
-     * @param bool $isPermanent
-     * @param bool $notify
-     * @param bool $isEncrypted
-     */
     public function writeFileManifest(
         string $fileName,
-        array $fileTags = [],
-        bool $isPublic = false,
-        bool $isPermanent = true,
-        bool $notify = false,
-        bool $isEncrypted = false
+        OutFileManifestOptions $options
     ): void {
         $tableManifestName = $this->getManifestFilename($fileName);
-        $manifest = [
-            'is_permanent' => $isPermanent,
-            'is_public' => $isPublic,
-            'tags' => $fileTags,
-            'notify' => $notify,
-            'is_encrypted' => $isEncrypted,
-        ];
-        $this->internalWriteFileManifest($tableManifestName, $manifest);
+        $this->internalWriteFileManifest($tableManifestName, $options->toArray());
     }
 
-    /**
-     * @param string $fileName
-     * @param string $destination
-     * @param string[] $primaryKeyColumns
-     * @param string[] $columns
-     * @param bool $incremental
-     * @param mixed[][] $metadata
-     * @param mixed[][] $columnMetadata
-     * @param string $delimiter
-     * @param string $enclosure
-     */
-    public function writeTableManifest(
-        string $fileName,
-        string $destination = '',
-        array $primaryKeyColumns = [],
-        array $columns = [],
-        bool $incremental = false,
-        array $metadata = [],
-        array $columnMetadata = [],
-        string $delimiter = ',',
-        string $enclosure = '"'
-    ): void {
-        $tableManifestFilename = $this->getManifestFilename($fileName);
-        $manifest = [
-            'destination' => $destination,
-            'primary_key' => $primaryKeyColumns,
-            'delimiter' => $delimiter,
-            'enclosure' => $enclosure,
-            'columns' => $columns,
-            'incremental' => $incremental,
-            'metadata' => $metadata,
-            'column_metadata' => $columnMetadata,
-        ];
-        $this->internalWriteTableManifest($tableManifestFilename, $manifest);
-    }
-
-    /**
-     * @param string $filename
-     * @param mixed[] $manifest
-     */
-    public function writeTableManifestFromArray(
-        string $filename,
-        array $manifest
-    ): void {
-        $this->writeTableManifest(
-            $filename,
-            $manifest['destination'] ?? '',
-            $manifest['primary_key'] ?? [],
-            $manifest['columns'] ?? [],
-            $manifest['incremental'] ?? false,
-            $manifest['metadata'] ?? [],
-            $manifest['column_metadata'] ?? [],
-            $manifest['delimiter'] ?? ',',
-            $manifest['enclosure'] ?? '"'
-        );
-    }
-
-    public function writeTableManifestFromOptions(string $fileName, WriteTableManifestOptions $options): void
+    public function writeTableManifest(string $fileName, OutTableManifestOptions $options): void
     {
         $manifestName = self::getManifestFilename($fileName);
 

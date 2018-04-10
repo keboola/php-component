@@ -36,10 +36,19 @@ class Component extends \Keboola\Component\BaseComponent
         $tableManifest = $this->getManifestManager()->getTableManifest('in.tableName');
 
         // write manifest for output file
-        $this->getManifestManager()->writeFileManifest('out-file.csv', ['tag1', 'tag2']);
-
+        $this->getManifestManager()->writeFileManifest(
+            'out-file.csv',
+            (new OutFileManifestOptions())
+                ->setTags(['tag1', 'tag2'])
+        );
+        
         // write manifest for output table
-        $this->getManifestManager()->writeTableManifest('data.csv', 'out.report', ['id']);
+        $this->getManifestManager()->writeTableManifest(
+            'data.csv',
+            (new OutTableManifestOptions())
+                ->setPrimaryKeyColumns(['id'])
+                ->setDestination('out.report')
+        );
     }
 }
 

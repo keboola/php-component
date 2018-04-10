@@ -5,11 +5,10 @@ declare(strict_types=1);
 namespace Keboola\Component\Tests\Manifest;
 
 use Keboola\Component\Manifest\ManifestManager;
-use Keboola\Component\Manifest\ManifestManager\Options\WriteTableManifestOptions;
+use Keboola\Component\Manifest\ManifestManager\Options\OutFileManifestOptions;
+use Keboola\Component\Manifest\ManifestManager\Options\OutTableManifestOptions;
 use Keboola\Temp\Temp;
 use PHPUnit\Framework\TestCase;
-use Symfony\Component\Serializer\Encoder\JsonEncoder;
-use function file_get_contents;
 
 class ManifestManagerTest extends TestCase
 {
@@ -53,96 +52,19 @@ class ManifestManagerTest extends TestCase
         $manager = new ManifestManager($dataDir);
         $fileName = 'file.jpg';
 
-        $manager->writeFileManifest($fileName, ['sometag'], false, false, true, false);
+        $manager->writeFileManifest(
+            $fileName,
+            (new OutFileManifestOptions())
+                ->setTags(['sometag'])
+                ->setIsPublic(false)
+                ->setIsPermanent(false)
+                ->setNotify(true)
+                ->setIsEncrypted(false)
+        );
 
         $this->assertJsonFileEqualsJsonFile(
             __DIR__ . '/fixtures/expected-file.manifest',
             $dataDir . '/out/files/file.jpg.manifest'
-        );
-    }
-
-    public function testWillWriteTableManifest(): void
-    {
-        $temp = new Temp('testWillWriteTableManifest');
-
-        $dataDir = $temp->getTmpFolder();
-        $manager = new ManifestManager($dataDir);
-
-        $metadata = [
-            [
-                'key' => 'an.arbitrary.key',
-                'value' => 'Some value',
-            ],
-            [
-                'key' => 'another.arbitrary.key',
-                'value' => 'A different value',
-            ],
-        ];
-        $columnMetadata = [
-            'column1' => [
-                [
-                    'key' => 'yet.another.key',
-                    'value' => 'Some other value',
-                ],
-            ],
-        ];
-        $manager->writeTableManifest(
-            'table.csv',
-            'destination-table',
-            ['id', 'number'],
-            ['id', 'number', 'other_column'],
-            false,
-            $metadata,
-            $columnMetadata,
-            ';',
-            '\''
-        );
-
-        $this->assertJsonFileEqualsJsonFile(
-            __DIR__ . '/fixtures/expected-table.manifest',
-            $dataDir . '/out/tables/table.csv.manifest'
-        );
-    }
-
-    public function testWillWriteTableManifestWithoutExtension(): void
-    {
-        $temp = new Temp('testWillWriteTableManifest');
-        $dataDir = $temp->getTmpFolder();
-        $manager = new ManifestManager($dataDir);
-
-        $metadata = [
-            [
-                'key' => 'an.arbitrary.key',
-                'value' => 'Some value',
-            ],
-            [
-                'key' => 'another.arbitrary.key',
-                'value' => 'A different value',
-            ],
-        ];
-        $columnMetadata = [
-            'column1' => [
-                [
-                    'key' => 'yet.another.key',
-                    'value' => 'Some other value',
-                ],
-            ],
-        ];
-        $manager->writeTableManifest(
-            'table-name',
-            'destination-table',
-            ['id', 'number'],
-            ['id', 'number', 'other_column'],
-            false,
-            $metadata,
-            $columnMetadata,
-            ';',
-            '\''
-        );
-
-        $this->assertJsonFileEqualsJsonFile(
-            __DIR__ . '/fixtures/expected-table.manifest',
-            $dataDir . '/out/tables/table-name.manifest'
         );
     }
 
@@ -190,45 +112,6 @@ class ManifestManagerTest extends TestCase
     }
 
     /**
-     * @param string $inTableName
-     * @dataProvider provideTableNameForManifestReadWriteTest
-     */
-    public function testReadAndWrittenManifestAreTheSame(string $inTableName): void
-    {
-        $dataDir = __DIR__ . '/fixtures/manifest-data-dir';
-        $outTableName = $inTableName . '-generated';
-        $manager = new ManifestManager($dataDir);
-
-        $manifest = $manager->getTableManifest($inTableName);
-        $manager->writeTableManifestFromArray(
-            $outTableName,
-            $manifest
-        );
-
-        // this needs to be done by hand as there is no API to reading manifest of out tables
-        $encoder = new JsonEncoder();
-        $generatedManifestFilePath = $dataDir . '/out/tables/' . $manager->getManifestFilename($outTableName);
-        $generatedManifestContents = file_get_contents($generatedManifestFilePath);
-        $generatedManifest = $encoder->decode($generatedManifestContents, JsonEncoder::FORMAT);
-        // generated manifest will include all fields due to default values
-        $this->assertGreaterThanOrEqual(
-            count($manifest),
-            count($generatedManifest)
-        );
-        foreach ($manifest as $key => $value) {
-            // every key from original must be preserved
-            $this->assertSame(
-                $manifest[$key],
-                $generatedManifest[$key],
-                sprintf('Key "%s" should be the same', $key)
-            );
-        }
-
-        // cleanup
-        unlink($generatedManifestFilePath);
-    }
-
-    /**
      * @return string[][]
      */
     public function provideTableNameForManifestReadWriteTest(): array
@@ -246,15 +129,15 @@ class ManifestManagerTest extends TestCase
     /**
      * @dataProvider provideWriteManifestOptions
      * @param string $expected
-     * @param WriteTableManifestOptions $options
+     * @param OutTableManifestOptions $options
      */
-    public function testWriteManifestFromOptions(string $expected, WriteTableManifestOptions $options): void
+    public function testWriteTableManifest(string $expected, OutTableManifestOptions $options): void
     {
         $temp = new Temp('testWriteManifestFromOptions');
         $dataDir = $temp->getTmpFolder();
         $manifestManager = new ManifestManager($dataDir);
 
-        $manifestManager->writeTableManifestFromOptions(
+        $manifestManager->writeTableManifest(
             'my-table',
             $options
         );
@@ -273,13 +156,13 @@ class ManifestManagerTest extends TestCase
         return [
             'writes only some' => [
                 __DIR__ . '/fixtures/expectedManifestForWriteFromOptionsSomeOptions.manifest',
-                (new WriteTableManifestOptions())
+                (new OutTableManifestOptions())
                     ->setDelimiter('|')
                     ->setEnclosure('_'),
             ],
             'write all options' => [
                 __DIR__ . '/fixtures/expectedManifestForWriteFromOptionsAllOptions.manifest',
-                (new WriteTableManifestOptions())
+                (new OutTableManifestOptions())
                     ->setEnclosure('_')
                     ->setDelimiter('|')
                     ->setColumnMetadata([
