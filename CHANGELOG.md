@@ -3,6 +3,8 @@
 
 ## master
 
+## 3.0.0
+
 **BC break:**
 - [\#19](https://github.com/keboola/php-component/pull/19): path when writing manifests is now relative to `out/files` (or `out/tables` respectively).
     - before: `$manager->writeTableManifest('/data/out/tables/table.csv', /*...*/)`
