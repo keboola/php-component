@@ -167,4 +167,32 @@ class OutTableManifestOptions
         $this->enclosure = $enclosure;
         return $this;
     }
+
+    /**
+     * @param mixed $metadata
+     * @throws OptionsValidationException
+     */
+    private function validateMetadata($metadata): void
+    {
+        if (!is_array($metadata)) {
+            throw new OptionsValidationException('Metadata must be an array');
+        }
+        foreach ($metadata as $key => $oneKeyAndValue) {
+            if (!is_array($oneKeyAndValue)) {
+                throw new OptionsValidationException(sprintf(
+                    'Metadata item #%s must be an array, found "%s"',
+                    $key,
+                    gettype($oneKeyAndValue)
+                ));
+            }
+            $keys = array_keys($oneKeyAndValue);
+            sort($keys);
+            if ($keys !== ['key', 'value']) {
+                throw new OptionsValidationException(sprintf(
+                    'Metadata item #%s must have only "key" and "value" keys',
+                    $key
+                ));
+            }
+        }
+    }
 }
