@@ -105,16 +105,7 @@ class OutTableManifestOptions
      */
     public function setMetadata(array $metadata): OutTableManifestOptions
     {
-        foreach ($metadata as $value) {
-            if (!is_array($value)) {
-                throw new OptionsValidationException('Each metadata item must be an array');
-            }
-            $keys = array_keys($value);
-            sort($keys);
-            if ($keys !== ['key', 'value']) {
-                throw new OptionsValidationException('Each metadata item must have only "key" and "value" keys');
-            }
-        }
+        $this->validateMetadata($metadata);
         $this->metadata = $metadata;
         return $this;
     }
@@ -132,24 +123,10 @@ class OutTableManifestOptions
             if (!is_string($columnName)) {
                 throw new OptionsValidationException('Each column metadata item must have string key');
             }
-            foreach ($columnMetadata as $key => $oneKeyAndValue) {
-                if (!is_array($oneKeyAndValue)) {
-                    throw new OptionsValidationException(sprintf(
-                        'Column metadata item #%s for "%s" column must be an array, found "%s"',
-                        $key,
-                        $columnName,
-                        gettype($oneKeyAndValue)
-                    ));
-                }
-                $keys = array_keys($oneKeyAndValue);
-                sort($keys);
-                if ($keys !== ['key', 'value']) {
-                    throw new OptionsValidationException(sprintf(
-                        'Column metadata item #%s for "%s" column must have only "key" and "value" keys',
-                        $key,
-                        $columnName
-                    ));
-                }
+            try {
+                $this->validateMetadata($columnMetadata);
+            } catch (OptionsValidationException $e) {
+                throw new OptionsValidationException(sprintf('Column "%s": %s', $columnName, $e->getMessage()), 0, $e);
             }
         }
         $this->columnMetadata = $columnsMetadata;
