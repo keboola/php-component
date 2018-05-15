@@ -57,23 +57,33 @@ class Component extends \Keboola\Component\BaseComponent
 Use this `src/run.php` template. 
 
 ```php
-<?php declare(strict_types = 1);
+<?php
+
+declare(strict_types=1);
+
+use Keboola\Component\Logger;
 
 require __DIR__ . '/../vendor/autoload.php';
 
+$logger = new Logger();
 try {
-    $app = new MyComponent\Component();
+    $app = new MyComponent\Component($logger);
     $app->run();
     exit(0);
 } catch (\Keboola\Component\UserException $e) {
-    echo $e->getMessage();
+    $logger->error($e->getMessage());
     exit(1);
 } catch (\Throwable $e) {
-    echo get_class($e) . ':' . $e->getMessage();
-    echo "\nFile: " . $e->getFile();
-    echo "\nLine: " . $e->getLine();
-    echo "\nCode: " . $e->getCode();
-    echo "\nTrace: " . $e->getTraceAsString() . "\n";
+    $logger->critical(
+        get_class($e) . ':' . $e->getMessage(),
+        [
+            'errFile' => $e->getFile(),
+            'errLine' => $e->getLine(),
+            'errCode' => $e->getCode(),
+            'errTrace' => $e->getTraceAsString(),
+            'errPrevious' => $e->getPrevious() ? get_class($e->getPrevious()) : '',
+        ]
+    );
     exit(2);
 }
 ```
