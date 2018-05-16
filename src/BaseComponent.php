@@ -37,7 +37,7 @@ class BaseComponent
         static::setEnvironment();
         $this->logger = $logger;
 
-        $dataDir = getenv('KBC_DATADIR') === false ? '/data/' : (string)getenv('KBC_DATADIR');
+        $dataDir = getenv('KBC_DATADIR') === false ? '/data/' : (string) getenv('KBC_DATADIR');
         $this->setDataDir($dataDir);
 
         $this->loadConfig();
