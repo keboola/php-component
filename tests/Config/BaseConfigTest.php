@@ -43,7 +43,32 @@ class BaseConfigTest extends TestCase
         $this->expectException(InvalidConfigurationException::class);
         $this->expectExceptionMessage('The child node "requiredValue" at path "root.parameters" must be configured.');
 
-        $config = new BaseConfig(['parameters' => []], $configDefinition);
+        new BaseConfig(['parameters' => []], $configDefinition);
+    }
+
+    public function testStrictParametersCheck(): void
+    {
+        $configDefinition = new class extends BaseConfigDefinition implements ConfigurationInterface
+        {
+            protected function getParametersDefinition(): ArrayNodeDefinition
+            {
+                $nodeDefinition = parent::getParametersDefinition();
+                // @formatter:off
+                $nodeDefinition->isRequired();
+                $nodeDefinition
+                    ->children()
+                    ->scalarNode('requiredValue')
+                    ->isRequired()
+                    ->cannotBeEmpty();
+                // @formatter:on
+                return $nodeDefinition;
+            }
+        };
+
+        $this->expectException(InvalidConfigurationException::class);
+        $this->expectExceptionMessage('Unrecognized option "extraValue" under "root.parameters"');
+
+        new BaseConfig(['parameters' => ['requiredValue' => 'yes', 'extraValue' => 'no']], $configDefinition);
     }
 
     public function testCanOverrideRootDefinition(): void
@@ -64,7 +89,7 @@ class BaseConfigTest extends TestCase
         $this->expectException(InvalidConfigurationException::class);
         $this->expectExceptionMessage('The child node "requiredRootNode" at path "root" must be configured.');
 
-        $config = new BaseConfig([], $configDefinition);
+        new BaseConfig([], $configDefinition);
     }
 
     public function testIsForwardCompatible(): void
@@ -95,6 +120,22 @@ class BaseConfigTest extends TestCase
 
     public function testGettersWillGetKeyIfPresent(): void
     {
+        $configDefinition = new class extends BaseConfigDefinition implements ConfigurationInterface
+        {
+            protected function getParametersDefinition(): ArrayNodeDefinition
+            {
+                $nodeDefinition = parent::getParametersDefinition();
+                // @formatter:off
+                $nodeDefinition->isRequired();
+                $nodeDefinition
+                    ->children()
+                    ->arrayNode('ipsum')
+                        ->children()
+                            ->scalarNode('dolor');
+                // @formatter:on
+                return $nodeDefinition;
+            }
+        };
         $config = new BaseConfig([
             'parameters' => [
                 'ipsum' => [
@@ -120,7 +161,7 @@ class BaseConfigTest extends TestCase
                     'files' => [],
                 ],
             ],
-        ]);
+        ], $configDefinition);
         $this->assertEquals(
             [
                 'ipsum' => [

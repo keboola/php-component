@@ -37,7 +37,6 @@ class BaseConfigDefinition implements ConfigurationInterface
         $builder = new TreeBuilder();
         /** @var ArrayNodeDefinition $parametersNode */
         $parametersNode = $builder->root('parameters');
-        $parametersNode->ignoreExtraKeys(false);
         return $parametersNode;
     }
 
