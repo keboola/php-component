@@ -122,6 +122,11 @@ class BaseComponent
         return $this->manifestManager;
     }
 
+    public function getLogger() : LoggerInterface
+    {
+        return $this->logger;
+    }
+
     /**
      * This is the main method for your code to run in. You have the `Config`
      * and `ManifestManager` ready as well as environment set up.
