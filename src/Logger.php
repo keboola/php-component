@@ -32,10 +32,12 @@ class Logger extends MonologLogger
 
         // no handlers
         if (count($handlers) === 0) {
+            $criticalHandler = self::getDefaultCriticalHandler();
             $errorHandler = self::getDefaultErrorHandler();
             $logHandler = self::getDefaultLogHandler();
 
             $handlers = [
+                $criticalHandler,
                 $errorHandler,
                 $logHandler,
             ];
@@ -67,5 +69,14 @@ class Logger extends MonologLogger
         $logHandler->setLevel(MonologLogger::INFO);
         $logHandler->setFormatter(new LineFormatter("%message%\n"));
         return $logHandler;
+    }
+
+    public static function getDefaultCriticalHandler(): StreamHandler
+    {
+        $handler = new StreamHandler('php://stderr');
+        $handler->setBubble(false);
+        $handler->setLevel(MonologLogger::CRITICAL);
+        $handler->setFormatter(new LineFormatter("[%datetime%] %level_name%: %message% %context% %extra%\n"));
+        return $handler;
     }
 }

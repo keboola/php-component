@@ -8,6 +8,7 @@ use ErrorException;
 use Keboola\Component\Config\BaseConfig;
 use Keboola\Component\Config\BaseConfigDefinition;
 use Keboola\Component\Manifest\ManifestManager;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use function error_reporting;
@@ -28,9 +29,13 @@ class BaseComponent
     /** @var ManifestManager */
     private $manifestManager;
 
-    public function __construct()
+    /** @var LoggerInterface */
+    private $logger;
+
+    public function __construct(LoggerInterface $logger)
     {
         static::setEnvironment();
+        $this->logger = $logger;
 
         $dataDir = getenv('KBC_DATADIR') === false ? '/data/' : (string)getenv('KBC_DATADIR');
         $this->setDataDir($dataDir);
@@ -38,6 +43,8 @@ class BaseComponent
         $this->loadConfig();
 
         $this->loadManifestManager();
+
+        $this->logger->debug('Component initialization completed');
     }
 
     /**
@@ -77,6 +84,7 @@ class BaseComponent
         } catch (InvalidConfigurationException $e) {
             throw new UserException($e->getMessage(), 0, $e);
         }
+        $this->logger->debug('Config loaded');
     }
 
     /**
