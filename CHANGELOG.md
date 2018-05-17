@@ -3,6 +3,28 @@
 
 ## master
 
+## 4.1.1
+
+**Patch:**
+- [\#36](https://github.com/keboola/php-component/pull/36): Missing changelog since 4.0.0.  
+
+## 4.1.0
+
+**Feature:**
+- [\#34](https://github.com/keboola/php-component/pull/34): Logger can be accessed from within the component via `$this->getLogger()` 
+
+## 4.0.0
+
+**BC break:**
+- [\#30](https://github.com/keboola/php-component/pull/30): LoggerInterface is a required parameter in BaseComponent constructor
+- [\#32](https://github.com/keboola/php-component/pull/19): Parameters key in config is checked strictly (no extra keys) by default. 
+
+**Feature:**
+- [\#28](https://github.com/keboola/php-component/pull/28): Logger class with default behavior for stdout/stderr logging for Keboola Connection.
+
+**Other:**
+- [\#33](https://github.com/keboola/php-component/pull/33): Dependencies updated to latest versions
+
 ## 3.0.0
 
 **BC break:**
