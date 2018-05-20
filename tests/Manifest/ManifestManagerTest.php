@@ -97,6 +97,13 @@ class ManifestManagerTest extends TestCase
         $this->assertSame($expectedManifest, $manager->getTableManifest('people.csv'));
     }
 
+    public function testNonexistentManifestReturnsEmptyArray(): void
+    {
+        $manager = new ManifestManager(__DIR__ . '/fixtures/manifest-data-dir');
+
+        $this->assertSame([], $manager->getTableManifest('manifest-does-not-exist'));
+    }
+
     public function testWillLoadTableManifestWithoutCsv(): void
     {
         $manager = new ManifestManager(__DIR__ . '/fixtures/manifest-data-dir');

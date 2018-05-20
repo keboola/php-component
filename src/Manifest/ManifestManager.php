@@ -80,8 +80,8 @@ class ManifestManager
     private function loadManifest(string $fileName, string $baseDir): array
     {
         $isPathInDirectory = strpos($fileName, $baseDir) === 0;
+        $fs = new Filesystem();
         if (!$isPathInDirectory) {
-            $fs = new Filesystem();
             if ($fs->isAbsolutePath($fileName)) {
                 throw new InvalidArgumentException(sprintf(
                     'Manifest source "%s" must be in the data directory (%s)!',
@@ -93,8 +93,13 @@ class ManifestManager
             $fileName = implode('/', [$baseDir, $fileName]);
         }
 
+        $manifestFilename = $this->getManifestFilename($fileName);
+        if (!$fs->exists($manifestFilename)) {
+            return [];
+        }
+
         $decoder = new JsonEncoder();
-        return $decoder->decode(file_get_contents($this->getManifestFilename($fileName)), JsonEncoder::FORMAT);
+        return $decoder->decode(file_get_contents($manifestFilename), JsonEncoder::FORMAT);
     }
 
     /**
