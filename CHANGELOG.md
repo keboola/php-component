@@ -3,6 +3,8 @@
 
 ## master
 
+## 4.2.0
+
 **Feature:**
 - [\#37](https://github.com/keboola/php-component/pull/37): No manifest behaves like empty manifest  
 
