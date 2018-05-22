@@ -19,6 +19,9 @@ class BaseConfig implements ConfigInterface
     /** @var mixed[] */
     protected $config;
 
+    /** @var mixed[] */
+    protected $rawConfig;
+
     /** @var ConfigurationInterface */
     private $configDefinition;
 
@@ -35,12 +38,13 @@ class BaseConfig implements ConfigInterface
     }
 
     /**
-     * @param mixed[] $config
+     * @param mixed[] $rawConfig
      */
-    private function setConfig(array $config): void
+    private function setConfig(array $rawConfig): void
     {
+        $this->rawConfig = $rawConfig;
         $processor = new Processor();
-        $processedConfig = $processor->processConfiguration($this->configDefinition, [$config]);
+        $processedConfig = $processor->processConfiguration($this->configDefinition, [$rawConfig]);
         $this->config = $processedConfig;
     }
 
@@ -60,6 +64,16 @@ class BaseConfig implements ConfigInterface
     public function getData(): array
     {
         return $this->config;
+    }
+
+    /**
+     * Returns all raw data in config as associative array
+     *
+     * @return mixed[]
+     */
+    public function getRawData(): array
+    {
+        return $this->rawConfig;
     }
 
     /**
