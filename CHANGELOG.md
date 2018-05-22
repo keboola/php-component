@@ -3,6 +3,8 @@
 
 ## master
 
+- [\#38](https://github.com/keboola/php-component/pull/38): Add the option to get raw config data
+
 ## 4.2.0
 
 **Feature:**

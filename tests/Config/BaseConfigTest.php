@@ -218,4 +218,28 @@ class BaseConfigTest extends TestCase
             $config->getValue(['parameters', 'ipsum', 'dolor'])
         );
     }
+
+    public function testWillGetRawDataWithoutDefaultValues(): void
+    {
+        $configDefinition = new class extends BaseConfigDefinition implements ConfigurationInterface
+        {
+            protected function getParametersDefinition(): ArrayNodeDefinition
+            {
+                $nodeDefinition = parent::getParametersDefinition();
+                // @formatter:off
+                $nodeDefinition->isRequired();
+                $nodeDefinition
+                    ->children()
+                        ->scalarNode('requiredValue')
+                            ->defaultValue('loremIpsum')
+                            ->cannotBeEmpty();
+                // @formatter:on
+                return $nodeDefinition;
+            }
+        };
+
+        $config = new BaseConfig(['parameters' => []], $configDefinition);
+        $this->assertSame(['parameters' =>['requiredValue' => 'loremIpsum']], $config->getData());
+        $this->assertSame(['parameters'=> []], $config->getRawData());
+    }
 }
