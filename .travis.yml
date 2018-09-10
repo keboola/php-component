@@ -16,7 +16,7 @@ matrix:
   # report before nightly is finished
   fast_finish: true
   # nightly can fail
-  allow-failures:
+  allow_failures:
     - php: nightly
 
 before_script:
