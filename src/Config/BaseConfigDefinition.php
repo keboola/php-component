@@ -48,6 +48,7 @@ class BaseConfigDefinition implements ConfigurationInterface
         /** @var ArrayNodeDefinition $rootNode */
         $rootNode = $treeBuilder->root('root');
         $rootNode->ignoreExtraKeys(false);
+        $rootNode->normalizeKeys(false);
 
         // @formatter:off
         $rootNode
