@@ -75,6 +75,7 @@ class BaseConfig implements ConfigInterface
         $config = $this->config;
         $pointer = &$config;
         foreach ($keys as $key) {
+            $this->checkKey($key);
             if (!array_key_exists($key, $pointer)) {
                 if ($default === null) {
                     throw new InvalidArgumentException(sprintf(
@@ -87,6 +88,17 @@ class BaseConfig implements ConfigInterface
             $pointer = &$pointer[$key];
         }
         return $pointer;
+    }
+
+    protected function checkKey(string $key): void
+    {
+        if (strpos($key, '-') !== false) {
+            trigger_error(
+                'Try not to use dash-separated keys in config. ' .
+                'You can override the "BaseConfig::checkKey" method to get rid of this message',
+                E_USER_DEPRECATED
+            );
+        }
     }
 
     /**
