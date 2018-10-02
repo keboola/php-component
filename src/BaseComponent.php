@@ -21,7 +21,7 @@ use function file_get_contents;
 class BaseComponent
 {
     /** @var BaseConfig */
-    protected $config;
+    private $config;
 
     /** @var string */
     private $dataDir;
@@ -100,6 +100,11 @@ class BaseComponent
     protected function getConfigDefinitionClass(): string
     {
         return BaseConfigDefinition::class;
+    }
+
+    protected function setConfig(BaseConfig $config): void
+    {
+        $this->config = $config;
     }
 
     /**
