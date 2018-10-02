@@ -21,7 +21,7 @@ use function file_get_contents;
 class BaseComponent
 {
     /** @var BaseConfig */
-    private $config;
+    protected $config;
 
     /** @var string */
     private $dataDir;
@@ -72,19 +72,24 @@ class BaseComponent
      */
     protected function loadConfig(): void
     {
-        $jsonContents = file_get_contents($this->dataDir . '/config.json');
-        $jsonEncoder = new JsonEncoder();
         $configClass = $this->getConfigClass();
         $configDefinitionClass = $this->getConfigDefinitionClass();
         try {
             $this->config = new $configClass(
-                $jsonEncoder->decode($jsonContents, JsonEncoder::FORMAT),
+                $this->getFormattedConfig(),
                 new $configDefinitionClass()
             );
         } catch (InvalidConfigurationException $e) {
             throw new UserException($e->getMessage(), 0, $e);
         }
         $this->logger->debug('Config loaded');
+    }
+
+    protected function getFormattedConfig(): array
+    {
+        $jsonContents = file_get_contents($this->dataDir . '/config.json');
+        $jsonEncoder = new JsonEncoder();
+        return $jsonEncoder->decode($jsonContents, JsonEncoder::FORMAT);
     }
 
     /**
