@@ -72,19 +72,24 @@ class BaseComponent
      */
     protected function loadConfig(): void
     {
-        $jsonContents = file_get_contents($this->dataDir . '/config.json');
-        $jsonEncoder = new JsonEncoder();
         $configClass = $this->getConfigClass();
         $configDefinitionClass = $this->getConfigDefinitionClass();
         try {
             $this->config = new $configClass(
-                $jsonEncoder->decode($jsonContents, JsonEncoder::FORMAT),
+                $this->getRawConfig(),
                 new $configDefinitionClass()
             );
         } catch (InvalidConfigurationException $e) {
             throw new UserException($e->getMessage(), 0, $e);
         }
         $this->logger->debug('Config loaded');
+    }
+
+    protected function getRawConfig(): array
+    {
+        $jsonContents = file_get_contents($this->dataDir . '/config.json');
+        $jsonEncoder = new JsonEncoder();
+        return $jsonEncoder->decode($jsonContents, JsonEncoder::FORMAT);
     }
 
     /**
@@ -95,6 +100,11 @@ class BaseComponent
     protected function getConfigDefinitionClass(): string
     {
         return BaseConfigDefinition::class;
+    }
+
+    protected function setConfig(BaseConfig $config): void
+    {
+        $this->config = $config;
     }
 
     /**
