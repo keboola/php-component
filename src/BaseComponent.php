@@ -76,7 +76,7 @@ class BaseComponent
         $configDefinitionClass = $this->getConfigDefinitionClass();
         try {
             $this->config = new $configClass(
-                $this->getFormattedConfig(),
+                $this->getRawConfig(),
                 new $configDefinitionClass()
             );
         } catch (InvalidConfigurationException $e) {
@@ -85,7 +85,7 @@ class BaseComponent
         $this->logger->debug('Config loaded');
     }
 
-    protected function getFormattedConfig(): array
+    protected function getRawConfig(): array
     {
         $jsonContents = file_get_contents($this->dataDir . '/config.json');
         $jsonEncoder = new JsonEncoder();
