@@ -32,6 +32,9 @@ class BaseComponent
     /** @var LoggerInterface */
     private $logger;
 
+    /** @var array */
+    private $inputState;
+
     public function __construct(LoggerInterface $logger)
     {
         static::setEnvironment();
@@ -41,6 +44,7 @@ class BaseComponent
         $this->setDataDir($dataDir);
 
         $this->loadConfig();
+        $this->loadInputState();
 
         $this->loadManifestManager();
 
@@ -83,6 +87,18 @@ class BaseComponent
             throw new UserException($e->getMessage(), 0, $e);
         }
         $this->logger->debug('Config loaded');
+    }
+
+    protected function loadInputState(): void
+    {
+        $inputStateFile = $this->getDataDir() . '/in/state.json';
+        if (file_exists($inputStateFile)) {
+            $jsonContents = (string) file_get_contents($inputStateFile);
+            $jsonEncoder = new JsonEncoder();
+            $this->inputState = $jsonEncoder->decode($jsonContents, JsonEncoder::FORMAT);
+        } else {
+            $this->inputState = [];
+        }
     }
 
     protected function getRawConfig(): array
@@ -135,6 +151,11 @@ class BaseComponent
     public function getLogger() : LoggerInterface
     {
         return $this->logger;
+    }
+
+    public function getInputState(): array
+    {
+        return $this->inputState;
     }
 
     /**
