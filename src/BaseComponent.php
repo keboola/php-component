@@ -101,6 +101,21 @@ class BaseComponent
         }
     }
 
+    protected function writeOutputStateToFile(array $state): void
+    {
+        $outDataDir = $this->getDataDir() . '/out';
+        if (!is_dir($outDataDir)) {
+            mkdir($outDataDir);
+        }
+
+        $outputStateFile = $outDataDir . '/state.json';
+        $jsonEncode = new JsonEncoder();
+        file_put_contents(
+            $outputStateFile,
+            $jsonEncode->encode($state, JsonEncoder::FORMAT, ['json_encode_options' => JSON_PRETTY_PRINT])
+        );
+    }
+
     protected function getRawConfig(): array
     {
         $jsonContents = file_get_contents($this->dataDir . '/config.json');
