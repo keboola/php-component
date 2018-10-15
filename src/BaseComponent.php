@@ -103,12 +103,7 @@ class BaseComponent
 
     protected function writeOutputStateToFile(array $state): void
     {
-        $outDataDir = $this->getDataDir() . '/out';
-        if (!is_dir($outDataDir)) {
-            mkdir($outDataDir);
-        }
-
-        $outputStateFile = $outDataDir . '/state.json';
+        $outputStateFile = $this->getDataDir() . '/out/state.json';
         $jsonEncode = new JsonEncoder();
         file_put_contents(
             $outputStateFile,
