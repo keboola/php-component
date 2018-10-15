@@ -10,9 +10,8 @@ use Keboola\Component\Config\BaseConfigDefinition;
 use Keboola\Component\Manifest\ManifestManager;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
-use Symfony\Component\Serializer\Encoder\JsonEncoder;
+use Symfony\Component\Filesystem\Exception\FileNotFoundException;
 use function error_reporting;
-use function file_get_contents;
 
 /**
  * This is the core class that does all the heavy lifting. By default you don't need to setup anything. There are some
@@ -91,31 +90,25 @@ class BaseComponent
 
     protected function loadInputState(): void
     {
-        $inputStateFile = $this->getDataDir() . '/in/state.json';
-        if (file_exists($inputStateFile)) {
-            $jsonContents = (string) file_get_contents($inputStateFile);
-            $jsonEncoder = new JsonEncoder();
-            $this->inputState = $jsonEncoder->decode($jsonContents, JsonEncoder::FORMAT);
-        } else {
+        try {
+            $this->inputState = (new JsonFileHelper())->read($this->getDataDir() . '/in/state.json');
+        } catch (FileNotFoundException $exception) {
             $this->inputState = [];
         }
     }
 
     protected function writeOutputStateToFile(array $state): void
     {
-        $outputStateFile = $this->getDataDir() . '/out/state.json';
-        $jsonEncode = new JsonEncoder();
-        file_put_contents(
-            $outputStateFile,
-            $jsonEncode->encode($state, JsonEncoder::FORMAT, ['json_encode_options' => JSON_PRETTY_PRINT])
+        (new JsonFileHelper())->write(
+            $this->getDataDir() . '/out/state.json',
+            $state,
+            ['json_encode_options' => JSON_PRETTY_PRINT]
         );
     }
 
     protected function getRawConfig(): array
     {
-        $jsonContents = file_get_contents($this->dataDir . '/config.json');
-        $jsonEncoder = new JsonEncoder();
-        return $jsonEncoder->decode($jsonContents, JsonEncoder::FORMAT);
+        return (new JsonFileHelper())->read($this->dataDir . '/config.json');
     }
 
     /**
