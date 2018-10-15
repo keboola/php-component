@@ -66,6 +66,6 @@ class BaseComponentTest extends TestCase
         $logger = new Logger();
         $baseComponent = new BaseComponent($logger);
 
-        $this->assertEmpty($baseComponent->getInputState());
+        $this->assertSame([], $baseComponent->getInputState());
     }
 }
