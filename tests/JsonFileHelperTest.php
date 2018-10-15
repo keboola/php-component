@@ -14,7 +14,7 @@ class JsonFileHelperTest extends TestCase
     /** @var JsonFileHelper */
     private $jsonFileHelper;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->jsonFileHelper = new JsonFileHelper();
     }

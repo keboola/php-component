@@ -20,12 +20,12 @@ class JsonFileHelper
         return $jsonEncoder->decode($jsonContents, JsonEncoder::FORMAT);
     }
 
-    public function write(string $filePath, array $data, ?array $context = []): void
+    public function write(string $filePath, array $data, array $context = []): void
     {
         $jsonEncoder = new JsonEncoder();
         file_put_contents(
             $filePath,
-            $jsonEncoder->encode($data,JsonEncoder::FORMAT, $context)
+            $jsonEncoder->encode($data, JsonEncoder::FORMAT, $context)
         );
     }
 }
