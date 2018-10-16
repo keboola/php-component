@@ -22,6 +22,11 @@ class JsonFileHelper
 
     public function write(string $filePath, array $data, bool $formatted = true): void
     {
+        $filePathDir = pathinfo($filePath, PATHINFO_DIRNAME);
+        if (!is_dir($filePathDir)) {
+            mkdir($filePathDir, 0777, true);
+        }
+
         $context = [];
         if ($formatted) {
             $context = ['json_encode_options' => JSON_PRETTY_PRINT];

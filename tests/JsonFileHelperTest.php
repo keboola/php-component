@@ -83,18 +83,16 @@ class JsonFileHelperTest extends TestCase
         unlink($filePath);
     }
 
-    public function testWriteToNonExistingDirectoryThrowsException(): void
+    public function testWriteToNonExistingDirectorySuccessfully(): void
     {
         $filePath = __DIR__ . '/non-existing-folder/tmp.json';
         $array = [
             'key' => 'val',
         ];
 
-        $this->expectException(\ErrorException::class);
-        $this->expectExceptionMessageRegExp(
-            '~^file_put_contents(.*):'
-            . ' failed to open stream: No such file or directory$~'
-        );
-        $this->jsonFileHelper->write($filePath, $array);
+        $this->jsonFileHelper->write($filePath, $array, false);
+        $this->assertSame('{"key":"val"}', file_get_contents($filePath));
+
+        unlink($filePath);
     }
 }
