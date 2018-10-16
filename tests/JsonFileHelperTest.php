@@ -86,15 +86,16 @@ class JsonFileHelperTest extends TestCase
         $this->assertSame('{"key":"val"}', file_get_contents($filePath));
 
         unlink($filePath);
+        rmdir(pathinfo($filePath, PATHINFO_DIRNAME));
     }
 
-    public function testWriteToDevFullThrowsException(): void
+    public function testWriteToProtectedDirectoryThrowsException(): void
     {
-        $filePath = '/dev/full';
+        $filePath =  '/tmp.json';
         $array = ['key'];
 
         $this->expectException(\ErrorException::class);
-        $this->expectExceptionMessage('file_put_contents(/dev/full): failed to open stream: Operation not permitted');
+        $this->expectExceptionMessageRegExp('~^file_put_contents(.*): failed to open stream: Permission denied$~');
         JsonFileHelper::write($filePath, $array);
     }
 }
