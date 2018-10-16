@@ -82,4 +82,19 @@ class JsonFileHelperTest extends TestCase
         );
         unlink($filePath);
     }
+
+    public function testWriteToNonExistingDirectoryThrowsException(): void
+    {
+        $filePath = __DIR__ . '/non-existing-folder/tmp.json';
+        $array = [
+            'key' => 'val',
+        ];
+
+        $this->expectException(\ErrorException::class);
+        $this->expectExceptionMessage(
+            'file_put_contents(/Users/ds/projects/keboola/php-component/tests/non-existing-folder/tmp.json):'
+            . ' failed to open stream: No such file or directory'
+        );
+        $this->jsonFileHelper->write($filePath, $array);
+    }
 }
