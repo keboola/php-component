@@ -87,4 +87,14 @@ class JsonFileHelperTest extends TestCase
 
         unlink($filePath);
     }
+
+    public function testWriteToDevFullThrowsException(): void
+    {
+        $filePath = '/dev/full';
+        $array = ['key'];
+
+        $this->expectException(\ErrorException::class);
+        $this->expectExceptionMessage('file_put_contents(/dev/full): failed to open stream: Operation not permitted');
+        JsonFileHelper::write($filePath, $array);
+    }
 }
