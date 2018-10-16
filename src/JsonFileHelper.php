@@ -9,7 +9,7 @@ use Symfony\Component\Serializer\Encoder\JsonEncoder;
 
 class JsonFileHelper
 {
-    public function read(string $filePath): array
+    public static function read(string $filePath): array
     {
         if (!file_exists($filePath)) {
             throw new FileNotFoundException(null, 0, null, $filePath);
@@ -20,7 +20,7 @@ class JsonFileHelper
         return $jsonEncoder->decode($jsonContents, JsonEncoder::FORMAT);
     }
 
-    public function write(string $filePath, array $data, bool $formatted = true): void
+    public static function write(string $filePath, array $data, bool $formatted = true): void
     {
         $filePathDir = pathinfo($filePath, PATHINFO_DIRNAME);
         if (!is_dir($filePathDir)) {
