@@ -52,7 +52,7 @@ class JsonFileHelperTest extends TestCase
             'key' => 'val',
             'keys' => [0, 1, 2],
         ];
-        $this->jsonFileHelper->write($filePath, $array);
+        $this->jsonFileHelper->write($filePath, $array, false);
 
         $this->assertSame(
             '{"key":"val","keys":[0,1,2]}',
@@ -67,7 +67,7 @@ class JsonFileHelperTest extends TestCase
             'key' => 'val',
             'keys' => [0, 1, 2],
         ];
-        $this->jsonFileHelper->write($filePath, $array, ['json_encode_options' => JSON_PRETTY_PRINT]);
+        $this->jsonFileHelper->write($filePath, $array);
 
         $this->assertSame(
             '{
@@ -91,9 +91,9 @@ class JsonFileHelperTest extends TestCase
         ];
 
         $this->expectException(\ErrorException::class);
-        $this->expectExceptionMessage(
-            'file_put_contents(/Users/ds/projects/keboola/php-component/tests/non-existing-folder/tmp.json):'
-            . ' failed to open stream: No such file or directory'
+        $this->expectExceptionMessageRegExp(
+            '~^file_put_contents(.*):'
+            . ' failed to open stream: No such file or directory$~'
         );
         $this->jsonFileHelper->write($filePath, $array);
     }

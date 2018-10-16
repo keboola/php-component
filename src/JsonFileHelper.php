@@ -20,8 +20,13 @@ class JsonFileHelper
         return $jsonEncoder->decode($jsonContents, JsonEncoder::FORMAT);
     }
 
-    public function write(string $filePath, array $data, array $context = []): void
+    public function write(string $filePath, array $data, bool $formatted = true): void
     {
+        $context = [];
+        if ($formatted) {
+            $context = ['json_encode_options' => JSON_PRETTY_PRINT];
+        }
+
         $jsonEncoder = new JsonEncoder();
         file_put_contents(
             $filePath,

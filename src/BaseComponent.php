@@ -101,8 +101,7 @@ class BaseComponent
     {
         (new JsonFileHelper())->write(
             $this->getDataDir() . '/out/state.json',
-            $state,
-            ['json_encode_options' => JSON_PRETTY_PRINT]
+            $state
         );
     }
 
