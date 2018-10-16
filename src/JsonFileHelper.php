@@ -33,9 +33,13 @@ class JsonFileHelper
         }
 
         $jsonEncoder = new JsonEncoder();
-        file_put_contents(
+        $result = file_put_contents(
             $filePath,
             $jsonEncoder->encode($data, JsonEncoder::FORMAT, $context)
         );
+
+        if ($result === false) {
+            throw new \ErrorException('Could not write to file "%s".');
+        }
     }
 }
