@@ -10,9 +10,8 @@ use Keboola\Component\Config\BaseConfigDefinition;
 use Keboola\Component\Manifest\ManifestManager;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
-use Symfony\Component\Serializer\Encoder\JsonEncoder;
+use Symfony\Component\Filesystem\Exception\FileNotFoundException;
 use function error_reporting;
-use function file_get_contents;
 
 /**
  * This is the core class that does all the heavy lifting. By default you don't need to setup anything. There are some
@@ -32,6 +31,9 @@ class BaseComponent
     /** @var LoggerInterface */
     private $logger;
 
+    /** @var array */
+    private $inputState;
+
     public function __construct(LoggerInterface $logger)
     {
         static::setEnvironment();
@@ -41,6 +43,7 @@ class BaseComponent
         $this->setDataDir($dataDir);
 
         $this->loadConfig();
+        $this->loadInputState();
 
         $this->loadManifestManager();
 
@@ -85,11 +88,26 @@ class BaseComponent
         $this->logger->debug('Config loaded');
     }
 
+    protected function loadInputState(): void
+    {
+        try {
+            $this->inputState = JsonFileHelper::read($this->getDataDir() . '/in/state.json');
+        } catch (FileNotFoundException $exception) {
+            $this->inputState = [];
+        }
+    }
+
+    protected function writeOutputStateToFile(array $state): void
+    {
+        JsonFileHelper::write(
+            $this->getDataDir() . '/out/state.json',
+            $state
+        );
+    }
+
     protected function getRawConfig(): array
     {
-        $jsonContents = file_get_contents($this->dataDir . '/config.json');
-        $jsonEncoder = new JsonEncoder();
-        return $jsonEncoder->decode($jsonContents, JsonEncoder::FORMAT);
+        return JsonFileHelper::read($this->dataDir . '/config.json');
     }
 
     /**
@@ -135,6 +153,11 @@ class BaseComponent
     public function getLogger() : LoggerInterface
     {
         return $this->logger;
+    }
+
+    public function getInputState(): array
+    {
+        return $this->inputState;
     }
 
     /**
