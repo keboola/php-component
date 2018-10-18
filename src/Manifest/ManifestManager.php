@@ -5,13 +5,12 @@ declare(strict_types=1);
 namespace Keboola\Component\Manifest;
 
 use InvalidArgumentException;
+use Keboola\Component\JsonFileHelper;
 use Keboola\Component\Manifest\ManifestManager\Options\OutFileManifestOptions;
 use Keboola\Component\Manifest\ManifestManager\Options\OutTableManifestOptions;
 use Symfony\Component\Filesystem\Filesystem;
-use Symfony\Component\Serializer\Encoder\JsonEncoder;
-use const PATHINFO_EXTENSION;
-use function file_get_contents;
 use function pathinfo;
+use const PATHINFO_EXTENSION;
 
 /**
  * Handles everything related to generating and reading manifests for tables and files.
@@ -98,8 +97,7 @@ class ManifestManager
             return [];
         }
 
-        $decoder = new JsonEncoder();
-        return $decoder->decode(file_get_contents($manifestFilename), JsonEncoder::FORMAT);
+        return JsonFileHelper::read($manifestFilename);
     }
 
     /**
@@ -108,10 +106,7 @@ class ManifestManager
      */
     private function internalWriteManifest(string $manifestAbsolutePath, array $manifestContents): void
     {
-        $encoder = new JsonEncoder();
-        $manifestJson = $encoder->encode($manifestContents, JsonEncoder::FORMAT);
-        $filesystem = new Filesystem();
-        $filesystem->dumpFile($manifestAbsolutePath, $manifestJson . "\n");
+        JsonFileHelper::write($manifestAbsolutePath, $manifestContents, false);
     }
 
     /**
