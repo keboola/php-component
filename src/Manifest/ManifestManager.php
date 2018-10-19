@@ -106,7 +106,7 @@ class ManifestManager
      */
     private function internalWriteManifest(string $manifestAbsolutePath, array $manifestContents): void
     {
-        JsonFileHelper::write($manifestAbsolutePath, $manifestContents, false);
+        JsonFileHelper::write($manifestAbsolutePath, $manifestContents);
     }
 
     /**
