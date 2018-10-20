@@ -23,7 +23,7 @@ class JsonHelper
         }
 
         $jsonEncoder = new JsonEncoder();
-        return $jsonEncoder->encode($data, JsonEncoder::FORMAT, $context);
+        return (string) $jsonEncoder->encode($data, JsonEncoder::FORMAT, $context);
     }
 
     public static function read(string $filePath): array
