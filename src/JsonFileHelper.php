@@ -9,15 +9,30 @@ use Symfony\Component\Serializer\Encoder\JsonEncoder;
 
 class JsonFileHelper
 {
+    public static function decode(string $json): array
+    {
+        $jsonEncoder = new JsonEncoder();
+        return $jsonEncoder->decode($json, JsonEncoder::FORMAT);
+    }
+
+    public static function encode(array $data, bool $formatted = true): string
+    {
+        $context = [];
+        if ($formatted) {
+            $context = ['json_encode_options' => JSON_PRETTY_PRINT];
+        }
+
+        $jsonEncoder = new JsonEncoder();
+        return $jsonEncoder->encode($data, JsonEncoder::FORMAT, $context);
+    }
+
     public static function read(string $filePath): array
     {
         if (!file_exists($filePath)) {
             throw new FileNotFoundException(null, 0, null, $filePath);
         }
 
-        $jsonEncoder = new JsonEncoder();
-        $jsonContents = file_get_contents($filePath);
-        return $jsonEncoder->decode($jsonContents, JsonEncoder::FORMAT);
+        return self::decode(file_get_contents($filePath));
     }
 
     public static function write(string $filePath, array $data, bool $formatted = true): void
@@ -27,15 +42,9 @@ class JsonFileHelper
             mkdir($filePathDir, 0777, true);
         }
 
-        $context = [];
-        if ($formatted) {
-            $context = ['json_encode_options' => JSON_PRETTY_PRINT];
-        }
-
-        $jsonEncoder = new JsonEncoder();
         $result = file_put_contents(
             $filePath,
-            $jsonEncoder->encode($data, JsonEncoder::FORMAT, $context)
+            self::encode($data, $formatted)
         );
 
         if ($result === false) {
