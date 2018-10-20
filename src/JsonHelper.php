@@ -7,7 +7,7 @@ namespace Keboola\Component;
 use Symfony\Component\Filesystem\Exception\FileNotFoundException;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 
-class JsonFileHelper
+class JsonHelper
 {
     public static function decode(string $json): array
     {

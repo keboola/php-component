@@ -91,7 +91,7 @@ class BaseComponent
     protected function loadInputState(): void
     {
         try {
-            $this->inputState = JsonFileHelper::read($this->getDataDir() . '/in/state.json');
+            $this->inputState = JsonHelper::read($this->getDataDir() . '/in/state.json');
         } catch (FileNotFoundException $exception) {
             $this->inputState = [];
         }
@@ -99,7 +99,7 @@ class BaseComponent
 
     protected function writeOutputStateToFile(array $state): void
     {
-        JsonFileHelper::write(
+        JsonHelper::write(
             $this->getDataDir() . '/out/state.json',
             $state
         );
@@ -107,7 +107,7 @@ class BaseComponent
 
     protected function getRawConfig(): array
     {
-        return JsonFileHelper::read($this->dataDir . '/config.json');
+        return JsonHelper::read($this->dataDir . '/config.json');
     }
 
     /**
