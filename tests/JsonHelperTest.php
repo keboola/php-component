@@ -11,6 +11,59 @@ use Symfony\Component\Serializer\Exception\NotEncodableValueException;
 
 class JsonHelperTest extends TestCase
 {
+    public function testDecodeSuccessfully(): void
+    {
+        $json = '{"key":"val","nums":[2,3]}';
+        $this->assertSame(
+            [
+                'key' => 'val',
+                'nums' => [2, 3],
+            ],
+            JsonHelper::decode($json)
+        );
+    }
+
+    public function testDecodeWrongJsonThrowsException(): void
+    {
+        $json = '{"key":"val"';
+        $this->expectException(NotEncodableValueException::class);
+        $this->expectExceptionMessage('Syntax error');
+        JsonHelper::decode($json);
+    }
+
+    public function testEncodeFormattedSuccessfully(): void
+    {
+        $array = [
+            'key' => 'val',
+            'keys' => [0, 1, 2],
+        ];
+
+        $this->assertSame(
+            '{"key":"val","keys":[0,1,2]}',
+            JsonHelper::encode($array, false)
+        );
+    }
+
+    public function testEncodeNonFormattedSuccessfully(): void
+    {
+        $array = [
+            'key' => 'val',
+            'keys' => [0, 1, 2],
+        ];
+
+        $this->assertSame(
+            '{
+    "key": "val",
+    "keys": [
+        0,
+        1,
+        2
+    ]
+}',
+            JsonHelper::encode($array, true)
+        );
+    }
+
     public function testReadNonExistingFileThrowsException(): void
     {
         $this->expectException(FileNotFoundException::class);
