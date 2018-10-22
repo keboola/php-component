@@ -97,7 +97,7 @@ class ManifestManager
             return [];
         }
 
-        return JsonHelper::read($manifestFilename);
+        return JsonHelper::readFile($manifestFilename);
     }
 
     /**
@@ -106,7 +106,7 @@ class ManifestManager
      */
     private function internalWriteManifest(string $manifestAbsolutePath, array $manifestContents): void
     {
-        JsonHelper::write($manifestAbsolutePath, $manifestContents);
+        JsonHelper::writeFile($manifestAbsolutePath, $manifestContents);
     }
 
     /**

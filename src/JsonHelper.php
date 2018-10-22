@@ -26,7 +26,7 @@ class JsonHelper
         return (string) $jsonEncoder->encode($data, JsonEncoder::FORMAT, $context);
     }
 
-    public static function read(string $filePath): array
+    public static function readFile(string $filePath): array
     {
         if (!file_exists($filePath)) {
             throw new FileNotFoundException(null, 0, null, $filePath);
@@ -35,7 +35,7 @@ class JsonHelper
         return self::decode(file_get_contents($filePath));
     }
 
-    public static function write(string $filePath, array $data, bool $formatted = true): void
+    public static function writeFile(string $filePath, array $data, bool $formatted = true): void
     {
         $filePathDir = pathinfo($filePath, PATHINFO_DIRNAME);
         if (!is_dir($filePathDir)) {

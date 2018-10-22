@@ -68,19 +68,19 @@ class JsonHelperTest extends TestCase
     {
         $this->expectException(FileNotFoundException::class);
         $this->expectExceptionMessage('File "/dev/null/file.json" could not be found.');
-        JsonHelper::read('/dev/null/file.json');
+        JsonHelper::readFile('/dev/null/file.json');
     }
 
     public function testReadInvalidFileThrowsException(): void
     {
         $this->expectException(NotEncodableValueException::class);
         $this->expectExceptionMessage('Syntax error');
-        JsonHelper::read(__DIR__ . '/fixtures/json-file-helper-test/invalidJsonFile.json');
+        JsonHelper::readFile(__DIR__ . '/fixtures/json-file-helper-test/invalidJsonFile.json');
     }
 
     public function testReadFileSuccessfully(): void
     {
-        $array = JsonHelper::read(__DIR__ . '/fixtures/json-file-helper-test/file.json');
+        $array = JsonHelper::readFile(__DIR__ . '/fixtures/json-file-helper-test/file.json');
         $this->assertSame(
             [
                 'key' => 'value',
@@ -97,7 +97,7 @@ class JsonHelperTest extends TestCase
             'key' => 'val',
             'keys' => [0, 1, 2],
         ];
-        JsonHelper::write($filePath, $array, false);
+        JsonHelper::writeFile($filePath, $array, false);
 
         $this->assertSame(
             '{"key":"val","keys":[0,1,2]}',
@@ -112,7 +112,7 @@ class JsonHelperTest extends TestCase
             'key' => 'val',
             'keys' => [0, 1, 2],
         ];
-        JsonHelper::write($filePath, $array);
+        JsonHelper::writeFile($filePath, $array);
 
         $this->assertSame(
             '{
@@ -135,7 +135,7 @@ class JsonHelperTest extends TestCase
             'key' => 'val',
         ];
 
-        JsonHelper::write($filePath, $array, false);
+        JsonHelper::writeFile($filePath, $array, false);
         $this->assertSame('{"key":"val"}', file_get_contents($filePath));
 
         unlink($filePath);
@@ -149,6 +149,6 @@ class JsonHelperTest extends TestCase
 
         $this->expectException(\ErrorException::class);
         $this->expectExceptionMessageRegExp('~^file_put_contents(.*): failed to open stream: Permission denied$~');
-        JsonHelper::write($filePath, $array);
+        JsonHelper::writeFile($filePath, $array);
     }
 }
