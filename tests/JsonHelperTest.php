@@ -4,30 +4,83 @@ declare(strict_types=1);
 
 namespace Keboola\Component\Tests;
 
-use Keboola\Component\JsonFileHelper;
+use Keboola\Component\JsonHelper;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Filesystem\Exception\FileNotFoundException;
 use Symfony\Component\Serializer\Exception\NotEncodableValueException;
 
-class JsonFileHelperTest extends TestCase
+class JsonHelperTest extends TestCase
 {
+    public function testDecodeSuccessfully(): void
+    {
+        $json = '{"key":"val","nums":[2,3]}';
+        $this->assertSame(
+            [
+                'key' => 'val',
+                'nums' => [2, 3],
+            ],
+            JsonHelper::decode($json)
+        );
+    }
+
+    public function testDecodeWrongJsonThrowsException(): void
+    {
+        $json = '{"key":"val"';
+        $this->expectException(NotEncodableValueException::class);
+        $this->expectExceptionMessage('Syntax error');
+        JsonHelper::decode($json);
+    }
+
+    public function testEncodeNonFormattedSuccessfully(): void
+    {
+        $array = [
+            'key' => 'val',
+            'keys' => [0, 1, 2],
+        ];
+
+        $this->assertSame(
+            '{"key":"val","keys":[0,1,2]}',
+            JsonHelper::encode($array, false)
+        );
+    }
+
+    public function testEncodeFormattedSuccessfully(): void
+    {
+        $array = [
+            'key' => 'val',
+            'keys' => [0, 1, 2],
+        ];
+
+        $this->assertSame(
+            '{
+    "key": "val",
+    "keys": [
+        0,
+        1,
+        2
+    ]
+}',
+            JsonHelper::encode($array, true)
+        );
+    }
+
     public function testReadNonExistingFileThrowsException(): void
     {
         $this->expectException(FileNotFoundException::class);
         $this->expectExceptionMessage('File "/dev/null/file.json" could not be found.');
-        JsonFileHelper::read('/dev/null/file.json');
+        JsonHelper::readFile('/dev/null/file.json');
     }
 
     public function testReadInvalidFileThrowsException(): void
     {
         $this->expectException(NotEncodableValueException::class);
         $this->expectExceptionMessage('Syntax error');
-        JsonFileHelper::read(__DIR__ . '/fixtures/json-file-helper-test/invalidJsonFile.json');
+        JsonHelper::readFile(__DIR__ . '/fixtures/json-file-helper-test/invalidJsonFile.json');
     }
 
     public function testReadFileSuccessfully(): void
     {
-        $array = JsonFileHelper::read(__DIR__ . '/fixtures/json-file-helper-test/file.json');
+        $array = JsonHelper::readFile(__DIR__ . '/fixtures/json-file-helper-test/file.json');
         $this->assertSame(
             [
                 'key' => 'value',
@@ -44,7 +97,7 @@ class JsonFileHelperTest extends TestCase
             'key' => 'val',
             'keys' => [0, 1, 2],
         ];
-        JsonFileHelper::write($filePath, $array, false);
+        JsonHelper::writeFile($filePath, $array, false);
 
         $this->assertSame(
             '{"key":"val","keys":[0,1,2]}',
@@ -59,7 +112,7 @@ class JsonFileHelperTest extends TestCase
             'key' => 'val',
             'keys' => [0, 1, 2],
         ];
-        JsonFileHelper::write($filePath, $array);
+        JsonHelper::writeFile($filePath, $array);
 
         $this->assertSame(
             '{
@@ -82,7 +135,7 @@ class JsonFileHelperTest extends TestCase
             'key' => 'val',
         ];
 
-        JsonFileHelper::write($filePath, $array, false);
+        JsonHelper::writeFile($filePath, $array, false);
         $this->assertSame('{"key":"val"}', file_get_contents($filePath));
 
         unlink($filePath);
@@ -96,6 +149,6 @@ class JsonFileHelperTest extends TestCase
 
         $this->expectException(\ErrorException::class);
         $this->expectExceptionMessageRegExp('~^file_put_contents(.*): failed to open stream: Permission denied$~');
-        JsonFileHelper::write($filePath, $array);
+        JsonHelper::writeFile($filePath, $array);
     }
 }

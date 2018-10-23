@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Keboola\Component\Manifest;
 
 use InvalidArgumentException;
-use Keboola\Component\JsonFileHelper;
+use Keboola\Component\JsonHelper;
 use Keboola\Component\Manifest\ManifestManager\Options\OutFileManifestOptions;
 use Keboola\Component\Manifest\ManifestManager\Options\OutTableManifestOptions;
 use Symfony\Component\Filesystem\Filesystem;
@@ -97,7 +97,7 @@ class ManifestManager
             return [];
         }
 
-        return JsonFileHelper::read($manifestFilename);
+        return JsonHelper::readFile($manifestFilename);
     }
 
     /**
@@ -106,7 +106,7 @@ class ManifestManager
      */
     private function internalWriteManifest(string $manifestAbsolutePath, array $manifestContents): void
     {
-        JsonFileHelper::write($manifestAbsolutePath, $manifestContents);
+        JsonHelper::writeFile($manifestAbsolutePath, $manifestContents);
     }
 
     /**
