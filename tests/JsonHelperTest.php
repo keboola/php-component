@@ -31,7 +31,7 @@ class JsonHelperTest extends TestCase
         JsonHelper::decode($json);
     }
 
-    public function testEncodeFormattedSuccessfully(): void
+    public function testEncodeNonFormattedSuccessfully(): void
     {
         $array = [
             'key' => 'val',
@@ -44,7 +44,7 @@ class JsonHelperTest extends TestCase
         );
     }
 
-    public function testEncodeNonFormattedSuccessfully(): void
+    public function testEncodeFormattedSuccessfully(): void
     {
         $array = [
             'key' => 'val',
