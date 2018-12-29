@@ -150,7 +150,7 @@ class BaseComponent
         return $this->manifestManager;
     }
 
-    public function getLogger() : LoggerInterface
+    public function getLogger(): LoggerInterface
     {
         return $this->logger;
     }

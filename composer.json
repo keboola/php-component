@@ -29,10 +29,10 @@
         "php": "^7.1",
         "ext-json": "*",
         "monolog/monolog": "^1.23",
-        "symfony/config": "^4.0",
-        "symfony/filesystem": "^4.0",
-        "symfony/finder": "^4.0",
-        "symfony/serializer": "^4.0"
+        "symfony/config": "^4.2",
+        "symfony/filesystem": "^4.2",
+        "symfony/finder": "^4.2",
+        "symfony/serializer": "^4.2"
     },
     "require-dev": {
         "devedge/sami-github": "^1.0",
@@ -40,7 +40,7 @@
         "keboola/php-temp": "^1.0",
         "phpstan/phpstan-shim": "^0.9.1",
         "phpunit/phpunit": "^7.1",
-        "keboola/coding-standard": "^4.0"
+        "keboola/coding-standard": "^7.0.2"
     },
     "scripts": {
         "tests": "phpunit",
