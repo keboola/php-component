@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Keboola\Component;
 
+use Keboola\Component\JsonHelper\JsonHelperException;
 use Symfony\Component\Filesystem\Exception\FileNotFoundException;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 
@@ -42,13 +43,13 @@ class JsonHelper
             mkdir($filePathDir, 0777, true);
         }
 
-        $result = file_put_contents(
+        $result = @file_put_contents(
             $filePath,
             self::encode($data, $formatted)
         );
 
         if ($result === false) {
-            throw new \ErrorException('Could not write to file "%s".');
+            throw new JsonHelperException(sprintf('Could not write to file "%s".', $filePath));
         }
     }
 }

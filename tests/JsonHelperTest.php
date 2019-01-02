@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Keboola\Component\Tests;
 
 use Keboola\Component\JsonHelper;
+use Keboola\Component\JsonHelper\JsonHelperException;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Filesystem\Exception\FileNotFoundException;
 use Symfony\Component\Serializer\Exception\NotEncodableValueException;
@@ -142,13 +143,13 @@ class JsonHelperTest extends TestCase
         rmdir(pathinfo($filePath, PATHINFO_DIRNAME));
     }
 
-    public function testWriteToProtectedDirectoryThrowsException(): void
+    public function testFailedWriteThrowsException(): void
     {
-        $filePath =  '/tmp.json';
+        $filePath =  'php://stdin';
         $array = ['key'];
 
-        $this->expectException(\ErrorException::class);
-        $this->expectExceptionMessageRegExp('~^file_put_contents(.*): failed to open stream: Permission denied$~');
+        $this->expectException(JsonHelperException::class);
+        $this->expectExceptionMessage('Could not write to file "php://stdin".');
         JsonHelper::writeFile($filePath, $array);
     }
 }
