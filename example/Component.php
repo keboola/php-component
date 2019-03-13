@@ -9,7 +9,7 @@ use Keboola\Component\Manifest\ManifestManager\Options\OutTableManifestOptions;
 
 class Component extends \Keboola\Component\BaseComponent
 {
-    public function run(): void
+    protected function run(): void
     {
         // get parameters
         $parameters = $this->getConfig()->getParameters();
@@ -40,5 +40,15 @@ class Component extends \Keboola\Component\BaseComponent
                 ->setPrimaryKeyColumns(['id'])
                 ->setDestination('out.report')
         );
+    }
+
+    protected function customSyncAction(): array
+    {
+        return ['result' => 'success', 'data' => ['joe', 'marry']];
+    }
+
+    protected function getSyncActions(): array
+    {
+        return ['custom' => 'customSyncAction'];
     }
 }

@@ -4,8 +4,11 @@ declare(strict_types=1);
 
 namespace Keboola\Component\Tests;
 
+use Exception;
 use Keboola\Component\BaseComponent;
+use Keboola\Component\Exception\BaseComponentException;
 use Keboola\Component\Logger;
+use Monolog\Handler\NullHandler;
 use Monolog\Handler\TestHandler;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Serializer\Exception\NotEncodableValueException;
@@ -43,9 +46,43 @@ class BaseComponentTest extends TestCase
         $this->assertEquals('value', $inputStateFile['dict']['key']);
     }
 
+    public function testSyncActions(): void
+    {
+        $logger = $this->getLogger();
+        putenv(sprintf(
+            'KBC_DATADIR=%s',
+            __DIR__ . '/fixtures/base-component-data-dir/sync-action'
+        ));
+        $baseComponent = new class ($logger) extends BaseComponent
+        {
+            public function run(): void
+            {
+                throw new Exception('Not implemented');
+            }
+
+            protected function getSyncActions(): array
+            {
+                return ['sync' => 'handleSync'];
+            }
+
+            public function handleSync(): array
+            {
+                return ['status' => 'success', 'count' => 20];
+            }
+        };
+        $expectedJson = <<<JSON
+{
+    "status": "success",
+    "count": 20
+}
+JSON;
+        $this->expectOutputString($expectedJson);
+        $baseComponent->execute();
+    }
+
     public function testRunAction(): void
     {
-        $logger = new Logger();
+        $logger = $this->getLogger();
         $handler = new TestHandler();
         $logger->setHandlers([$handler]);
         putenv(sprintf(
@@ -61,7 +98,7 @@ class BaseComponentTest extends TestCase
             }
         };
         $this->expectOutputString('Shitty output');
-        $baseComponent->run();
+        $baseComponent->execute();
 
         $this->assertTrue($handler->hasAlert('Log message from run'));
     }
@@ -91,5 +128,40 @@ class BaseComponentTest extends TestCase
         $baseComponent = new BaseComponent($logger);
 
         $this->assertSame([], $baseComponent->getInputState());
+    }
+
+    public function testCannotSetUpInvalidSyncActions(): void
+    {
+        $logger = new Logger();
+        $this->expectException(BaseComponentException::class);
+        $this->expectExceptionMessage('Unknown sync action "nonexistentMethod", method does not exist in class');
+        new class($logger) extends BaseComponent
+        {
+            protected function getSyncActions(): array
+            {
+                return ['nonexistentMethod'];
+            }
+        };
+    }
+
+    public function testRunCannotBeSyncAction(): void
+    {
+        $logger = new Logger();
+        $this->expectException(BaseComponentException::class);
+        $this->expectExceptionMessage('"run" cannot be a sync action');
+        new class($logger) extends BaseComponent
+        {
+            protected function getSyncActions(): array
+            {
+                return ['run' => 'run'];
+            }
+        };
+    }
+
+    private function getLogger(): \Monolog\Logger
+    {
+        $logger = new \Monolog\Logger('app');
+        $logger->setHandlers([new NullHandler()]);
+        return $logger;
     }
 }

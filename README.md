@@ -16,9 +16,10 @@ composer require keboola/php-component
 Create a subclass of `BaseComponent`. 
 
 ```php
+<?php
 class Component extends \Keboola\Component\BaseComponent
 {
-    public function run(): void
+    protected function run(): void
     {
         // get parameters
         $parameters = $this->getConfig()->getParameters();
@@ -41,7 +42,7 @@ class Component extends \Keboola\Component\BaseComponent
             (new OutFileManifestOptions())
                 ->setTags(['tag1', 'tag2'])
         );
-        
+
         // write manifest for output table
         $this->getManifestManager()->writeTableManifest(
             'data.csv',
@@ -50,8 +51,17 @@ class Component extends \Keboola\Component\BaseComponent
                 ->setDestination('out.report')
         );
     }
-}
 
+    protected function customSyncAction(): array
+    {
+        return ['result' => 'success', 'data' => ['joe', 'marry']];
+    }
+
+    protected function getSyncActions(): array
+    {
+        return ['custom' => 'customSyncAction'];
+    }
+}
 ```
 
 Use this `src/run.php` template. 
@@ -68,7 +78,7 @@ require __DIR__ . '/../vendor/autoload.php';
 $logger = new Logger();
 try {
     $app = new MyComponent\Component($logger);
-    $app->run();
+    $app->execute();
     exit(0);
 } catch (\Keboola\Component\UserException $e) {
     $logger->error($e->getMessage());
@@ -87,6 +97,15 @@ try {
     exit(2);
 }
 ```
+
+## Sync actions support
+
+[Sync actions](https://developers.keboola.com/extend/common-interface/actions/) can be called directly via API. API will block and wait for the result. The correct action is selected based on the `action` key of config. `BaseComponent` class handles the selection automatically. Also it handles serialization and output of the action result - sync actions must output valid JSON.
+
+To implement a sync action  
+* add a method in your `Component` class. The naming is entirely up to you. 
+* override the `Component::getSyncActions()` method to return array containing your sync actions names as keys and corresponding method names from the `Component` class as values. 
+* return value of the method will be serialized to json
 
 ## Customizing config
 
@@ -157,6 +176,10 @@ class MyComponent extends \Keboola\Component\BaseComponent
 ```
 
 If any constraint of config definition is not met a `UserException` is thrown. That means you don't need to handle the messages yourself. 
+
+## Migration from version 6 to version 7
+
+The default entrypoint of component (in `index.php`) changed from `BaseComponent::run()` to `BaseComponent::execute()`. While running the component via `run` method is still supported, you need to use `execute()` if you want to take advantage of sync action support. 
 
 ## More reading
 
