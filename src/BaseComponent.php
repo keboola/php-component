@@ -85,7 +85,6 @@ class BaseComponent
         } catch (InvalidConfigurationException $e) {
             throw new UserException($e->getMessage(), 0, $e);
         }
-        $this->logger->debug('Config loaded');
     }
 
     protected function loadInputState(): void
