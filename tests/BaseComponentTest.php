@@ -6,6 +6,7 @@ namespace Keboola\Component\Tests;
 
 use Keboola\Component\BaseComponent;
 use Keboola\Component\Logger;
+use Monolog\Handler\TestHandler;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Serializer\Exception\NotEncodableValueException;
 
@@ -40,6 +41,29 @@ class BaseComponentTest extends TestCase
         $this->assertCount(1, $inputStateFile['dict']);
         $this->assertArrayHasKey('key', $inputStateFile['dict']);
         $this->assertEquals('value', $inputStateFile['dict']['key']);
+    }
+
+    public function testRunAction(): void
+    {
+        $logger = new Logger();
+        $handler = new TestHandler();
+        $logger->setHandlers([$handler]);
+        putenv(sprintf(
+            'KBC_DATADIR=%s',
+            __DIR__ . '/fixtures/base-component-data-dir/run-action'
+        ));
+        $baseComponent = new class ($logger) extends BaseComponent
+        {
+            public function run(): void
+            {
+                echo 'Shitty output';
+                $this->getLogger()->alert('Log message from run');
+            }
+        };
+        $this->expectOutputString('Shitty output');
+        $baseComponent->run();
+
+        $this->assertTrue($handler->hasAlert('Log message from run'));
     }
 
     public function testLoadInputStateFileEmptyThrowsException(): void
