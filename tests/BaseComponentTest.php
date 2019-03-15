@@ -55,7 +55,7 @@ class BaseComponentTest extends TestCase
         ));
         $baseComponent = new class ($logger) extends BaseComponent
         {
-            public function run(): void
+            protected function run(): void
             {
                 throw new Exception('Not implemented');
             }
@@ -91,7 +91,7 @@ JSON;
         ));
         $baseComponent = new class ($logger) extends BaseComponent
         {
-            public function run(): void
+            protected function run(): void
             {
                 echo 'Shitty output';
                 $this->getLogger()->alert('Log message from run');
@@ -158,8 +158,25 @@ JSON;
         };
     }
 
+    public function testRunActionCannotBePublic(): void
+    {
+        $this->expectException(BaseComponentException::class);
+        $this->expectExceptionMessage('Method "run" cannot be public since version 7');
+        new class($this->getLogger()) extends BaseComponent
+        {
+            public function run(): void
+            {
+                return;
+            }
+        };
+    }
+
     private function getLogger(): \Monolog\Logger
     {
+        putenv(sprintf(
+            'KBC_DATADIR=%s',
+            __DIR__ . '/fixtures/base-component-data-dir/run-action'
+        ));
         $logger = new \Monolog\Logger('app');
         $logger->setHandlers([new NullHandler()]);
         return $logger;

@@ -14,6 +14,8 @@ use Keboola\Component\Logger\SyncActionLogging;
 use Keboola\Component\Manifest\ManifestManager;
 use Monolog\Handler\NullHandler;
 use Psr\Log\LoggerInterface;
+use Reflection;
+use ReflectionClass;
 use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
 use Symfony\Component\Filesystem\Exception\FileNotFoundException;
 use function error_reporting;
@@ -52,6 +54,8 @@ class BaseComponent
         $this->loadInputState();
 
         $this->loadManifestManager();
+
+        $this->checkRunMethodNotPublic();
 
         $this->logger->debug('Component initialization completed');
     }
@@ -120,6 +124,15 @@ class BaseComponent
             $this->inputState = JsonHelper::readFile($this->getDataDir() . '/in/state.json');
         } catch (FileNotFoundException $exception) {
             $this->inputState = [];
+        }
+    }
+
+    private function checkRunMethodNotPublic(): void
+    {
+        $reflection = new ReflectionClass(static::class);
+        $method = $reflection->getMethod('run');
+        if ($method->isPublic()) {
+            throw BaseComponentException::runMethodCannotBePublic();
         }
     }
 
@@ -207,7 +220,7 @@ class BaseComponent
      * This is the main method for your code to run in. You have the `Config`
      * and `ManifestManager` ready as well as environment set up.
      */
-    public function run(): void
+    protected function run(): void
     {
         // to be implemented in subclass
     }

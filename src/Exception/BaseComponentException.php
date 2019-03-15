@@ -20,4 +20,9 @@ class BaseComponentException extends Exception
     {
         return new self('"run" cannot be a sync action');
     }
+
+    public static function runMethodCannotBePublic(): self
+    {
+        return new self('Method "run" cannot be public since version 7');
+    }
 }
