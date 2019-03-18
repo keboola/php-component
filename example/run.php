@@ -9,7 +9,7 @@ require __DIR__ . '/../vendor/autoload.php';
 $logger = new Logger();
 try {
     $app = new MyComponent\Component($logger);
-    $app->run();
+    $app->execute();
     exit(0);
 } catch (\Keboola\Component\UserException $e) {
     $logger->error($e->getMessage());

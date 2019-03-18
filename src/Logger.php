@@ -5,54 +5,11 @@ declare(strict_types=1);
 namespace Keboola\Component;
 
 use Monolog\Formatter\LineFormatter;
-use Monolog\Handler\GelfHandler;
-use Monolog\Handler\HandlerInterface;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger as MonologLogger;
-use function array_filter;
-use function array_values;
 
-class Logger extends MonologLogger
+class Logger extends MonologLogger implements Logger\SyncActionLogging, Logger\AsyncActionLogging
 {
-    /**
-     * @param HandlerInterface[] $handlers
-     */
-    public function __construct(
-        array $handlers = []
-    ) {
-        parent::__construct('php-component');
-
-        // only keep valid handlers
-        $handlers = array_filter(
-            array_values($handlers),
-            function ($handler) {
-                return $handler instanceof HandlerInterface;
-            }
-        );
-
-        // no handlers
-        if (count($handlers) === 0) {
-            $criticalHandler = self::getDefaultCriticalHandler();
-            $errorHandler = self::getDefaultErrorHandler();
-            $logHandler = self::getDefaultLogHandler();
-
-            $handlers = [
-                $criticalHandler,
-                $errorHandler,
-                $logHandler,
-            ];
-        }
-
-        // gelf log handler
-        if (count($handlers) === 1 && !($handlers[0] instanceof GelfHandler)) {
-            throw new \Exception(
-                'If only one handler is provided, it needs to be GelfHandler'
-            );
-        }
-
-        $this->setHandlers($handlers);
-    }
-
     public static function getDefaultErrorHandler(): StreamHandler
     {
         $errorHandler = new StreamHandler('php://stderr');
@@ -60,6 +17,11 @@ class Logger extends MonologLogger
         $errorHandler->setLevel(MonologLogger::WARNING);
         $errorHandler->setFormatter(new LineFormatter("%message%\n"));
         return $errorHandler;
+    }
+
+    public function __construct()
+    {
+        parent::__construct('php-component');
     }
 
     public static function getDefaultLogHandler(): StreamHandler
@@ -78,5 +40,23 @@ class Logger extends MonologLogger
         $handler->setLevel(MonologLogger::CRITICAL);
         $handler->setFormatter(new LineFormatter("[%datetime%] %level_name%: %message% %context% %extra%\n"));
         return $handler;
+    }
+
+    public function setupSyncActionLogging(): void
+    {
+        $this->setHandlers([]);
+    }
+
+    public function setupAsyncActionLogging(): void
+    {
+        $criticalHandler = self::getDefaultCriticalHandler();
+        $errorHandler = self::getDefaultErrorHandler();
+        $logHandler = self::getDefaultLogHandler();
+
+        $this->setHandlers([
+            $criticalHandler,
+            $errorHandler,
+            $logHandler,
+        ]);
     }
 }
