@@ -22,8 +22,7 @@ class BaseComponentTest extends TestCase
             __DIR__ . '/fixtures/base-component-data-dir/state-file'
         ));
 
-        $logger = new Logger();
-        $baseComponent = new BaseComponent($logger);
+        $baseComponent = new BaseComponent($this->getLogger());
 
         $inputStateFile = $baseComponent->getInputState();
         $this->assertCount(4, $inputStateFile);
@@ -124,8 +123,7 @@ JSON;
             __DIR__ . '/fixtures/base-component-data-dir/undefined-state-file'
         ));
 
-        $logger = new Logger();
-        $baseComponent = new BaseComponent($logger);
+        $baseComponent = new BaseComponent($this->getLogger());
 
         $this->assertSame([], $baseComponent->getInputState());
     }
@@ -146,6 +144,10 @@ JSON;
 
     public function testRunCannotBeSyncAction(): void
     {
+        putenv(sprintf(
+            'KBC_DATADIR=%s',
+            __DIR__ . '/fixtures/base-component-data-dir/run-action'
+        ));
         $logger = new Logger();
         $this->expectException(BaseComponentException::class);
         $this->expectExceptionMessage('"run" cannot be a sync action');
@@ -160,6 +162,10 @@ JSON;
 
     public function testRunActionCannotBePublic(): void
     {
+        putenv(sprintf(
+            'KBC_DATADIR=%s',
+            __DIR__ . '/fixtures/base-component-data-dir/run-action'
+        ));
         $this->expectException(BaseComponentException::class);
         $this->expectExceptionMessage('Method "run" cannot be public since version 7');
         new class($this->getLogger()) extends BaseComponent
@@ -173,10 +179,6 @@ JSON;
 
     private function getLogger(): \Monolog\Logger
     {
-        putenv(sprintf(
-            'KBC_DATADIR=%s',
-            __DIR__ . '/fixtures/base-component-data-dir/run-action'
-        ));
         $logger = new \Monolog\Logger('app');
         $logger->setHandlers([new NullHandler()]);
         return $logger;
