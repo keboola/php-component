@@ -108,7 +108,7 @@ class BaseConfigTest extends TestCase
             ],
         ]);
         $this->assertSame([], $config->getParameters());
-        $this->assertSame('', $config->getAction());
+        $this->assertSame('run', $config->getAction());
         $this->assertSame([], $config->getAuthorization());
         $this->assertSame('', $config->getOAuthApiAppKey());
         $this->assertSame('', $config->getOAuthApiAppSecret());
