@@ -179,7 +179,7 @@ If any constraint of config definition is not met a `UserException` is thrown. T
 
 ## Migration from version 6 to version 7
 
-The default entrypoint of component (in `index.php`) changed from `BaseComponent::run()` to `BaseComponent::execute()`. While running the component via `run` method is still supported, you need to use `execute()` if you want to take advantage of sync action support. 
+The default entrypoint of component (in `index.php`) changed from `BaseComponent::run()` to `BaseComponent::execute()`. Please also note, that the `run` method can no longer be public and can only be called from inside the component now.  
 
 ## More reading
 
