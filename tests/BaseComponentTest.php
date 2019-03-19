@@ -102,6 +102,29 @@ JSON;
         $this->assertTrue($handler->hasAlert('Log message from run'));
     }
 
+    public function testWillNotFailWithEmptyConfigAction(): void
+    {
+        $logger = $this->getLogger();
+        $handler = new TestHandler();
+        $logger->setHandlers([$handler]);
+        putenv(sprintf(
+            'KBC_DATADIR=%s',
+            __DIR__ . '/fixtures/base-component-data-dir/empty-config-file'
+        ));
+        $baseComponent = new class ($logger) extends BaseComponent
+        {
+            protected function run(): void
+            {
+                echo 'Shitty output';
+                $this->getLogger()->alert('Log message from run');
+            }
+        };
+        $this->expectOutputString('Shitty output');
+        $baseComponent->execute();
+
+        $this->assertTrue($handler->hasAlert('Log message from run'));
+    }
+
     public function testLoadInputStateFileEmptyThrowsException(): void
     {
         putenv(sprintf(

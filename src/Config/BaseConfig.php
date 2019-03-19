@@ -136,7 +136,7 @@ class BaseConfig implements ConfigInterface
      */
     public function getAction(): string
     {
-        return $this->getValue(['action'], '');
+        return $this->getValue(['action'], 'run');
     }
 
     /**
