@@ -41,7 +41,7 @@ class JsonHelperTest extends TestCase
 
         $this->assertSame(
             '{"key":"val","keys":[0,1,2]}',
-            JsonHelper::encode($array, false)
+            JsonHelper::encode($array)
         );
     }
 
@@ -98,7 +98,7 @@ class JsonHelperTest extends TestCase
             'key' => 'val',
             'keys' => [0, 1, 2],
         ];
-        JsonHelper::writeFile($filePath, $array, false);
+        JsonHelper::writeFile($filePath, $array);
 
         $this->assertSame(
             '{"key":"val","keys":[0,1,2]}',
@@ -113,7 +113,7 @@ class JsonHelperTest extends TestCase
             'key' => 'val',
             'keys' => [0, 1, 2],
         ];
-        JsonHelper::writeFile($filePath, $array);
+        JsonHelper::writeFile($filePath, $array, true);
 
         $this->assertSame(
             '{
@@ -136,7 +136,7 @@ class JsonHelperTest extends TestCase
             'key' => 'val',
         ];
 
-        JsonHelper::writeFile($filePath, $array, false);
+        JsonHelper::writeFile($filePath, $array);
         $this->assertSame('{"key":"val"}', file_get_contents($filePath));
 
         unlink($filePath);

@@ -69,12 +69,7 @@ class BaseComponentTest extends TestCase
                 return ['status' => 'success', 'count' => 20];
             }
         };
-        $expectedJson = <<<JSON
-{
-    "status": "success",
-    "count": 20
-}
-JSON;
+        $expectedJson = '{"status":"success","count":20}';
         $this->expectOutputString($expectedJson);
         $baseComponent->execute();
     }
