@@ -16,7 +16,7 @@ class JsonHelper
         return $jsonEncoder->decode($json, JsonEncoder::FORMAT);
     }
 
-    public static function encode(array $data, bool $formatted = true): string
+    public static function encode(array $data, bool $formatted = false): string
     {
         $context = [];
         if ($formatted) {
@@ -36,7 +36,7 @@ class JsonHelper
         return self::decode(file_get_contents($filePath));
     }
 
-    public static function writeFile(string $filePath, array $data, bool $formatted = true): void
+    public static function writeFile(string $filePath, array $data, bool $formatted = false): void
     {
         $filePathDir = pathinfo($filePath, PATHINFO_DIRNAME);
         if (!is_dir($filePathDir)) {
