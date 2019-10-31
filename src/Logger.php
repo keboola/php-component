@@ -42,9 +42,18 @@ class Logger extends MonologLogger implements Logger\SyncActionLogging, Logger\A
         return $handler;
     }
 
+    public static function getSyncActionErrorHandler(): StreamHandler
+    {
+        $logHandler = new StreamHandler('php://stderr');
+        $logHandler->setBubble(false);
+        $logHandler->setLevel(MonologLogger::ERROR);
+        $logHandler->setFormatter(new LineFormatter("%message%\n"));
+        return $logHandler;
+    }
+
     public function setupSyncActionLogging(): void
     {
-        $this->setHandlers([]);
+        $this->setHandlers([self::getSyncActionErrorHandler()]);
     }
 
     public function setupAsyncActionLogging(): void
