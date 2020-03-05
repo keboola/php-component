@@ -24,7 +24,7 @@ class BaseConfigDefinition implements ConfigurationInterface
      */
     public function getConfigTreeBuilder(): TreeBuilder
     {
-        $treeBuilder = new TreeBuilder();
+        $treeBuilder = new TreeBuilder('root');
         $this->getRootDefinition($treeBuilder);
         return $treeBuilder;
     }
@@ -34,9 +34,9 @@ class BaseConfigDefinition implements ConfigurationInterface
      */
     protected function getParametersDefinition(): ArrayNodeDefinition
     {
-        $builder = new TreeBuilder();
+        $builder = new TreeBuilder('parameters');
         /** @var ArrayNodeDefinition $parametersNode */
-        $parametersNode = $builder->root('parameters');
+        $parametersNode = $builder->getRootNode();
         return $parametersNode;
     }
 
@@ -46,7 +46,7 @@ class BaseConfigDefinition implements ConfigurationInterface
     protected function getRootDefinition(TreeBuilder $treeBuilder): ArrayNodeDefinition
     {
         /** @var ArrayNodeDefinition $rootNode */
-        $rootNode = $treeBuilder->root('root');
+        $rootNode = $treeBuilder->getRootNode();
         $rootNode->ignoreExtraKeys(false);
 
         // @formatter:off

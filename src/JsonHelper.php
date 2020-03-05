@@ -33,7 +33,7 @@ class JsonHelper
             throw new FileNotFoundException(null, 0, null, $filePath);
         }
 
-        return self::decode(file_get_contents($filePath));
+        return self::decode((string) file_get_contents($filePath));
     }
 
     public static function writeFile(string $filePath, array $data, bool $formatted = false): void
