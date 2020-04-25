@@ -226,8 +226,8 @@ class BaseComponent
     }
 
     /**
-     * Class of created config. It's useful if you want to implment getters for
-     * parameters in your config. It's prefferable to accessing configuration
+     * Class of created config. It's useful if you want to implement getters for
+     * parameters in your config. It's preferable to accessing configuration
      * keys as arrays.
      */
     protected function getConfigClass(): string
