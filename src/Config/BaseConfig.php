@@ -12,7 +12,7 @@ use function implode;
 
 /**
  * Offers basic abstraction over the JSON config. You can extend it and add your own getters for custom parameters.
- * It's then easier to use them then to remember under which key they are in the paramteres array.
+ * It's then easier to use them then to remember under which key they are in the parameters array.
  */
 class BaseConfig implements ConfigInterface
 {
