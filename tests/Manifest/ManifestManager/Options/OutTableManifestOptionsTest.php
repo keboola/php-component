@@ -58,7 +58,7 @@ class OutTableManifestOptionsTest extends TestCase
                             'value' => 'A different value',
                         ],
                     ],
-                    'column_metadata' => [
+                    'column_metadata' => (object) [
                         'column1' => [
                             [
                                 'key' => 'yet.another.key',
@@ -70,7 +70,7 @@ class OutTableManifestOptionsTest extends TestCase
                 (new OutTableManifestOptions())
                     ->setEnclosure('_')
                     ->setDelimiter('|')
-                    ->setColumnMetadata([
+                    ->setColumnMetadata((object) [
                         'column1' => [
                             [
                                 'value' => 'Some other value',
