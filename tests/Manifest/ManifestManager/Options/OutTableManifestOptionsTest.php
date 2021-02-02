@@ -59,6 +59,12 @@ class OutTableManifestOptionsTest extends TestCase
                         ],
                     ],
                     'column_metadata' => (object) [
+                        '123456' => [
+                            [
+                                'key' => 'int.column.name',
+                                'value' => 'Int column name',
+                            ],
+                        ],
                         'column1' => [
                             [
                                 'key' => 'yet.another.key',
@@ -71,6 +77,12 @@ class OutTableManifestOptionsTest extends TestCase
                     ->setEnclosure('_')
                     ->setDelimiter('|')
                     ->setColumnMetadata((object) [
+                        '123456' => [
+                            [
+                                'value' => 'Int column name',
+                                'key' => 'int.column.name',
+                            ],
+                        ],
                         'column1' => [
                             [
                                 'value' => 'Some other value',
