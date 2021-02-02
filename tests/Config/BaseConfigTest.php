@@ -40,10 +40,18 @@ class BaseConfigTest extends TestCase
             }
         };
 
-        $this->expectException(InvalidConfigurationException::class);
-        $this->expectExceptionMessage('The child node "requiredValue" at path "root.parameters" must be configured.');
-
-        new BaseConfig(['parameters' => []], $configDefinition);
+        try {
+            new BaseConfig(['parameters' => []], $configDefinition);
+            $this->fail('Expected "InvalidConfigurationException" exception.');
+        } catch (InvalidConfigurationException $e) {
+            $this->assertContains(
+                $e->getMessage(),
+                [
+                    'The child node "requiredValue" at path "root.parameters" must be configured.',
+                    'The child config "requiredValue" under "root.parameters" must be configured.',
+                ]
+            );
+        }
     }
 
     public function testStrictParametersCheck(): void
@@ -86,10 +94,19 @@ class BaseConfigTest extends TestCase
                 return $rootNode;
             }
         };
-        $this->expectException(InvalidConfigurationException::class);
-        $this->expectExceptionMessage('The child node "requiredRootNode" at path "root" must be configured.');
 
-        new BaseConfig([], $configDefinition);
+        try {
+            new BaseConfig([], $configDefinition);
+            $this->fail('Expected "InvalidConfigurationException" exception.');
+        } catch (InvalidConfigurationException $e) {
+            $this->assertContains(
+                $e->getMessage(),
+                [
+                    'The child node "requiredRootNode" at path "root" must be configured.',
+                    'The child config "requiredRootNode" under "root" must be configured.',
+                ]
+            );
+        }
     }
 
     public function testIsForwardCompatible(): void
