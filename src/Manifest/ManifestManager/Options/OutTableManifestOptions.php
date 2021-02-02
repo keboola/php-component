@@ -111,10 +111,10 @@ class OutTableManifestOptions
     }
 
     /**
-     * @param mixed[] $columnsMetadata
+     * @param mixed $columnsMetadata
      * @return OutTableManifestOptions
      */
-    public function setColumnMetadata(array $columnsMetadata): OutTableManifestOptions
+    public function setColumnMetadata($columnsMetadata): OutTableManifestOptions
     {
         foreach ($columnsMetadata as $columnName => $columnMetadata) {
             if (!is_array($columnMetadata)) {
