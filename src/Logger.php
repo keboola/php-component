@@ -19,16 +19,6 @@ class Logger extends MonologLogger implements Logger\SyncActionLogging, Logger\A
         return $errorHandler;
     }
 
-    public function __construct()
-    {
-        parent::__construct('php-component');
-
-        // Add default logger to log errors in configuration, etc.
-        // It will be overwritten by calling setupSyncActionLogging/setupAsyncActionLogging
-        // from BaseComponent::initializeSyncActions
-        $this->pushHandler(new StreamHandler('php://stderr', static::DEBUG));
-    }
-
     public static function getDefaultLogHandler(): StreamHandler
     {
         $logHandler = new StreamHandler('php://stdout');
@@ -56,9 +46,34 @@ class Logger extends MonologLogger implements Logger\SyncActionLogging, Logger\A
         return $logHandler;
     }
 
+    public static function getSyncActionCriticalHandler(): StreamHandler
+    {
+        $logHandler = new StreamHandler('php://stderr');
+        $logHandler->setBubble(false);
+        $logHandler->setLevel(MonologLogger::CRITICAL);
+        $logHandler->setFormatter(new LineFormatter("%message% %context% %extra%\n"));
+        return $logHandler;
+    }
+
+    public function __construct()
+    {
+        parent::__construct('php-component');
+
+        // Add default logger to log errors in configuration, etc.
+        // It will be overwritten by calling setupSyncActionLogging/setupAsyncActionLogging
+        // from BaseComponent::initializeSyncActions
+        $this->pushHandler(new StreamHandler('php://stderr', static::DEBUG));
+    }
+
     public function setupSyncActionLogging(): void
     {
-        $this->setHandlers([self::getSyncActionErrorHandler()]);
+        $criticalHandler = self::getSyncActionCriticalHandler();
+        $errorHandler = self::getSyncActionErrorHandler();
+
+        $this->setHandlers([
+            $criticalHandler,
+            $errorHandler,
+        ]);
     }
 
     public function setupAsyncActionLogging(): void

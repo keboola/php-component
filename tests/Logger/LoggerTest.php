@@ -32,12 +32,17 @@ class LoggerTest extends TestCase
         $logger->setupSyncActionLogging();
 
         $handlers = $logger->getHandlers();
-        $this->assertCount(1, $handlers);
+        $this->assertCount(2, $handlers);
 
-        /** @var StreamHandler $streamHandler */
-        $streamHandler = $handlers[0];
-        $this->assertSame('php://stderr', $streamHandler->getUrl());
-        $this->assertSame(Logger::ERROR, $streamHandler->getLevel());
+        /** @var StreamHandler $streamHandler1 */
+        $streamHandler1 = $handlers[0];
+        $this->assertSame('php://stderr', $streamHandler1->getUrl());
+        $this->assertSame(Logger::CRITICAL, $streamHandler1->getLevel());
+
+        /** @var StreamHandler $streamHandler2 */
+        $streamHandler2 = $handlers[1];
+        $this->assertSame('php://stderr', $streamHandler2->getUrl());
+        $this->assertSame(Logger::ERROR, $streamHandler2->getLevel());
     }
 
     public function testSetupAsyncActionLogging(): void
