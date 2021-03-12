@@ -51,7 +51,7 @@ class Logger extends MonologLogger implements Logger\SyncActionLogging, Logger\A
         $logHandler = new StreamHandler('php://stderr');
         $logHandler->setBubble(false);
         $logHandler->setLevel(MonologLogger::CRITICAL);
-        $logHandler->setFormatter(new LineFormatter("%message% %context% %extra%\n"));
+        $logHandler->setFormatter(new LineFormatter("%message% %context% %extra%\n", null, false, true));
         return $logHandler;
     }
 
