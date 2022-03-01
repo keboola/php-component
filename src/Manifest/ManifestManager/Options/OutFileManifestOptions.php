@@ -7,19 +7,15 @@ namespace Keboola\Component\Manifest\ManifestManager\Options;
 class OutFileManifestOptions
 {
     /** @var string[] */
-    private $tags;
+    private array $tags;
 
-    /** @var bool */
-    private $isPublic;
+    private bool $isPublic;
 
-    /** @var bool */
-    private $isPermanent;
+    private bool $isPermanent;
 
-    /** @var bool */
-    private $notify;
+    private bool $notify;
 
-    /** @var bool */
-    private $isEncrypted;
+    private bool $isEncrypted;
 
     /**
      * @return mixed[]

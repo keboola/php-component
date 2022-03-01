@@ -13,7 +13,6 @@ class OutTableManifestOptionsTest extends TestCase
     /**
      * @dataProvider provideOptions
      * @param mixed[] $expected
-     * @param OutTableManifestOptions $options
      */
     public function testToArray(array $expected, OutTableManifestOptions $options): void
     {
