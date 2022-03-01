@@ -15,7 +15,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        phpVersion: [7.3, 7.4, 8.0, 8.1]
+        phpVersion: [7.4, 8.0, 8.1]
     steps:
       -
         name: Check out the repo
