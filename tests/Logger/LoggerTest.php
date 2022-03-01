@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace Keboola\Component\Tests\Logger;
 
+use DateTimeImmutable;
 use Keboola\Component\Logger;
 use Monolog\Handler\StreamHandler;
+use Monolog\Logger as MonologLogger;
 use PHPUnit\Framework\TestCase;
 
 class LoggerTest extends TestCase
@@ -37,16 +39,32 @@ class LoggerTest extends TestCase
         /** @var StreamHandler $streamHandler1 */
         $streamHandler1 = $handlers[0];
         $this->assertSame('php://stderr', $streamHandler1->getUrl());
-        $this->assertSame(Logger::CRITICAL, $streamHandler1->getLevel());
+        $this->assertSame(MonologLogger::CRITICAL, $streamHandler1->getLevel());
 
         /** @var StreamHandler $streamHandler2 */
         $streamHandler2 = $handlers[1];
         $this->assertSame('php://stderr', $streamHandler2->getUrl());
-        $this->assertSame(Logger::ERROR, $streamHandler2->getLevel());
+        $this->assertSame(MonologLogger::ERROR, $streamHandler2->getLevel());
 
         // Init streams (stream is created with first message)
-        $streamHandler1->handle(['level' => Logger::CRITICAL, 'message' => '', 'extra' => [], 'context' => []]);
-        $streamHandler2->handle(['level' => Logger::ERROR, 'message' => '', 'extra' => [], 'context' => []]);
+        $streamHandler1->handle([
+            'message' => '',
+            'context' => [],
+            'level' => MonologLogger::CRITICAL,
+            'level_name' => 'CRITICAL',
+            'channel' => '',
+            'datetime' => new DateTimeImmutable(),
+            'extra' => [],
+        ]);
+        $streamHandler2->handle([
+            'message' => '',
+            'context' => [],
+            'level' => MonologLogger::ERROR,
+            'level_name' => 'CRITICAL',
+            'channel' => '',
+            'datetime' => new DateTimeImmutable(),
+            'extra' => [],
+        ]);
 
         // Connect tester (logger) to the streams
         /** @var resource $stream1 */

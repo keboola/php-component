@@ -4,10 +4,11 @@ declare(strict_types=1);
 
 namespace Keboola\Component\Tests\Logger;
 
-class StreamTester extends \php_user_filter
+use php_user_filter;
+
+class StreamTester extends php_user_filter
 {
-    /** @var string */
-    private static $content = '';
+    private static string $content = '';
 
     /**
      * @param resource $stream
@@ -28,7 +29,8 @@ class StreamTester extends \php_user_filter
      * @param resource $out
      * @param int $consumed
      * @param bool $closing
-     * @return int
+     *
+     * @codingStandardsIgnoreStart
      */
     public function filter($in, $out, &$consumed, $closing): int
     {
@@ -39,5 +41,6 @@ class StreamTester extends \php_user_filter
             stream_bucket_append($out, $bucket);
         }
         return PSFS_PASS_ON;
+        // @codingStandardsIgnoreEnd
     }
 }

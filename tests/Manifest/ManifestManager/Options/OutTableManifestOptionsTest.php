@@ -12,17 +12,12 @@ class OutTableManifestOptionsTest extends TestCase
 {
     /**
      * @dataProvider provideOptions
-     * @param mixed[] $expected
-     * @param OutTableManifestOptions $options
      */
     public function testToArray(array $expected, OutTableManifestOptions $options): void
     {
         $this->assertEquals($expected, $options->toArray());
     }
 
-    /**
-     * @return mixed[][]
-     */
     public function provideOptions(): array
     {
         return [
@@ -119,9 +114,6 @@ class OutTableManifestOptionsTest extends TestCase
         $callWithInvalidArguments();
     }
 
-    /**
-     * @return mixed[][]
-     */
     public function provideInvalidOptions(): array
     {
         return [

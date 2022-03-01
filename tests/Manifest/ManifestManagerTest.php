@@ -135,8 +135,6 @@ class ManifestManagerTest extends TestCase
 
     /**
      * @dataProvider provideWriteManifestOptions
-     * @param string $expected
-     * @param OutTableManifestOptions $options
      */
     public function testWriteTableManifest(string $expected, OutTableManifestOptions $options): void
     {

@@ -26,20 +26,15 @@ use function error_reporting;
  */
 class BaseComponent
 {
-    /** @var BaseConfig */
-    private $config;
+    private BaseConfig $config;
 
-    /** @var string */
-    private $dataDir;
+    private string $dataDir;
 
-    /** @var ManifestManager */
-    private $manifestManager;
+    private ManifestManager $manifestManager;
 
-    /** @var LoggerInterface */
-    private $logger;
+    private LoggerInterface $logger;
 
-    /** @var array */
-    private $inputState;
+    private array $inputState;
 
     public function __construct(LoggerInterface $logger)
     {
@@ -167,7 +162,6 @@ class BaseComponent
     /**
      * Data dir is set without the trailing slash
      *
-     * @param string $dataDir
      */
     protected function setDataDir(string $dataDir): void
     {

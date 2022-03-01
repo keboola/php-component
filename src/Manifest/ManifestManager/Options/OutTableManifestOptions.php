@@ -10,33 +10,22 @@ use function is_array;
 
 class OutTableManifestOptions
 {
-    /** @var string */
-    private $destination;
+    private string $destination;
 
-    /** @var string[] */
-    private $primaryKeyColumns;
+    private array $primaryKeyColumns;
 
-    /** @var string[] */
-    private $columns;
+    private array $columns;
 
-    /** @var bool */
-    private $incremental;
+    private bool $incremental;
 
-    /** @var mixed[][] */
-    private $metadata;
+    private array $metadata;
 
-    /** @var mixed[][] */
-    private $columnMetadata;
+    private array|object $columnMetadata;
 
-    /** @var string */
-    private $delimiter;
+    private string $delimiter;
 
-    /** @var string */
-    private $enclosure;
+    private string $enclosure;
 
-    /**
-     * @return mixed[]
-     */
     public function toArray(): array
     {
         $result = [];
@@ -75,7 +64,6 @@ class OutTableManifestOptions
 
     /**
      * @param string[] $primaryKeyColumns
-     * @return OutTableManifestOptions
      */
     public function setPrimaryKeyColumns(array $primaryKeyColumns): OutTableManifestOptions
     {
@@ -85,7 +73,6 @@ class OutTableManifestOptions
 
     /**
      * @param string[] $columns
-     * @return OutTableManifestOptions
      */
     public function setColumns(array $columns): OutTableManifestOptions
     {
@@ -99,10 +86,6 @@ class OutTableManifestOptions
         return $this;
     }
 
-    /**
-     * @param mixed[] $metadata
-     * @return OutTableManifestOptions
-     */
     public function setMetadata(array $metadata): OutTableManifestOptions
     {
         $this->validateMetadata($metadata);
@@ -111,10 +94,10 @@ class OutTableManifestOptions
     }
 
     /**
-     * @param mixed $columnsMetadata
-     * @return OutTableManifestOptions
+     * $columnsMetadata must be an object, because php will turn string with integers into integers
+     * e.g. '123' -> 123
      */
-    public function setColumnMetadata($columnsMetadata): OutTableManifestOptions
+    public function setColumnMetadata(array|object $columnsMetadata): OutTableManifestOptions
     {
         foreach ($columnsMetadata as $columnName => $columnMetadata) {
             if (!is_array($columnMetadata)) {
@@ -146,10 +129,9 @@ class OutTableManifestOptions
     }
 
     /**
-     * @param mixed $metadata
      * @throws OptionsValidationException
      */
-    private function validateMetadata($metadata): void
+    private function validateMetadata(mixed $metadata): void
     {
         if (!is_array($metadata)) {
             throw new OptionsValidationException('Metadata must be an array');

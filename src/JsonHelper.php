@@ -13,7 +13,7 @@ class JsonHelper
     public static function decode(string $json): array
     {
         $jsonEncoder = new JsonEncoder();
-        return $jsonEncoder->decode($json, JsonEncoder::FORMAT);
+        return (array) $jsonEncoder->decode($json, JsonEncoder::FORMAT);
     }
 
     public static function encode(array $data, bool $formatted = false): string

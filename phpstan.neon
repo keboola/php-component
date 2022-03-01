@@ -1,4 +1,5 @@
 parameters:
     checkMissingIterableValueType: false
     ignoreErrors:
-        - '#Unreachable statement - code above always terminates#'
+        - '#Property Keboola\\Component\\BaseComponent::\$config \(Keboola\\Component\\Config\\BaseConfig\) does not accept object\.#'
+        - '#Argument of an invalid type array\|object supplied for foreach, only iterables are supported\.#'

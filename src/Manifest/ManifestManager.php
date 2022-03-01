@@ -17,8 +17,7 @@ use const PATHINFO_EXTENSION;
  */
 class ManifestManager
 {
-    /** @var string */
-    private $dataDir;
+    private string $dataDir;
 
     public function __construct(
         string $dataDir
@@ -51,7 +50,6 @@ class ManifestManager
     }
 
     /**
-     * @param string $fileName
      * @return mixed[]
      */
     public function getFileManifest(string $fileName): array
@@ -60,11 +58,7 @@ class ManifestManager
         return $this->loadManifest($fileName, $baseDir);
     }
 
-    /**
-     * @param string $tableName
-     * @return mixed
-     */
-    public function getTableManifest(string $tableName)
+    public function getTableManifest(string $tableName): mixed
     {
         $baseDir = implode('/', [$this->dataDir, 'in', 'tables']);
 
@@ -72,8 +66,6 @@ class ManifestManager
     }
 
     /**
-     * @param string $fileName
-     * @param string $baseDir
      * @return mixed[]
      */
     private function loadManifest(string $fileName, string $baseDir): array
@@ -101,7 +93,6 @@ class ManifestManager
     }
 
     /**
-     * @param string $manifestAbsolutePath
      * @param mixed[] $manifestContents
      */
     private function internalWriteManifest(string $manifestAbsolutePath, array $manifestContents): void
@@ -110,7 +101,6 @@ class ManifestManager
     }
 
     /**
-     * @param string $tableManifestName
      * @param mixed[] $manifestContents
      */
     private function internalWriteTableManifest(string $tableManifestName, array $manifestContents): void
@@ -119,7 +109,6 @@ class ManifestManager
     }
 
     /**
-     * @param string $fileManifestName
      * @param mixed[] $manifestContents
      */
     private function internalWriteFileManifest(string $fileManifestName, array $manifestContents): void

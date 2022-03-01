@@ -4,10 +4,11 @@ declare(strict_types=1);
 
 namespace MyComponent;
 
+use Keboola\Component\BaseComponent;
 use Keboola\Component\Manifest\ManifestManager\Options\OutFileManifestOptions;
 use Keboola\Component\Manifest\ManifestManager\Options\OutTableManifestOptions;
 
-class Component extends \Keboola\Component\BaseComponent
+class Component extends BaseComponent
 {
     protected function run(): void
     {
