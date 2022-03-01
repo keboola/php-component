@@ -10,6 +10,7 @@ use Keboola\Component\Exception\BaseComponentException;
 use Keboola\Component\Logger;
 use Monolog\Handler\NullHandler;
 use Monolog\Handler\TestHandler;
+use Monolog\Logger as MonologLogger;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Serializer\Exception\NotEncodableValueException;
 
@@ -195,9 +196,9 @@ class BaseComponentTest extends TestCase
         };
     }
 
-    private function getLogger(): \Monolog\Logger
+    private function getLogger(): MonologLogger
     {
-        $logger = new \Monolog\Logger('app');
+        $logger = new MonologLogger('app');
         $logger->setHandlers([new NullHandler()]);
         return $logger;
     }

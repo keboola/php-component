@@ -26,20 +26,16 @@ use function error_reporting;
  */
 class BaseComponent
 {
-    /** @var BaseConfig */
-    private $config;
+    private BaseConfig $config;
 
-    /** @var string */
-    private $dataDir;
+    private string $dataDir;
 
-    /** @var ManifestManager */
-    private $manifestManager;
+    private ManifestManager $manifestManager;
 
-    /** @var LoggerInterface */
-    private $logger;
+    private LoggerInterface $logger;
 
-    /** @var array */
-    private $inputState;
+    /** @phpcsSuppress SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingTraversableTypeHintSpecification */
+    private array $inputState;
 
     public function __construct(LoggerInterface $logger)
     {
@@ -88,10 +84,12 @@ class BaseComponent
         $configClass = $this->getConfigClass();
         $configDefinitionClass = $this->getConfigDefinitionClass();
         try {
-            $this->config = new $configClass(
+            /** @var BaseConfig $config */
+            $config = new $configClass(
                 $this->getRawConfig(),
                 new $configDefinitionClass()
             );
+            $this->config = $config;
         } catch (InvalidConfigurationException $e) {
             throw new UserException($e->getMessage(), 0, $e);
         }
@@ -166,8 +164,6 @@ class BaseComponent
 
     /**
      * Data dir is set without the trailing slash
-     *
-     * @param string $dataDir
      */
     protected function setDataDir(string $dataDir): void
     {

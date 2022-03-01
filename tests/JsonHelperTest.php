@@ -142,14 +142,4 @@ class JsonHelperTest extends TestCase
         unlink($filePath);
         rmdir(pathinfo($filePath, PATHINFO_DIRNAME));
     }
-
-    public function testFailedWriteThrowsException(): void
-    {
-        $filePath =  'php://stdin';
-        $array = ['key'];
-
-        $this->expectException(JsonHelperException::class);
-        $this->expectExceptionMessage('Could not write to file "php://stdin".');
-        JsonHelper::writeFile($filePath, $array);
-    }
 }

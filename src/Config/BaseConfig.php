@@ -17,10 +17,9 @@ use function implode;
 class BaseConfig implements ConfigInterface
 {
     /** @var mixed[] */
-    protected $config;
+    protected array $config;
 
-    /** @var ConfigurationInterface */
-    private $configDefinition;
+    private ConfigurationInterface $configDefinition;
 
     /**
      * @param mixed[] $config Configuration array
@@ -63,6 +62,36 @@ class BaseConfig implements ConfigInterface
     }
 
     /**
+     * @param mixed $default
+     */
+    public function getArrayValue(array $keys, $default = null): array
+    {
+        /** @var array $value */
+        $value = $this->getValue($keys, $default);
+        return $value;
+    }
+
+    /**
+     * @param mixed $default
+     */
+    public function getStringValue(array $keys, $default = null): string
+    {
+        /** @var string $value */
+        $value = $this->getValue($keys, $default);
+        return $value;
+    }
+
+    /**
+     * @param mixed $default
+     */
+    public function getIntValue(array $keys, $default = null): int
+    {
+        /** @var int $value */
+        $value = $this->getValue($keys, $default);
+        return $value;
+    }
+
+    /**
      * Returns value by key. You can supply default value for when the key is missing.
      * Without default value exception is thrown for nonexistent keys.
      *
@@ -91,84 +120,62 @@ class BaseConfig implements ConfigInterface
 
     /**
      * Returns `parameters` section of the config
-     *
-     * @return mixed[]
      */
     public function getParameters(): array
     {
-        return $this->getValue(['parameters'], []);
+        return $this->getArrayValue(['parameters'], []);
     }
 
     /**
      * Returns `storage` section of the config
-     *
-     * @return mixed[]
      */
     public function getStorage(): array
     {
-        return $this->getValue(['storage'], []);
+        return $this->getArrayValue(['storage'], []);
     }
 
     /**
      * Returns `image_parameters` section of the config
-     *
-     * @return mixed[]
      */
     public function getImageParameters(): array
     {
-        return $this->getValue(['image_parameters'], []);
+        return $this->getArrayValue(['image_parameters'], []);
     }
 
     /**
      * Returns `authorization` section of the config
-     *
-     * @return mixed[]
      */
     public function getAuthorization(): array
     {
-        return $this->getValue(['authorization'], []);
+        return $this->getArrayValue(['authorization'], []);
     }
 
     /**
      * Returns `action` section of the config
-     *
-     * @return string
      */
     public function getAction(): string
     {
-        return $this->getValue(['action'], 'run');
+        return $this->getStringValue(['action'], 'run');
     }
 
-    /**
-     * @return mixed[][]
-     */
     public function getInputFiles(): array
     {
-        return $this->getValue(['storage', 'input', 'files'], []);
+        return $this->getArrayValue(['storage', 'input', 'files'], []);
     }
 
-    /**
-     * @return mixed[][]
-     */
     public function getExpectedOutputFiles(): array
     {
-        return $this->getValue(['storage', 'output', 'files'], []);
+        return $this->getArrayValue(['storage', 'output', 'files'], []);
     }
 
-    /**
-     * @return mixed[][]
-     */
     public function getInputTables(): array
     {
-        return $this->getValue(['storage', 'input', 'tables'], []);
+        return $this->getArrayValue(['storage', 'input', 'tables'], []);
     }
 
-    /**
-     * @return mixed[][]
-     */
     public function getExpectedOutputTables(): array
     {
-        return $this->getValue(['storage', 'output', 'tables'], []);
+        return $this->getArrayValue(['storage', 'output', 'tables'], []);
     }
 
     /**
@@ -181,11 +188,11 @@ class BaseConfig implements ConfigInterface
 
     public function getOAuthApiAppSecret(): string
     {
-        return $this->getValue(['authorization', 'oauth_api', 'credentials', '#appSecret'], '');
+        return $this->getStringValue(['authorization', 'oauth_api', 'credentials', '#appSecret'], '');
     }
 
     public function getOAuthApiAppKey(): string
     {
-        return $this->getValue(['authorization', 'oauth_api', 'credentials', 'appKey'], '');
+        return $this->getStringValue(['authorization', 'oauth_api', 'credentials', 'appKey'], '');
     }
 }

@@ -10,29 +10,25 @@ use function is_array;
 
 class OutTableManifestOptions
 {
-    /** @var string */
-    private $destination;
+    private string $destination;
 
     /** @var string[] */
-    private $primaryKeyColumns;
+    private array $primaryKeyColumns;
 
     /** @var string[] */
-    private $columns;
+    private array $columns;
 
-    /** @var bool */
-    private $incremental;
-
-    /** @var mixed[][] */
-    private $metadata;
+    private bool $incremental;
 
     /** @var mixed[][] */
+    private array $metadata;
+
+    /** @var mixed $columnMetadata */
     private $columnMetadata;
 
-    /** @var string */
-    private $delimiter;
+    private string $delimiter;
 
-    /** @var string */
-    private $enclosure;
+    private string $enclosure;
 
     /**
      * @return mixed[]
@@ -75,7 +71,6 @@ class OutTableManifestOptions
 
     /**
      * @param string[] $primaryKeyColumns
-     * @return OutTableManifestOptions
      */
     public function setPrimaryKeyColumns(array $primaryKeyColumns): OutTableManifestOptions
     {
@@ -85,7 +80,6 @@ class OutTableManifestOptions
 
     /**
      * @param string[] $columns
-     * @return OutTableManifestOptions
      */
     public function setColumns(array $columns): OutTableManifestOptions
     {
@@ -99,10 +93,6 @@ class OutTableManifestOptions
         return $this;
     }
 
-    /**
-     * @param mixed[] $metadata
-     * @return OutTableManifestOptions
-     */
     public function setMetadata(array $metadata): OutTableManifestOptions
     {
         $this->validateMetadata($metadata);
@@ -112,7 +102,6 @@ class OutTableManifestOptions
 
     /**
      * @param mixed $columnsMetadata
-     * @return OutTableManifestOptions
      */
     public function setColumnMetadata($columnsMetadata): OutTableManifestOptions
     {

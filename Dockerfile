@@ -1,4 +1,6 @@
-FROM php:7-cli
+ARG phpversion=8
+
+FROM php:${phpversion}-cli
 
 ENV COMPOSER_ALLOW_SUPERUSER 1
 
