@@ -2,4 +2,3 @@ parameters:
     checkMissingIterableValueType: false
     ignoreErrors:
         - '#Argument of an invalid type mixed supplied for foreach, only iterables are supported.#'
-        - '#Parameter \#1 \$callback of function set_error_handler expects \(callable\(int, string, string, int\): bool\)\|null, Closure\(mixed, mixed, mixed, mixed, array\): false given\.#'
