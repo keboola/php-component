@@ -26,7 +26,7 @@ use function error_reporting;
  */
 class BaseComponent
 {
-    private BaseConfig $config;
+    protected BaseConfig $config;
 
     private string $dataDir;
 
