@@ -36,14 +36,14 @@ class BaseConfig implements ConfigInterface
     /**
      * @param mixed[] $config
      */
-    private function setConfig(array $config): void
+    protected function setConfig(array $config): void
     {
         $processor = new Processor();
         $processedConfig = $processor->processConfiguration($this->configDefinition, [$config]);
         $this->config = $processedConfig;
     }
 
-    private function setConfigDefinition(?ConfigurationInterface $configDefinition): void
+    protected function setConfigDefinition(?ConfigurationInterface $configDefinition): void
     {
         if ($configDefinition === null) {
             $configDefinition = new BaseConfigDefinition();
