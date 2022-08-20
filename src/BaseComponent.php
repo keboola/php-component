@@ -26,7 +26,7 @@ use function error_reporting;
  */
 class BaseComponent
 {
-    private BaseConfig $config;
+    protected BaseConfig $config;
 
     private string $dataDir;
 
@@ -64,7 +64,8 @@ class BaseComponent
     public static function setEnvironment(): void
     {
         error_reporting(E_ALL);
-        set_error_handler(function ($errno, $errstr, $errfile, $errline, array $errcontext): bool {
+
+        set_error_handler(function (int $errno, string $errstr, string $errfile, int $errline): bool {
             if (!(error_reporting() & $errno)) {
                 // respect error_reporting() level
                 // libraries used in custom components may emit notices that cannot be fixed
