@@ -184,3 +184,7 @@ The default entrypoint of component (in `index.php`) changed from `BaseComponent
 ## More reading
 
 For more information, please refer to the [generated docs](https://keboola.github.io/php-component/master/classes.html). See [development guide](https://developers.keboola.com/extend/component/tutorial/) for help with KBC integration.
+
+## License
+
+MIT licensed, see [LICENSE](./LICENSE) file.
