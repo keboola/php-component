@@ -62,7 +62,9 @@ class Logger extends MonologLogger implements Logger\SyncActionLogging, Logger\A
         // Add default logger to log errors in configuration, etc.
         // It will be overwritten by calling setupSyncActionLogging/setupAsyncActionLogging
         // from BaseComponent::initializeSyncActions
-        $this->pushHandler(new StreamHandler('php://stderr', static::DEBUG));
+        $logHandler = new StreamHandler('php://stderr', static::DEBUG);
+        $logHandler->setFormatter(new LineFormatter("%message%\n"));
+        $this->pushHandler($logHandler);
     }
 
     public function setupSyncActionLogging(): void
