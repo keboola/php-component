@@ -16,7 +16,6 @@ use function implode;
  */
 class BaseConfig implements ConfigInterface
 {
-    /** @var mixed[] */
     protected array $config;
 
     private ConfigurationInterface $configDefinition;
