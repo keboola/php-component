@@ -6,6 +6,7 @@ namespace Keboola\Component\Config;
 
 use InvalidArgumentException;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
+use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
 use Symfony\Component\Config\Definition\Processor;
 use function array_key_exists;
 use function implode;
@@ -193,5 +194,90 @@ class BaseConfig implements ConfigInterface
     public function getOAuthApiAppKey(): string
     {
         return $this->getStringValue(['authorization', 'oauth_api', 'credentials', 'appKey'], '');
+    }
+
+    public function getEnvKbcRunID(): string
+    {
+        return (string) getenv('KBC_RUNID');
+    }
+
+    public function getEnvKbcProjectId(): int
+    {
+        return (int) getenv('KBC_PROJECTID');
+    }
+
+    public function getEnvKbcStackId(): string
+    {
+        return (string) getenv('KBC_STACKID');
+    }
+
+    public function getEnvKbcConfigId(): string
+    {
+        return (string) getenv('KBC_CONFIGID');
+    }
+
+    public function getEnvKbcConfigRowId(): string
+    {
+        return (string) getenv('KBC_CONFIGROWID');
+    }
+
+    public function getEnvKbcComponentId(): string
+    {
+        return (string) getenv('KBC_COMPONENTID');
+    }
+
+    public function getEnvKbcBranchId(): string
+    {
+        return (string) getenv('KBC_BRANCHID');
+    }
+
+    public function getEnvKbcStagingFileProvider(): string
+    {
+        return (string) getenv('KBC_STAGING_FILE_PROVIDER');
+    }
+
+    public function getEncKbcProjectName(): string
+    {
+        $env = getenv('KBC_PROJECTNAME');
+        if (!$env) {
+            throw new InvalidConfigurationException('The variable "KBC_PROJECTNAME" is not allowed.');
+        }
+        return (string) $env;
+    }
+
+    public function getEnvKbcTokenId(): string
+    {
+        $env = getenv('KBC_TOKENID');
+        if (!$env) {
+            throw new InvalidConfigurationException('The variable "KBC_TOKENID" is not allowed.');
+        }
+        return (string) $env;
+    }
+
+    public function getEnvKbcTokenDescription(): string
+    {
+        $env = getenv('KBC_TOKENDESC');
+        if (!$env) {
+            throw new InvalidConfigurationException('The variable "KBC_TOKENDESC" is not allowed.');
+        }
+        return (string) $env;
+    }
+
+    public function getEnvKbcToken(): string
+    {
+        $env = getenv('KBC_TOKEN');
+        if (!$env) {
+            throw new InvalidConfigurationException('The variable "KBC_TOKEN" is not allowed.');
+        }
+        return (string) $env;
+    }
+
+    public function getEnvKbcUrl(): string
+    {
+        $env = getenv('KBC_URL');
+        if (!$env) {
+            throw new InvalidConfigurationException('The variable "KBC_URL" is not allowed.');
+        }
+        return (string) $env;
     }
 }
