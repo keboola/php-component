@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace Keboola\Component\Tests\Config;
 
+use Generator;
 use Keboola\Component\Config\BaseConfig;
 use Keboola\Component\Config\BaseConfigDefinition;
+use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
@@ -234,5 +236,119 @@ class BaseConfigTest extends TestCase
             'value',
             $config->getValue(['parameters', 'ipsum', 'dolor'])
         );
+    }
+
+    /**
+     * @dataProvider envGettersDataProvider
+     */
+    public function testEnvGetters(array $envs): void
+    {
+        foreach ($envs as $env => $value) {
+            putenv(sprintf('%s=%s', $env, $value));
+        }
+
+        $config = new BaseConfig([], new BaseConfigDefinition());
+
+        Assert::assertEquals($envs['KBC_RUNID'], $config->getEnvKbcRunID());
+        Assert::assertEquals($envs['KBC_PROJECTID'], $config->getEnvKbcProjectId());
+        Assert::assertEquals($envs['KBC_STACKID'], $config->getEnvKbcStackId());
+        Assert::assertEquals($envs['KBC_CONFIGID'], $config->getEnvKbcConfigId());
+        Assert::assertEquals($envs['KBC_CONFIGROWID'], $config->getEnvKbcConfigRowId());
+        Assert::assertEquals($envs['KBC_COMPONENTID'], $config->getEnvKbcComponentId());
+        Assert::assertEquals($envs['KBC_BRANCHID'], $config->getEnvKbcBranchId());
+        Assert::assertEquals($envs['KBC_STAGING_FILE_PROVIDER'], $config->getEnvKbcStagingFileProvider());
+
+        if (!isset($envs['KBC_PROJECTNAME'])) {
+            try {
+                $config->getEncKbcProjectName();
+                $this->fail('Should be fail.');
+            } catch (InvalidConfigurationException $e) {
+                Assert::assertEquals('The variable "KBC_PROJECTNAME" is not allowed.', $e->getMessage());
+            }
+        } else {
+            Assert::assertEquals($envs['KBC_PROJECTNAME'], $config->getEncKbcProjectName());
+        }
+
+        if (!isset($envs['KBC_TOKENID'])) {
+            try {
+                $config->getEnvKbcTokenId();
+                $this->fail('Should be fail.');
+            } catch (InvalidConfigurationException $e) {
+                Assert::assertEquals('The variable "KBC_TOKENID" is not allowed.', $e->getMessage());
+            }
+        } else {
+            Assert::assertEquals($envs['KBC_TOKENID'], $config->getEnvKbcTokenId());
+        }
+
+        if (!isset($envs['KBC_TOKENDESC'])) {
+            try {
+                $config->getEnvKbcTokenDescription();
+                $this->fail('Should be fail.');
+            } catch (InvalidConfigurationException $e) {
+                Assert::assertEquals('The variable "KBC_TOKENDESC" is not allowed.', $e->getMessage());
+            }
+        } else {
+            Assert::assertEquals($envs['KBC_TOKENDESC'], $config->getEnvKbcTokenDescription());
+        }
+
+        if (!isset($envs['KBC_TOKEN'])) {
+            try {
+                $config->getEnvKbcToken();
+                $this->fail('Should be fail.');
+            } catch (InvalidConfigurationException $e) {
+                Assert::assertEquals('The variable "KBC_TOKEN" is not allowed.', $e->getMessage());
+            }
+        } else {
+            Assert::assertEquals($envs['KBC_TOKEN'], $config->getEnvKbcToken());
+        }
+
+        if (!isset($envs['KBC_URL'])) {
+            try {
+                $config->getEnvKbcUrl();
+                $this->fail('Should be fail.');
+            } catch (InvalidConfigurationException $e) {
+                Assert::assertEquals('The variable "KBC_URL" is not allowed.', $e->getMessage());
+            }
+        } else {
+            Assert::assertEquals($envs['KBC_URL'], $config->getEnvKbcUrl());
+        }
+
+        foreach ($envs as $env => $value) {
+            putenv(sprintf('%s', $env));
+        }
+    }
+
+    public function envGettersDataProvider(): Generator
+    {
+        yield 'envsWithoutForwardToken' => [
+            [
+                'KBC_RUNID' => 'runId',
+                'KBC_PROJECTID' => 123456,
+                'KBC_STACKID' => 'stackId',
+                'KBC_CONFIGID' => 'configId',
+                'KBC_CONFIGROWID' => 'configRowId',
+                'KBC_COMPONENTID' => 'componentId',
+                'KBC_BRANCHID' => 'brancId',
+                'KBC_STAGING_FILE_PROVIDER' => 'staging_file_provider',
+            ],
+        ];
+
+        yield 'allEnvIsSet' => [
+            [
+                'KBC_RUNID' => 'runId',
+                'KBC_PROJECTID' => 123456,
+                'KBC_STACKID' => 'stackId',
+                'KBC_CONFIGID' => 'configId',
+                'KBC_CONFIGROWID' => 'configRowId',
+                'KBC_COMPONENTID' => 'componentId',
+                'KBC_BRANCHID' => 'brancId',
+                'KBC_STAGING_FILE_PROVIDER' => 'staging_file_provider',
+                'KBC_PROJECTNAME' => 'projectName',
+                'KBC_TOKENID' => 'tokenId',
+                'KBC_TOKENDESC' => 'tokenDesc',
+                'KBC_TOKEN' => 'token',
+                'KBC_URL' => 'url',
+            ],
+        ];
     }
 }
