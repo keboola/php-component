@@ -19,6 +19,10 @@ class BaseConfig implements ConfigInterface
 {
     protected array $config;
 
+    public const COMPONENT_RUN_MODE_RUN = 'run';
+
+    public const COMPONENT_RUN_MODE_DEBUG = 'debug';
+
     private ConfigurationInterface $configDefinition;
 
     /**
@@ -234,6 +238,11 @@ class BaseConfig implements ConfigInterface
     public function getEnvKbcStagingFileProvider(): string
     {
         return (string) getenv('KBC_STAGING_FILE_PROVIDER');
+    }
+
+    public function getEnvComponentRunMode(): string
+    {
+        return (string) getenv('KBC_COMPONENT_RUN_MODE');
     }
 
     public function getEncKbcProjectName(): string
