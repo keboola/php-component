@@ -108,11 +108,11 @@ class BaseComponent
         }
         if ($this->isSyncAction()) {
             if ($this->logger instanceof SyncActionLogging) {
-                $this->logger->setupSyncActionLogging();
+                $this->logger->setupSyncActionLogging($this->config->getEnvComponentRunMode());
             }
         } else {
             if ($this->logger instanceof AsyncActionLogging) {
-                $this->logger->setupAsyncActionLogging();
+                $this->logger->setupAsyncActionLogging($this->config->getEnvComponentRunMode());
             }
         }
     }

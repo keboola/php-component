@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace Keboola\Component\Tests\Logger;
 
 use DateTimeImmutable;
+use Keboola\Component\Config\BaseConfig;
 use Keboola\Component\Logger;
 use Monolog\Handler\StreamHandler;
+use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
 
 class LoggerTest extends TestCase
@@ -84,6 +86,72 @@ class LoggerTest extends TestCase
             "Critical! {\"context\":\"critical\"} \n",
             StreamTester::getContent()
         );
+    }
+
+    public function testDebugLogging(): void
+    {
+        $logger = new Logger();
+        $logger->setupAsyncActionLogging(BaseConfig::COMPONENT_RUN_MODE_DEBUG);
+
+        $handlers = $logger->getHandlers();
+
+        $this->assertCount(4, $handlers);
+
+        // Init streams (stream is created with first message)
+        $logger->critical('');
+        $logger->error('');
+        $logger->info('');
+        $logger->debug('');
+
+        /** @var StreamHandler $handlerCritical */
+        $handlerCritical = $handlers[0];
+        /** @var StreamHandler $handlerError */
+        $handlerError = $handlers[1];
+        /** @var StreamHandler $handlerLog */
+        $handlerLog = $handlers[2];
+        /** @var StreamHandler $handlerDebug */
+        $handlerDebug = $handlers[3];
+
+        // Connect tester (logger) to the streams
+        /** @var resource $streamCritical */
+        $streamCritical = $handlerCritical->getStream();
+        /** @var resource $streamError */
+        $streamError = $handlerError->getStream();
+        /** @var resource $streamLog */
+        $streamLog = $handlerLog->getStream();
+        /** @var resource $streamDebug */
+        $streamDebug = $handlerDebug->getStream();
+        StreamTester::attach($streamCritical);
+        StreamTester::attach($streamError);
+        StreamTester::attach($streamLog);
+        StreamTester::attach($streamDebug);
+
+        // Log some messages
+        $logger->info('Info!', ['context' => 'info']);
+        $logger->error('Error!', ['context' => 'error']);
+        $logger->critical('Critical!', ['context' => 'critical']);
+        $logger->debug('Debug message!', ['context' => 'debug context']);
+
+        Assert::assertStringContainsString('Info!', StreamTester::getContent());
+        Assert::assertStringContainsString('Error!', StreamTester::getContent());
+        Assert::assertStringContainsString(
+            'CRITICAL: Critical! {"context":"critical"}',
+            StreamTester::getContent()
+        );
+        Assert::assertStringContainsString(
+            'DEBUG: Debug message! {"context":"debug context"}',
+            StreamTester::getContent()
+        );
+
+        $this->assertSame(Logger::CRITICAL, $handlerCritical->getLevel());
+        $this->assertSame(Logger::WARNING, $handlerError->getLevel());
+        $this->assertSame(Logger::INFO, $handlerLog->getLevel());
+        $this->assertSame(Logger::DEBUG, $handlerDebug->getLevel());
+
+        $this->assertSame('php://stderr', $handlerCritical->getUrl());
+        $this->assertSame('php://stderr', $handlerError->getUrl());
+        $this->assertSame('php://stdout', $handlerLog->getUrl());
+        $this->assertSame('php://stdout', $handlerDebug->getUrl());
     }
 
     public function testSetupAsyncActionLogging(): void

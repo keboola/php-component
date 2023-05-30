@@ -4,12 +4,13 @@ declare(strict_types=1);
 
 use Keboola\Component\Logger;
 use Keboola\Component\UserException;
+use MyComponent\Component;
 
 require __DIR__ . '/../vendor/autoload.php';
 
 $logger = new Logger();
 try {
-    $app = new MyComponent\Component($logger);
+    $app = new Component($logger);
     $app->execute();
     exit(0);
 } catch (UserException $e) {

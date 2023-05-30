@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Keboola\Component;
 
+use Keboola\Component\Config\BaseConfig;
 use Monolog\Formatter\LineFormatter;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger as MonologLogger;
@@ -37,6 +38,15 @@ class Logger extends MonologLogger implements Logger\SyncActionLogging, Logger\A
         return $handler;
     }
 
+    public static function getDefaultDebugHandler(): StreamHandler
+    {
+        $handler = new StreamHandler('php://stdout');
+        $handler->setBubble(false);
+        $handler->setLevel(MonologLogger::DEBUG);
+        $handler->setFormatter(new LineFormatter("[%datetime%] %level_name%: %message% %context% %extra%\n"));
+        return $handler;
+    }
+
     public static function getSyncActionErrorHandler(): StreamHandler
     {
         $logHandler = new StreamHandler('php://stderr');
@@ -55,6 +65,15 @@ class Logger extends MonologLogger implements Logger\SyncActionLogging, Logger\A
         return $logHandler;
     }
 
+    public static function getSyncActionDebugHandler(): StreamHandler
+    {
+        $logHandler = new StreamHandler('php://stdout');
+        $logHandler->setBubble(false);
+        $logHandler->setLevel(MonologLogger::DEBUG);
+        $logHandler->setFormatter(new LineFormatter("[%datetime%] %level_name%: %message% %context% %extra%\n"));
+        return $logHandler;
+    }
+
     public function __construct()
     {
         parent::__construct('php-component');
@@ -67,27 +86,32 @@ class Logger extends MonologLogger implements Logger\SyncActionLogging, Logger\A
         $this->pushHandler($logHandler);
     }
 
-    public function setupSyncActionLogging(): void
+    public function setupSyncActionLogging(string $componentRunMode = BaseConfig::COMPONENT_RUN_MODE_RUN): void
     {
-        $criticalHandler = self::getSyncActionCriticalHandler();
-        $errorHandler = self::getSyncActionErrorHandler();
+        $handlers = [
+            self::getSyncActionCriticalHandler(),
+            self::getSyncActionErrorHandler(),
+        ];
 
-        $this->setHandlers([
-            $criticalHandler,
-            $errorHandler,
-        ]);
+        if ($componentRunMode === BaseConfig::COMPONENT_RUN_MODE_DEBUG) {
+            $handlers[] = self::getSyncActionDebugHandler();
+        }
+
+        $this->setHandlers($handlers);
     }
 
-    public function setupAsyncActionLogging(): void
+    public function setupAsyncActionLogging(string $componentRunMode = BaseConfig::COMPONENT_RUN_MODE_RUN): void
     {
-        $criticalHandler = self::getDefaultCriticalHandler();
-        $errorHandler = self::getDefaultErrorHandler();
-        $logHandler = self::getDefaultLogHandler();
+        $handlers = [
+            self::getDefaultCriticalHandler(),
+            self::getDefaultErrorHandler(),
+            self::getDefaultLogHandler(),
+        ];
 
-        $this->setHandlers([
-            $criticalHandler,
-            $errorHandler,
-            $logHandler,
-        ]);
+        if ($componentRunMode === BaseConfig::COMPONENT_RUN_MODE_DEBUG) {
+            $handlers[] = self::getDefaultDebugHandler();
+        }
+
+        $this->setHandlers($handlers);
     }
 }
