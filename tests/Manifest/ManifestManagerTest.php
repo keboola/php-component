@@ -6,7 +6,7 @@ namespace Keboola\Component\Tests\Manifest;
 
 use Keboola\Component\Manifest\ManifestManager;
 use Keboola\Component\Manifest\ManifestManager\Options\OutFileManifestOptions;
-use Keboola\Component\Manifest\ManifestManager\Options\OutTableManifestOptions;
+use Keboola\Component\Manifest\ManifestManager\Options\OutTable\OutTableManifestOptions;
 use Keboola\Temp\Temp;
 use PHPUnit\Framework\TestCase;
 

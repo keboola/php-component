@@ -5,7 +5,8 @@ declare(strict_types=1);
 namespace Keboola\Component\Tests\Manifest\ManifestManager\Options;
 
 use Keboola\Component\Manifest\ManifestManager\Options\OptionsValidationException;
-use Keboola\Component\Manifest\ManifestManager\Options\OutTableManifestOptions;
+use Keboola\Component\Manifest\ManifestManager\Options\OutTable\ManifestOptions;
+use Keboola\Component\Manifest\ManifestManager\Options\OutTable\ManifestOptionsSchema;
 use PHPUnit\Framework\TestCase;
 
 class OutTableManifestOptionsTest extends TestCase
@@ -14,7 +15,7 @@ class OutTableManifestOptionsTest extends TestCase
      * @dataProvider provideOptions
      * @param mixed[] $expected
      */
-    public function testToArray(array $expected, OutTableManifestOptions $options): void
+    public function testToArray(array $expected, ManifestOptions $options): void
     {
         $this->assertEquals($expected, $options->toArray());
     }
@@ -31,7 +32,7 @@ class OutTableManifestOptionsTest extends TestCase
                     'enclosure' => '_',
 
                 ],
-                (new OutTableManifestOptions())
+                (new ManifestOptions())
                     ->setDelimiter('|')
                     ->setEnclosure('_'),
             ],
@@ -72,7 +73,7 @@ class OutTableManifestOptionsTest extends TestCase
                         ],
                     ],
                 ],
-                (new OutTableManifestOptions())
+                (new ManifestOptions())
                     ->setEnclosure('_')
                     ->setDelimiter('|')
                     ->setColumnMetadata((object) [
@@ -127,7 +128,7 @@ class OutTableManifestOptionsTest extends TestCase
             'non-array metadata' => [
                 'Metadata item #0 must be an array, found "string"',
                 function (): void {
-                    (new OutTableManifestOptions())->setMetadata([
+                    (new ManifestOptions())->setMetadata([
                         'one',
                         'two',
                     ]);
@@ -136,7 +137,7 @@ class OutTableManifestOptionsTest extends TestCase
             'metadata with extra key' => [
                 'Metadata item #0 must have only "key" and "value" keys',
                 function (): void {
-                    (new OutTableManifestOptions())->setMetadata([
+                    (new ManifestOptions())->setMetadata([
                         [
                             'key' => 'my-key',
                             'value' => 'my-value',
@@ -148,7 +149,7 @@ class OutTableManifestOptionsTest extends TestCase
             'missing one of the metadata keys' => [
                 'Metadata item #0 must have only "key" and "value" keys',
                 function (): void {
-                    (new OutTableManifestOptions())->setMetadata([
+                    (new ManifestOptions())->setMetadata([
                         [
                             'key' => 'my-key',
                             'something' => 'my-value',
@@ -159,7 +160,7 @@ class OutTableManifestOptionsTest extends TestCase
             'Column metadata is not array' => [
                 'Each column metadata item must be an array',
                 function (): void {
-                    (new OutTableManifestOptions())->setColumnMetadata([
+                    (new ManifestOptions())->setColumnMetadata([
                         'x',
                     ]);
                 },
@@ -167,7 +168,7 @@ class OutTableManifestOptionsTest extends TestCase
             'Column name is not a string' => [
                 'Each column metadata item must have string key',
                 function (): void {
-                    (new OutTableManifestOptions())->setColumnMetadata([
+                    (new ManifestOptions())->setColumnMetadata([
                         ['x'],
                     ]);
                 },
@@ -175,7 +176,7 @@ class OutTableManifestOptionsTest extends TestCase
             'Column metadata item is not an array' => [
                 'Column "column1": Metadata item #0 must be an array, found "string"',
                 function (): void {
-                    (new OutTableManifestOptions())->setColumnMetadata([
+                    (new ManifestOptions())->setColumnMetadata([
                         'column1' => ['x'],
                     ]);
                 },
@@ -183,7 +184,7 @@ class OutTableManifestOptionsTest extends TestCase
             'Column metadata item is missing required keys' => [
                 'Column "column1": Metadata item #0 must have only "key" and "value" keys',
                 function (): void {
-                    (new OutTableManifestOptions())->setColumnMetadata([
+                    (new ManifestOptions())->setColumnMetadata([
                         'column1' => [
                             ['some' => 'x'],
                         ],
@@ -193,7 +194,7 @@ class OutTableManifestOptionsTest extends TestCase
             'Column metadata item has extra keys' => [
                 'Column "column1": Metadata item #1 must have only "key" and "value" keys',
                 function (): void {
-                    (new OutTableManifestOptions())->setColumnMetadata([
+                    (new ManifestOptions())->setColumnMetadata([
                         'column1' => [
                             [
                                 'key' => 'x',
@@ -206,6 +207,131 @@ class OutTableManifestOptionsTest extends TestCase
                             ],
                         ],
                     ]);
+                },
+            ],
+            'Metadata item #0 must be an array, found "string"' => [
+                'Metadata item #0 must be an array, found "string"',
+                function (): void {
+                    (new ManifestOptions())->setMetadata([
+                        'one',
+                        'two',
+                    ]);
+                },
+            ],
+            'Metadata item #0 must have only "key" and "value" keys' => [
+                'Metadata item #0 must have only "key" and "value" keys',
+                function (): void {
+                    (new ManifestOptions())->setMetadata([
+                        [
+                            'key' => 'my-key',
+                            'value' => 'my-value',
+                            'extra' => 'should not be here',
+                        ],
+                    ]);
+                },
+            ],
+            'Each column metadata item must be an array' => [
+                'Each column metadata item must be an array',
+                function (): void {
+                    (new ManifestOptions())->setColumnMetadata([
+                        'x',
+                    ]);
+                },
+            ],
+            'Cannot set columns when schema is set' => [
+                'Cannot set columns when schema is set',
+                function (): void {
+                    $schema = new ManifestOptionsSchema(
+                        'id',
+                        ['base' => ['type' => 'INTEGER', 'length' => '11', 'default' => '123']],
+                        false,
+                        true
+                    );
+                    (new ManifestOptions())
+                        ->setSchema($schema)
+                        ->setColumns(['id', 'name']);
+                },
+            ],
+            'Cannot set schema when columns are set' => [
+                'Cannot set schema when columns are set',
+                function (): void {
+                    (new ManifestOptions())
+                        ->setColumns(['id', 'name'])
+                        ->setSchema(new ManifestOptionsSchema(
+                            'id',
+                            ['base' => ['type' => 'INTEGER', 'length' => '11', 'default' => '123']],
+                            false,
+                            true
+                        ));
+                },
+            ],
+            'Cannot set metadata when schema is set' => [
+                'Cannot set metadata when schema is set',
+                function (): void {
+                    $schema = new ManifestOptionsSchema(
+                        'id',
+                        ['base' => ['type' => 'INTEGER', 'length' => '11', 'default' => '123']],
+                        false,
+                        true
+                    );
+                    (new ManifestOptions())
+                        ->setSchema($schema)
+                        ->setMetadata([
+                            ['key' => 'sample', 'value' => 'data']
+                        ]);
+                },
+            ],
+            'Cannot set column metadata when schema is set' => [
+                'Cannot set column metadata when schema is set',
+                function (): void {
+                    $schema = new ManifestOptionsSchema(
+                        'id',
+                        ['base' => ['type' => 'INTEGER', 'length' => '11', 'default' => '123']],
+                        false,
+                        true
+                    );
+                    (new ManifestOptions())
+                        ->setSchema($schema)
+                        ->setColumnMetadata([
+                            'id' => [
+                                ['key' => 'description', 'value' => 'ID column']
+                            ]
+                        ]);
+                },
+            ],
+            'The "unsupported_type" backendType is not supported' => [
+                'The "unsupported_type" backendType is not supported',
+                function (): void {
+                    new ManifestOptionsSchema(
+                        'id',
+                        ['unsupported_type' => ['type' => 'INTEGER', 'length' => '11', 'default' => '123']],
+                        false,
+                        true
+                    );
+                },
+            ],
+            'Name cannot be empty' => [
+                'Name cannot be empty',
+                function (): void {
+                    new ManifestOptionsSchema(
+                        '',
+                        ['base' => ['type' => 'INTEGER', 'length' => '11', 'default' => '123']],
+                        false,
+                        true
+                    );
+                },
+            ],
+            'Only one of "description" or "metadata.KBC.description" can be defined' => [
+                'Only one of "description" or "metadata.KBC.description" can be defined',
+                function (): void {
+                    new ManifestOptionsSchema(
+                        'id',
+                        ['base' => ['type' => 'INTEGER', 'length' => '11', 'default' => '123']],
+                        false,
+                        true,
+                        'Primary key column',
+                        ['KBC.description' => 'Primary key column']
+                    );
                 },
             ],
         ];

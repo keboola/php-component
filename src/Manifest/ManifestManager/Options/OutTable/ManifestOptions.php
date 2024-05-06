@@ -2,13 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Keboola\Component\Manifest\ManifestManager\Options;
+namespace Keboola\Component\Manifest\ManifestManager\Options\OutTable;
 
+use Keboola\Component\Manifest\ManifestManager\Options\OptionsValidationException;
 use function array_keys;
 use function gettype;
 use function is_array;
 
-class OutTableManifestOptions
+class ManifestOptions
 {
     private string $destination;
 
@@ -16,19 +17,29 @@ class OutTableManifestOptions
     private array $primaryKeyColumns;
 
     /** @var string[] */
-    private array $columns;
+    private ?array $columns = null;
 
     private bool $incremental;
 
     /** @var mixed[][] */
-    private array $metadata;
+    private ?array $metadata = null;
 
     /** @var mixed $columnMetadata */
-    private $columnMetadata;
+    private $columnMetadata = null;
 
     private string $delimiter;
 
     private string $enclosure;
+
+    private ?ManifestOptionsSchema $schema = null;
+
+    private ?string $manifestType = null;
+
+    private ?bool $hasHeader = null;
+
+    private ?string $description = null;
+
+    private ?array $tableMetadata = null;
 
     /**
      * @return mixed[]
@@ -51,6 +62,9 @@ class OutTableManifestOptions
         if (isset($this->columns)) {
             $result['columns'] = $this->columns;
         }
+        if (isset($this->schema)) {
+            $result['schema'] = $this->schema;
+        }
         if (isset($this->incremental)) {
             $result['incremental'] = $this->incremental;
         }
@@ -60,10 +74,22 @@ class OutTableManifestOptions
         if (isset($this->columnMetadata)) {
             $result['column_metadata'] = $this->columnMetadata;
         }
+        if (isset($this->manifestType)) {
+            $result['manifestType'] = $this->manifestType;
+        }
+        if (isset($this->hasHeader)) {
+            $result['hasHeader'] = $this->hasHeader;
+        }
+        if (isset($this->description)) {
+            $result['description'] = $this->description;
+        }
+        if (isset($this->tableMetadata)) {
+            $result['tableMetadata'] = $this->tableMetadata;
+        }
         return $result;
     }
 
-    public function setDestination(string $destination): OutTableManifestOptions
+    public function setDestination(string $destination): ManifestOptions
     {
         $this->destination = $destination;
         return $this;
@@ -72,7 +98,7 @@ class OutTableManifestOptions
     /**
      * @param string[] $primaryKeyColumns
      */
-    public function setPrimaryKeyColumns(array $primaryKeyColumns): OutTableManifestOptions
+    public function setPrimaryKeyColumns(array $primaryKeyColumns): ManifestOptions
     {
         $this->primaryKeyColumns = $primaryKeyColumns;
         return $this;
@@ -81,20 +107,35 @@ class OutTableManifestOptions
     /**
      * @param string[] $columns
      */
-    public function setColumns(array $columns): OutTableManifestOptions
+    public function setColumns(array $columns): ManifestOptions
     {
+        if ($this->schema) {
+            throw new OptionsValidationException('Cannot set columns when schema is set');
+        }
         $this->columns = $columns;
         return $this;
     }
 
-    public function setIncremental(bool $incremental): OutTableManifestOptions
+    public function setSchema(ManifestOptionsSchema $schema): ManifestOptions
+    {
+        if ($this->columns) {
+            throw new OptionsValidationException('Cannot set schema when columns are set');
+        }
+        $this->schema = $schema;
+        return $this;
+    }
+
+    public function setIncremental(bool $incremental): ManifestOptions
     {
         $this->incremental = $incremental;
         return $this;
     }
 
-    public function setMetadata(array $metadata): OutTableManifestOptions
+    public function setMetadata(array $metadata): ManifestOptions
     {
+        if ($this->schema) {
+            throw new OptionsValidationException('Cannot set metadata when schema is set');
+        }
         $this->validateMetadata($metadata);
         $this->metadata = $metadata;
         return $this;
@@ -103,8 +144,11 @@ class OutTableManifestOptions
     /**
      * @param mixed $columnsMetadata
      */
-    public function setColumnMetadata($columnsMetadata): OutTableManifestOptions
+    public function setColumnMetadata($columnsMetadata): ManifestOptions
     {
+        if ($this->schema) {
+            throw new OptionsValidationException('Cannot set column metadata when schema is set');
+        }
         foreach ($columnsMetadata as $columnName => $columnMetadata) {
             if (!is_array($columnMetadata)) {
                 throw new OptionsValidationException('Each column metadata item must be an array');
@@ -122,15 +166,39 @@ class OutTableManifestOptions
         return $this;
     }
 
-    public function setDelimiter(string $delimiter): OutTableManifestOptions
+    public function setDelimiter(string $delimiter): ManifestOptions
     {
         $this->delimiter = $delimiter;
         return $this;
     }
 
-    public function setEnclosure(string $enclosure): OutTableManifestOptions
+    public function setEnclosure(string $enclosure): ManifestOptions
     {
         $this->enclosure = $enclosure;
+        return $this;
+    }
+
+    public function setManifestType(string $manifestType): ManifestOptions
+    {
+        $this->manifestType = $manifestType;
+        return $this;
+    }
+
+    public function setHasHeader(bool $hasHeader): ManifestOptions
+    {
+        $this->hasHeader = $hasHeader;
+        return $this;
+    }
+
+    public function setDescription(string $description): ManifestOptions
+    {
+        $this->description = $description;
+        return $this;
+    }
+
+    public function setTableMetadata(array $tableMetadata): ManifestOptions
+    {
+        $this->tableMetadata = $tableMetadata;
         return $this;
     }
 
@@ -158,6 +226,11 @@ class OutTableManifestOptions
                     'Metadata item #%s must have only "key" and "value" keys',
                     $key
                 ));
+            }
+            if ($oneKeyAndValue['key'] === 'KBC.description' && isset($this->description)) {
+                throw new OptionsValidationException(
+                    'Only one of "description" or "metadata.KBC.description" can be defined.'
+                );
             }
         }
     }

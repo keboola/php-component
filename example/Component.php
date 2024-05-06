@@ -6,7 +6,7 @@ namespace MyComponent;
 
 use Keboola\Component\BaseComponent;
 use Keboola\Component\Manifest\ManifestManager\Options\OutFileManifestOptions;
-use Keboola\Component\Manifest\ManifestManager\Options\OutTableManifestOptions;
+use Keboola\Component\Manifest\ManifestManager\Options\OutTable\ManifestOptions;
 
 class Component extends BaseComponent
 {
@@ -37,7 +37,7 @@ class Component extends BaseComponent
         // write manifest for output table
         $this->getManifestManager()->writeTableManifest(
             'data.csv',
-            (new OutTableManifestOptions())
+            (new ManifestOptions())
                 ->setPrimaryKeyColumns(['id'])
                 ->setDestination('out.report')
         );
