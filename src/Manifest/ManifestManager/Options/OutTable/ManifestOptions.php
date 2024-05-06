@@ -31,7 +31,8 @@ class ManifestOptions
 
     private string $enclosure;
 
-    private ?ManifestOptionsSchema $schema = null;
+    /** @var ManifestOptionsSchema[]  */
+    private ?array $schema = null;
 
     private ?string $manifestType = null;
 
@@ -63,7 +64,9 @@ class ManifestOptions
             $result['columns'] = $this->columns;
         }
         if (isset($this->schema)) {
-            $result['schema'] = $this->schema->toArray();
+            foreach ($this->schema as $schema) {
+                $result['schema'][] = $schema->toArray();
+            }
         }
         if (isset($this->incremental)) {
             $result['incremental'] = $this->incremental;
@@ -121,7 +124,7 @@ class ManifestOptions
         if ($this->columns) {
             throw new OptionsValidationException('Cannot set schema when columns are set');
         }
-        $this->schema = $schema;
+        $this->schema[] = $schema;
         return $this;
     }
 
