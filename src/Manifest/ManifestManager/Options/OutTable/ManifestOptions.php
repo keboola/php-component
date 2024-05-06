@@ -119,7 +119,7 @@ class ManifestOptions
         return $this;
     }
 
-    public function setSchema(ManifestOptionsSchema $schema): ManifestOptions
+    public function addSchema(ManifestOptionsSchema $schema): ManifestOptions
     {
         if ($this->columns) {
             throw new OptionsValidationException('Cannot set schema when columns are set');

@@ -58,7 +58,7 @@ class OutTableManifestOptionsTest extends TestCase
                             'value' => 'A different value',
                         ],
                     ],
-                    'column_metadata' => (object)[
+                    'column_metadata' => (object) [
                         '123456' => [
                             [
                                 'key' => 'int.column.name',
@@ -76,7 +76,7 @@ class OutTableManifestOptionsTest extends TestCase
                 (new ManifestOptions())
                     ->setEnclosure('_')
                     ->setDelimiter('|')
-                    ->setColumnMetadata((object)[
+                    ->setColumnMetadata((object) [
                         '123456' => [
                             [
                                 'value' => 'Int column name',
@@ -132,7 +132,7 @@ class OutTableManifestOptionsTest extends TestCase
                     ->setEnclosure('_')
                     ->setDelimiter('|')
                     ->setManifestType('output')
-                    ->setSchema(new ManifestOptionsSchema(
+                    ->addSchema(new ManifestOptionsSchema(
                         'id',
                         [
                             'base' => ['type' => 'INTEGER', 'length' => '11', 'default' => '123'],
@@ -141,7 +141,7 @@ class OutTableManifestOptionsTest extends TestCase
                         false,
                         true,
                         null,
-                        ['KBC.description' => 'Primary key column']
+                        ['KBC.description' => 'Primary key column'],
                     ))
                     ->setDestination('my.table')
                     ->setIncremental(true)
@@ -290,7 +290,7 @@ class OutTableManifestOptionsTest extends TestCase
                         true,
                     );
                     (new ManifestOptions())
-                        ->setSchema($schema)
+                        ->addSchema($schema)
                         ->setColumns(['id', 'name']);
                 },
             ],
@@ -299,7 +299,7 @@ class OutTableManifestOptionsTest extends TestCase
                 function (): void {
                     (new ManifestOptions())
                         ->setColumns(['id', 'name'])
-                        ->setSchema(new ManifestOptionsSchema(
+                        ->addSchema(new ManifestOptionsSchema(
                             'id',
                             ['base' => ['type' => 'INTEGER', 'length' => '11', 'default' => '123']],
                             false,
@@ -317,7 +317,7 @@ class OutTableManifestOptionsTest extends TestCase
                         true,
                     );
                     (new ManifestOptions())
-                        ->setSchema($schema)
+                        ->addSchema($schema)
                         ->setMetadata([
                             ['key' => 'sample', 'value' => 'data'],
                         ]);
@@ -333,7 +333,7 @@ class OutTableManifestOptionsTest extends TestCase
                         true,
                     );
                     (new ManifestOptions())
-                        ->setSchema($schema)
+                        ->addSchema($schema)
                         ->setColumnMetadata([
                             'id' => [
                                 ['key' => 'description', 'value' => 'ID column'],
