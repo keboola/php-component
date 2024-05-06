@@ -58,7 +58,7 @@ class OutTableManifestOptionsTest extends TestCase
                             'value' => 'A different value',
                         ],
                     ],
-                    'column_metadata' => (object) [
+                    'column_metadata' => (object)[
                         '123456' => [
                             [
                                 'key' => 'int.column.name',
@@ -76,7 +76,7 @@ class OutTableManifestOptionsTest extends TestCase
                 (new ManifestOptions())
                     ->setEnclosure('_')
                     ->setDelimiter('|')
-                    ->setColumnMetadata((object) [
+                    ->setColumnMetadata((object)[
                         '123456' => [
                             [
                                 'value' => 'Int column name',
@@ -103,6 +103,48 @@ class OutTableManifestOptionsTest extends TestCase
                             'key' => 'another.arbitrary.key',
                         ],
                     ])
+                    ->setPrimaryKeyColumns(['id']),
+            ],
+            'new native datatypes manifest' => [
+                [
+                    'destination' => 'my.table',
+                    'primary_key' => ['id'],
+                    'delimiter' => '|',
+                    'enclosure' => '_',
+                    'manifest_type' => 'output',
+                    'schema' => [
+                        [
+                            'name' => 'id',
+                            'data_type' => [
+                                'base' => ['type' => 'INTEGER', 'length' => '11', 'default' => '123'],
+                                'bigquery' => ['type' => 'VARCHAR', 'length' => '255'],
+                            ],
+                            'nullable' => false,
+                            'primary_key' => true,
+                            'metadata' => [
+                                'KBC.description' => 'Primary key column',
+                            ],
+                        ],
+                    ],
+                    'incremental' => true,
+                ],
+                (new ManifestOptions())
+                    ->setEnclosure('_')
+                    ->setDelimiter('|')
+                    ->setManifestType('output')
+                    ->setSchema(new ManifestOptionsSchema(
+                        'id',
+                        [
+                            'base' => ['type' => 'INTEGER', 'length' => '11', 'default' => '123'],
+                            'bigquery' => ['type' => 'VARCHAR', 'length' => '255'],
+                        ],
+                        false,
+                        true,
+                        null,
+                        ['KBC.description' => 'Primary key column']
+                    ))
+                    ->setDestination('my.table')
+                    ->setIncremental(true)
                     ->setPrimaryKeyColumns(['id']),
             ],
         ];
