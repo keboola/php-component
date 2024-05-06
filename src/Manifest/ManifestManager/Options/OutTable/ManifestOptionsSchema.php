@@ -36,6 +36,30 @@ class ManifestOptionsSchema
         $this->setMetadata($metadata);
     }
 
+    public function toArray(): array
+    {
+        $result = [
+            'name' => $this->name,
+            'data_type' => [],
+            'nullable' => $this->nullable,
+            'primary_key' => $this->primaryKey,
+        ];
+
+        foreach ($this->dataType as $backendType => $dataType) {
+            $result['data_type'][$backendType] = $dataType->toArray();
+        }
+
+        if (isset($this->description)) {
+            $result['description'] = $this->description;
+        }
+
+        if (isset($this->metadata)) {
+            $result['metadata'] = $this->metadata;
+        }
+
+        return $result;
+    }
+
     private function setDataType(array $dataTypes): void
     {
         foreach ($dataTypes as $backendType => $config) {

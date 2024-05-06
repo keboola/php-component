@@ -16,4 +16,21 @@ class ManifestOptionsSchemaDataType
         $this->length = $length;
         $this->default = $default;
     }
+
+    public function toArray(): array
+    {
+        $result = [
+            'type' => $this->type,
+        ];
+
+        if (isset($this->length)) {
+            $result['length'] = $this->length;
+        }
+
+        if (isset($this->default)) {
+            $result['default'] = $this->default;
+        }
+
+        return $result;
+    }
 }

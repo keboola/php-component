@@ -63,7 +63,7 @@ class ManifestOptions
             $result['columns'] = $this->columns;
         }
         if (isset($this->schema)) {
-            $result['schema'] = $this->schema;
+            $result['schema'] = $this->schema->toArray();
         }
         if (isset($this->incremental)) {
             $result['incremental'] = $this->incremental;
@@ -75,16 +75,16 @@ class ManifestOptions
             $result['column_metadata'] = $this->columnMetadata;
         }
         if (isset($this->manifestType)) {
-            $result['manifestType'] = $this->manifestType;
+            $result['manifest_type'] = $this->manifestType;
         }
         if (isset($this->hasHeader)) {
-            $result['hasHeader'] = $this->hasHeader;
+            $result['has_header'] = $this->hasHeader;
         }
         if (isset($this->description)) {
             $result['description'] = $this->description;
         }
         if (isset($this->tableMetadata)) {
-            $result['tableMetadata'] = $this->tableMetadata;
+            $result['table_metadata'] = $this->tableMetadata;
         }
         return $result;
     }
