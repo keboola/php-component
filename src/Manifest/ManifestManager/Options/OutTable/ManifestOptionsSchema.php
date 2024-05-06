@@ -104,4 +104,9 @@ class ManifestOptionsSchema
 
         $this->metadata = $metadata;
     }
+
+    public function isPrimaryKeySet(): bool
+    {
+        return $this->primaryKey;
+    }
 }

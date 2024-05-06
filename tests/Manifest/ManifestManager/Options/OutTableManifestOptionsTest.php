@@ -108,7 +108,6 @@ class OutTableManifestOptionsTest extends TestCase
             'new native datatypes manifest' => [
                 [
                     'destination' => 'my.table',
-                    'primary_key' => ['id'],
                     'delimiter' => '|',
                     'enclosure' => '_',
                     'manifest_type' => 'output',
@@ -144,8 +143,7 @@ class OutTableManifestOptionsTest extends TestCase
                         ['KBC.description' => 'Primary key column'],
                     ))
                     ->setDestination('my.table')
-                    ->setIncremental(true)
-                    ->setPrimaryKeyColumns(['id']),
+                    ->setIncremental(true),
             ],
         ];
     }
@@ -374,6 +372,34 @@ class OutTableManifestOptionsTest extends TestCase
                         'Primary key column',
                         ['KBC.description' => 'Primary key column'],
                     );
+                },
+            ],
+            'primary key and schema primary key set together' => [
+                'Only one of "primary_key" or "schema[].primary_key" can be defined.',
+                function (): void {
+                    $schema = new ManifestOptionsSchema(
+                        'id',
+                        ['base' => ['type' => 'INTEGER', 'length' => '11', 'default' => '123']],
+                        false,
+                        true,
+                    );
+                    (new ManifestOptions())
+                        ->setPrimaryKeyColumns(['id'])
+                        ->addSchema($schema);
+                },
+            ],
+            'schema primary key and primary key set together' => [
+                'Only one of "primary_key" or "schema[].primary_key" can be defined.',
+                function (): void {
+                    $schema = new ManifestOptionsSchema(
+                        'id',
+                        ['base' => ['type' => 'INTEGER', 'length' => '11', 'default' => '123']],
+                        false,
+                        true,
+                    );
+                    (new ManifestOptions())
+                        ->addSchema($schema)
+                        ->setPrimaryKeyColumns(['id']);
                 },
             ],
         ];

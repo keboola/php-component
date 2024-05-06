@@ -103,6 +103,16 @@ class ManifestOptions
      */
     public function setPrimaryKeyColumns(array $primaryKeyColumns): ManifestOptions
     {
+        if ($this->schema) {
+            foreach ($this->schema as $schema) {
+                if ($schema->isPrimaryKeySet()) {
+                    throw new OptionsValidationException(
+                        'Only one of "primary_key" or "schema[].primary_key" can be defined.',
+                    );
+                }
+            }
+        }
+
         $this->primaryKeyColumns = $primaryKeyColumns;
         return $this;
     }
@@ -124,6 +134,13 @@ class ManifestOptions
         if ($this->columns) {
             throw new OptionsValidationException('Cannot set schema when columns are set');
         }
+
+        if (!empty($this->primaryKeyColumns) && $schema->isPrimaryKeySet()) {
+            throw new OptionsValidationException(
+                'Only one of "primary_key" or "schema[].primary_key" can be defined.',
+            );
+        }
+
         $this->schema[] = $schema;
         return $this;
     }
