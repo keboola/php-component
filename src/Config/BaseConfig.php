@@ -31,7 +31,7 @@ class BaseConfig implements ConfigInterface
      */
     public function __construct(
         array $config,
-        ?ConfigurationInterface $configDefinition = null
+        ?ConfigurationInterface $configDefinition = null,
     ) {
         $this->setConfigDefinition($configDefinition);
         $this->setConfig($config);
@@ -112,7 +112,7 @@ class BaseConfig implements ConfigInterface
                 if ($default === null) {
                     throw new InvalidArgumentException(sprintf(
                         'Key "%s" does not exist',
-                        implode('.', $keys)
+                        implode('.', $keys),
                     ));
                 }
                 return $default;

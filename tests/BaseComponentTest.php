@@ -20,7 +20,7 @@ class BaseComponentTest extends TestCase
     {
         putenv(sprintf(
             'KBC_DATADIR=%s',
-            __DIR__ . '/fixtures/base-component-data-dir/state-file'
+            __DIR__ . '/fixtures/base-component-data-dir/state-file',
         ));
 
         $baseComponent = new BaseComponent($this->getLogger());
@@ -51,7 +51,7 @@ class BaseComponentTest extends TestCase
         $logger = $this->getLogger();
         putenv(sprintf(
             'KBC_DATADIR=%s',
-            __DIR__ . '/fixtures/base-component-data-dir/sync-action'
+            __DIR__ . '/fixtures/base-component-data-dir/sync-action',
         ));
         $baseComponent = new class ($logger) extends BaseComponent
         {
@@ -82,7 +82,7 @@ class BaseComponentTest extends TestCase
         $logger->setHandlers([$handler]);
         putenv(sprintf(
             'KBC_DATADIR=%s',
-            __DIR__ . '/fixtures/base-component-data-dir/run-action'
+            __DIR__ . '/fixtures/base-component-data-dir/run-action',
         ));
         $baseComponent = new class ($logger) extends BaseComponent
         {
@@ -105,7 +105,7 @@ class BaseComponentTest extends TestCase
         $logger->setHandlers([$handler]);
         putenv(sprintf(
             'KBC_DATADIR=%s',
-            __DIR__ . '/fixtures/base-component-data-dir/empty-config-file'
+            __DIR__ . '/fixtures/base-component-data-dir/empty-config-file',
         ));
         $baseComponent = new class ($logger) extends BaseComponent
         {
@@ -125,7 +125,7 @@ class BaseComponentTest extends TestCase
     {
         putenv(sprintf(
             'KBC_DATADIR=%s',
-            __DIR__ . '/fixtures/base-component-data-dir/empty-state-file'
+            __DIR__ . '/fixtures/base-component-data-dir/empty-state-file',
         ));
 
         $logger = new Logger();
@@ -139,7 +139,7 @@ class BaseComponentTest extends TestCase
     {
         putenv(sprintf(
             'KBC_DATADIR=%s',
-            __DIR__ . '/fixtures/base-component-data-dir/undefined-state-file'
+            __DIR__ . '/fixtures/base-component-data-dir/undefined-state-file',
         ));
 
         $baseComponent = new BaseComponent($this->getLogger());
@@ -165,7 +165,7 @@ class BaseComponentTest extends TestCase
     {
         putenv(sprintf(
             'KBC_DATADIR=%s',
-            __DIR__ . '/fixtures/base-component-data-dir/run-action'
+            __DIR__ . '/fixtures/base-component-data-dir/run-action',
         ));
         $logger = new Logger();
         $this->expectException(BaseComponentException::class);
@@ -183,7 +183,7 @@ class BaseComponentTest extends TestCase
     {
         putenv(sprintf(
             'KBC_DATADIR=%s',
-            __DIR__ . '/fixtures/base-component-data-dir/run-action'
+            __DIR__ . '/fixtures/base-component-data-dir/run-action',
         ));
         $this->expectException(BaseComponentException::class);
         $this->expectExceptionMessage('Method "run" cannot be public since version 7');

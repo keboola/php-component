@@ -216,7 +216,7 @@ class ManifestOptions
                 throw new OptionsValidationException(sprintf(
                     'Metadata item #%s must be an array, found "%s"',
                     $key,
-                    gettype($oneKeyAndValue)
+                    gettype($oneKeyAndValue),
                 ));
             }
             $keys = array_keys($oneKeyAndValue);
@@ -224,12 +224,12 @@ class ManifestOptions
             if ($keys !== ['key', 'value']) {
                 throw new OptionsValidationException(sprintf(
                     'Metadata item #%s must have only "key" and "value" keys',
-                    $key
+                    $key,
                 ));
             }
             if ($oneKeyAndValue['key'] === 'KBC.description' && isset($this->description)) {
                 throw new OptionsValidationException(
-                    'Only one of "description" or "metadata.KBC.description" can be defined.'
+                    'Only one of "description" or "metadata.KBC.description" can be defined.',
                 );
             }
         }

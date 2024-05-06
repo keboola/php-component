@@ -47,7 +47,7 @@ class JsonHelper
 
         $result = @file_put_contents(
             $filePath,
-            self::encode($data, $formatted)
+            self::encode($data, $formatted),
         );
 
         if ($result === false) {

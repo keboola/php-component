@@ -88,7 +88,7 @@ class BaseComponent
             /** @var BaseConfig $config */
             $config = new $configClass(
                 $this->getRawConfig(),
-                new $configDefinitionClass()
+                new $configDefinitionClass(),
             );
             $this->config = $config;
         } catch (InvalidConfigurationException $e) {
@@ -139,7 +139,7 @@ class BaseComponent
     {
         JsonHelper::writeFile(
             $this->getDataDir() . '/out/state.json',
-            $state
+            $state,
         );
     }
 

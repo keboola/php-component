@@ -31,7 +31,7 @@ class Component extends BaseComponent
         $this->getManifestManager()->writeFileManifest(
             'out-file.csv',
             (new OutFileManifestOptions())
-                ->setTags(['tag1', 'tag2'])
+                ->setTags(['tag1', 'tag2']),
         );
 
         // write manifest for output table
@@ -39,7 +39,7 @@ class Component extends BaseComponent
             'data.csv',
             (new ManifestOptions())
                 ->setPrimaryKeyColumns(['id'])
-                ->setDestination('out.report')
+                ->setDestination('out.report'),
         );
     }
 

@@ -20,7 +20,7 @@ class ManifestManagerTest extends TestCase
         $manifestManager = new ManifestManager('/data');
         $this->assertSame(
             $expected,
-            $manifestManager->getManifestFilename($filename)
+            $manifestManager->getManifestFilename($filename),
         );
     }
 
@@ -59,12 +59,12 @@ class ManifestManagerTest extends TestCase
                 ->setIsPublic(false)
                 ->setIsPermanent(false)
                 ->setNotify(true)
-                ->setIsEncrypted(false)
+                ->setIsEncrypted(false),
         );
 
         $this->assertJsonFileEqualsJsonFile(
             __DIR__ . '/fixtures/expected-file.manifest',
-            $dataDir . '/out/files/file.jpg.manifest'
+            $dataDir . '/out/files/file.jpg.manifest',
         );
     }
 
@@ -144,12 +144,12 @@ class ManifestManagerTest extends TestCase
 
         $manifestManager->writeTableManifest(
             'my-table',
-            $options
+            $options,
         );
 
         $this->assertJsonFileEqualsJsonFile(
             $expected,
-            $dataDir . '/out/tables/my-table.manifest'
+            $dataDir . '/out/tables/my-table.manifest',
         );
     }
 

@@ -84,7 +84,7 @@ class LoggerTest extends TestCase
         $this->assertSame(
             "Error!\n".
             "Critical! {\"context\":\"critical\"} \n",
-            StreamTester::getContent()
+            StreamTester::getContent(),
         );
     }
 
@@ -136,11 +136,11 @@ class LoggerTest extends TestCase
         Assert::assertStringContainsString('Error!', StreamTester::getContent());
         Assert::assertStringContainsString(
             'CRITICAL: Critical! {"context":"critical"}',
-            StreamTester::getContent()
+            StreamTester::getContent(),
         );
         Assert::assertStringContainsString(
             'DEBUG: Debug message! {"context":"debug context"}',
-            StreamTester::getContent()
+            StreamTester::getContent(),
         );
 
         $this->assertSame(Logger::CRITICAL, $handlerCritical->getLevel());

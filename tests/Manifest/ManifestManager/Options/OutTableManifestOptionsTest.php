@@ -245,7 +245,7 @@ class OutTableManifestOptionsTest extends TestCase
                         'id',
                         ['base' => ['type' => 'INTEGER', 'length' => '11', 'default' => '123']],
                         false,
-                        true
+                        true,
                     );
                     (new ManifestOptions())
                         ->setSchema($schema)
@@ -261,7 +261,7 @@ class OutTableManifestOptionsTest extends TestCase
                             'id',
                             ['base' => ['type' => 'INTEGER', 'length' => '11', 'default' => '123']],
                             false,
-                            true
+                            true,
                         ));
                 },
             ],
@@ -272,12 +272,12 @@ class OutTableManifestOptionsTest extends TestCase
                         'id',
                         ['base' => ['type' => 'INTEGER', 'length' => '11', 'default' => '123']],
                         false,
-                        true
+                        true,
                     );
                     (new ManifestOptions())
                         ->setSchema($schema)
                         ->setMetadata([
-                            ['key' => 'sample', 'value' => 'data']
+                            ['key' => 'sample', 'value' => 'data'],
                         ]);
                 },
             ],
@@ -288,14 +288,14 @@ class OutTableManifestOptionsTest extends TestCase
                         'id',
                         ['base' => ['type' => 'INTEGER', 'length' => '11', 'default' => '123']],
                         false,
-                        true
+                        true,
                     );
                     (new ManifestOptions())
                         ->setSchema($schema)
                         ->setColumnMetadata([
                             'id' => [
-                                ['key' => 'description', 'value' => 'ID column']
-                            ]
+                                ['key' => 'description', 'value' => 'ID column'],
+                            ],
                         ]);
                 },
             ],
@@ -306,7 +306,7 @@ class OutTableManifestOptionsTest extends TestCase
                         'id',
                         ['unsupported_type' => ['type' => 'INTEGER', 'length' => '11', 'default' => '123']],
                         false,
-                        true
+                        true,
                     );
                 },
             ],
@@ -317,7 +317,7 @@ class OutTableManifestOptionsTest extends TestCase
                         '',
                         ['base' => ['type' => 'INTEGER', 'length' => '11', 'default' => '123']],
                         false,
-                        true
+                        true,
                     );
                 },
             ],
@@ -330,7 +330,7 @@ class OutTableManifestOptionsTest extends TestCase
                         false,
                         true,
                         'Primary key column',
-                        ['KBC.description' => 'Primary key column']
+                        ['KBC.description' => 'Primary key column'],
                     );
                 },
             ],

@@ -37,7 +37,7 @@
     },
     "require-dev": {
         "devedge/sami-github": "^1.0",
-        "keboola/coding-standard": "^14.0",
+        "keboola/coding-standard": "^15.0",
         "keboola/php-temp": "^2.0",
         "phpstan/phpstan": "^1.4",
         "phpunit/phpunit": "^9.5"

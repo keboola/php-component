@@ -51,7 +51,7 @@ class BaseConfigTest extends TestCase
                 [
                     'The child node "requiredValue" at path "root.parameters" must be configured.',
                     'The child config "requiredValue" under "root.parameters" must be configured.',
-                ]
+                ],
             );
         }
     }
@@ -106,7 +106,7 @@ class BaseConfigTest extends TestCase
                 [
                     'The child node "requiredRootNode" at path "root" must be configured.',
                     'The child config "requiredRootNode" under "root" must be configured.',
-                ]
+                ],
             );
         }
     }
@@ -187,11 +187,11 @@ class BaseConfigTest extends TestCase
                     'dolor' => 'value',
                 ],
             ],
-            $config->getParameters()
+            $config->getParameters(),
         );
         $this->assertEquals(
             'run',
-            $config->getAction()
+            $config->getAction(),
         );
         $this->assertEquals(
             [
@@ -203,23 +203,23 @@ class BaseConfigTest extends TestCase
                     ],
                 ],
             ],
-            $config->getAuthorization()
+            $config->getAuthorization(),
         );
         $this->assertEquals(
             'value',
-            $config->getOAuthApiData()
+            $config->getOAuthApiData(),
         );
         $this->assertEquals(
             'secret',
-            $config->getOAuthApiAppSecret()
+            $config->getOAuthApiAppSecret(),
         );
         $this->assertEquals(
             'key',
-            $config->getOAuthApiAppKey()
+            $config->getOAuthApiAppKey(),
         );
         $this->assertEquals(
             ['param1' => 'value1'],
-            $config->getImageParameters()
+            $config->getImageParameters(),
         );
         $this->assertEquals(
             [
@@ -230,11 +230,11 @@ class BaseConfigTest extends TestCase
                     'files' => [],
                 ],
             ],
-            $config->getStorage()
+            $config->getStorage(),
         );
         $this->assertEquals(
             'value',
-            $config->getValue(['parameters', 'ipsum', 'dolor'])
+            $config->getValue(['parameters', 'ipsum', 'dolor']),
         );
     }
 

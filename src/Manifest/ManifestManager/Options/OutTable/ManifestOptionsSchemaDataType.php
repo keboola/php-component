@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Keboola\Component\Manifest\ManifestManager\Options\OutTable;
 
-
 class ManifestOptionsSchemaDataType
 {
     private string $type;
