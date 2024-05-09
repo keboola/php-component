@@ -5,6 +5,13 @@ declare(strict_types=1);
 namespace Keboola\Component\Manifest\ManifestManager\Options\OutTable;
 
 use Keboola\Component\Manifest\ManifestManager\Options\OptionsValidationException;
+use Keboola\Component\Manifest\ManifestManager\Options\OutTable\Serializer\LegacyManifestConverter;
+use Keboola\Component\Manifest\ManifestManager\Options\OutTable\Serializer\LegacyManifestNormalizer;
+use Keboola\Component\Manifest\ManifestManager\Options\OutTable\Serializer\NewNativeTypesManifestConverter;
+use Symfony\Component\Serializer\Encoder\JsonEncoder;
+use Symfony\Component\Serializer\Normalizer\AbstractObjectNormalizer;
+use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
+use Symfony\Component\Serializer\Serializer;
 use function array_keys;
 use function gettype;
 use function is_array;
@@ -42,54 +49,58 @@ class ManifestOptions
 
     private ?array $tableMetadata = null;
 
-    /**
-     * @return mixed[]
-     */
-    public function toArray(): array
+    private static function getLegacySerializer(): Serializer
     {
-        $result = [];
-        if (isset($this->destination)) {
-            $result['destination'] = $this->destination;
+        $normalizer = new ObjectNormalizer(
+            null,
+            new LegacyManifestConverter(),
+            null,
+            null,
+            null,
+            null,
+            [AbstractObjectNormalizer::SKIP_NULL_VALUES => true],
+        );
+        $encoders = [new JsonEncoder()];
+
+        return new Serializer([new LegacyManifestNormalizer($normalizer), $normalizer], $encoders);
+    }
+
+    private static function getNewNativeTypesSerializer(): Serializer
+    {
+        $nameConverter = new NewNativeTypesManifestConverter();
+        $normalizer = new ObjectNormalizer(null, $nameConverter);
+        $encoders = [new JsonEncoder()];
+
+        return new Serializer([$normalizer], $encoders);
+    }
+
+    public function toArray(bool $legacy = true): array
+    {
+        $serializer = $legacy ? self::getLegacySerializer() : self::getNewNativeTypesSerializer();
+
+        return (array) $serializer->normalize($this, null, [AbstractObjectNormalizer::SKIP_NULL_VALUES => true]);
+    }
+
+    public static function fromArray(array $data, bool $legacy = true): ManifestOptions
+    {
+        if ($legacy) {
+            $serializer = self::getLegacySerializer();
+        } else {
+            $serializer = self::getNewNativeTypesSerializer();
         }
-        if (isset($this->primaryKeyColumns)) {
-            $result['primary_key'] = $this->primaryKeyColumns;
-        }
-        if (isset($this->delimiter)) {
-            $result['delimiter'] = $this->delimiter;
-        }
-        if (isset($this->enclosure)) {
-            $result['enclosure'] = $this->enclosure;
-        }
-        if (isset($this->columns)) {
-            $result['columns'] = $this->columns;
-        }
-        if (isset($this->schema)) {
-            foreach ($this->schema as $schema) {
-                $result['schema'][] = $schema->toArray();
+
+        /** @var ManifestOptions $manifestOptions */
+        $manifestOptions = $serializer->denormalize($data, self::class);
+
+        if (isset($data['schema']) && is_array($data['schema'])) {
+            $schemas = [];
+            foreach ($data['schema'] as $schemaData) {
+                $schemas[] = ManifestOptionsSchema::fromArray($schemaData);
             }
+            $manifestOptions->setSchema($schemas);
         }
-        if (isset($this->incremental)) {
-            $result['incremental'] = $this->incremental;
-        }
-        if (isset($this->metadata)) {
-            $result['metadata'] = $this->metadata;
-        }
-        if (isset($this->columnMetadata)) {
-            $result['column_metadata'] = $this->columnMetadata;
-        }
-        if (isset($this->manifestType)) {
-            $result['manifest_type'] = $this->manifestType;
-        }
-        if (isset($this->hasHeader)) {
-            $result['has_header'] = $this->hasHeader;
-        }
-        if (isset($this->description)) {
-            $result['description'] = $this->description;
-        }
-        if (isset($this->tableMetadata)) {
-            $result['table_metadata'] = $this->tableMetadata;
-        }
-        return $result;
+
+        return $manifestOptions;
     }
 
     public function setDestination(string $destination): ManifestOptions
@@ -105,7 +116,7 @@ class ManifestOptions
     {
         if ($this->schema) {
             foreach ($this->schema as $schema) {
-                if ($schema->isPrimaryKeySet()) {
+                if ($schema->isPrimaryKey()) {
                     throw new OptionsValidationException(
                         'Only one of "primary_key" or "schema[].primary_key" can be defined.',
                     );
@@ -135,13 +146,34 @@ class ManifestOptions
             throw new OptionsValidationException('Cannot set schema when columns are set');
         }
 
-        if (!empty($this->primaryKeyColumns) && $schema->isPrimaryKeySet()) {
+        if (!empty($this->primaryKeyColumns) && $schema->isPrimaryKey()) {
             throw new OptionsValidationException(
                 'Only one of "primary_key" or "schema[].primary_key" can be defined.',
             );
         }
 
         $this->schema[] = $schema;
+        return $this;
+    }
+
+    /**
+     * @param ManifestOptionsSchema[] $schemas
+     */
+    public function setSchema(array $schemas): ManifestOptions
+    {
+        if ($this->columns) {
+            throw new OptionsValidationException('Cannot set schema when columns are set');
+        }
+
+        foreach ($schemas as $schema) {
+            if (!empty($this->primaryKeyColumns) && $schema->isPrimaryKey()) {
+                throw new OptionsValidationException(
+                    'Only one of "primary_key" or "schema[].primary_key" can be defined.',
+                );
+            }
+        }
+
+        $this->schema = $schemas;
         return $this;
     }
 
@@ -253,5 +285,68 @@ class ManifestOptions
                 );
             }
         }
+    }
+
+    public function getDestination(): string
+    {
+        return $this->destination;
+    }
+
+    public function isIncremental(): bool
+    {
+        return $this->incremental;
+    }
+
+    public function getMetadata(): ?array
+    {
+        return $this->metadata;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getColumnMetadata()
+    {
+        return $this->columnMetadata;
+    }
+
+    public function getDelimiter(): string
+    {
+        return $this->delimiter;
+    }
+
+    public function getEnclosure(): string
+    {
+        return $this->enclosure;
+    }
+
+    public function getManifestType(): ?string
+    {
+        return $this->manifestType;
+    }
+
+    public function getHasHeader(): ?bool
+    {
+        return $this->hasHeader;
+    }
+
+    public function getTableMetadata(): ?array
+    {
+        return $this->tableMetadata;
+    }
+
+    public function getSchema(): ?array
+    {
+        return $this->schema;
+    }
+
+    public function getPrimaryKeyColumns(): array
+    {
+        return $this->primaryKeyColumns;
+    }
+
+    public function getColumns(): ?array
+    {
+        return $this->columns;
     }
 }

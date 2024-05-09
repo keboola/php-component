@@ -17,20 +17,33 @@ class ManifestOptionsSchemaDataType
         $this->default = $default;
     }
 
-    public function toArray(): array
+    public function getDefault(): ?string
     {
-        $result = [
-            'type' => $this->type,
-        ];
+        return $this->default;
+    }
 
-        if (isset($this->length)) {
-            $result['length'] = $this->length;
-        }
+    public function getLength(): ?string
+    {
+        return $this->length;
+    }
 
-        if (isset($this->default)) {
-            $result['default'] = $this->default;
-        }
+    public function getType(): string
+    {
+        return $this->type;
+    }
 
-        return $result;
+    public function setType(string $type): void
+    {
+        $this->type = $type;
+    }
+
+    public function setLength(?string $length): void
+    {
+        $this->length = $length;
+    }
+
+    public function setDefault(?string $default): void
+    {
+        $this->default = $default;
     }
 }

@@ -21,6 +21,15 @@ class OutTableManifestOptionsTest extends TestCase
     }
 
     /**
+     * @dataProvider provideOptions
+     * @param mixed[] $options
+     */
+    public function testFromArray(array $options, ManifestOptions $expected): void
+    {
+        $this->assertEquals($expected, ManifestOptions::fromArray($options));
+    }
+
+    /**
      * @return mixed[][]
      */
     public function provideOptions(): array

@@ -36,31 +36,19 @@ class ManifestOptionsSchema
         $this->setMetadata($metadata);
     }
 
-    public function toArray(): array
+    public static function fromArray(array $data): self
     {
-        $result = [
-            'name' => $this->name,
-            'data_type' => [],
-            'nullable' => $this->nullable,
-            'primary_key' => $this->primaryKey,
-        ];
-
-        foreach ($this->dataType as $backendType => $dataType) {
-            $result['data_type'][$backendType] = $dataType->toArray();
-        }
-
-        if (isset($this->description)) {
-            $result['description'] = $this->description;
-        }
-
-        if (isset($this->metadata)) {
-            $result['metadata'] = $this->metadata;
-        }
-
-        return $result;
+        return new self(
+            $data['name'],
+            $data['data_type'],
+            $data['nullable'],
+            $data['primary_key'],
+            $data['description'] ?? null,
+            $data['metadata'],
+        );
     }
 
-    private function setDataType(array $dataTypes): void
+    public function setDataType(array $dataTypes): void
     {
         foreach ($dataTypes as $backendType => $config) {
             if (!in_array($backendType, self::ALLOWED_DATA_TYPES_BACKEND)) {
@@ -76,7 +64,7 @@ class ManifestOptionsSchema
         }
     }
 
-    private function setName(string $name): void
+    public function setName(string $name): void
     {
         if (empty($name)) {
             throw new OptionsValidationException('Name cannot be empty.');
@@ -84,7 +72,7 @@ class ManifestOptionsSchema
         $this->name = $name;
     }
 
-    private function setDescription(?string $description): void
+    public function setDescription(?string $description): void
     {
         if (isset($description) && isset($this->metadata['KBC.description'])) {
             throw new OptionsValidationException(
@@ -94,7 +82,7 @@ class ManifestOptionsSchema
         $this->description = $description;
     }
 
-    private function setMetadata(?array $metadata): void
+    public function setMetadata(?array $metadata): void
     {
         if (isset($this->description) && isset($metadata['KBC.description'])) {
             throw new OptionsValidationException(
@@ -105,8 +93,43 @@ class ManifestOptionsSchema
         $this->metadata = $metadata;
     }
 
-    public function isPrimaryKeySet(): bool
+    public function isNullable(): bool
+    {
+        return $this->nullable;
+    }
+
+    public function isPrimaryKey(): bool
     {
         return $this->primaryKey;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function getMetadata(): ?array
+    {
+        return $this->metadata;
+    }
+
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
+    public function getDataType(): array
+    {
+        return $this->dataType;
+    }
+
+    public function setNullable(bool $nullable): void
+    {
+        $this->nullable = $nullable;
+    }
+
+    public function setPrimaryKey(bool $primaryKey): void
+    {
+        $this->primaryKey = $primaryKey;
     }
 }
