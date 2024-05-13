@@ -349,4 +349,9 @@ class ManifestOptions
     {
         return $this->columns;
     }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
 }

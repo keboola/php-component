@@ -7,6 +7,7 @@ namespace Keboola\Component\Tests\Manifest;
 use Keboola\Component\Manifest\ManifestManager;
 use Keboola\Component\Manifest\ManifestManager\Options\OutFileManifestOptions;
 use Keboola\Component\Manifest\ManifestManager\Options\OutTable\ManifestOptions;
+use Keboola\Component\Manifest\ManifestManager\Options\OutTable\ManifestOptionsSchema;
 use Keboola\Temp\Temp;
 use PHPUnit\Framework\TestCase;
 
@@ -192,6 +193,55 @@ class ManifestManagerTest extends TestCase
                         ],
                     ])
                     ->setPrimaryKeyColumns(['id']),
+            ],
+            'write new datatype manifest' => [
+                __DIR__ . '/fixtures/expectedNewDataTypesManifest.manifest',
+                (new ManifestOptions())
+                    ->setDestination('my-table')
+                    ->setIncremental(true)
+                    ->setManifestType('output')
+                    ->setHasHeader(true)
+                    ->setDescription('Best table')
+                    ->setSchema([
+                        new ManifestOptionsSchema(
+                            'id',
+                            [
+                                'base' => [
+                                    'type' => 'INTEGER',
+                                    'length' => '11',
+                                    'default' => '123',
+                                ],
+                            ],
+                            false,
+                            true,
+                            'This is a primary key',
+                            ['yet.another.key' => 'Some other value'],
+                        ),
+                        new ManifestOptionsSchema(
+                            'number',
+                            [
+                                'base' => [
+                                    'type' => 'VARCHAR',
+                                    'length' => '255',
+                                ],
+                            ],
+                            true,
+                        ),
+                        new ManifestOptionsSchema(
+                            'other_column',
+                            [
+                                'base' => [
+                                    'type' => 'VARCHAR',
+                                    'length' => '255',
+                                ],
+                            ],
+                            true,
+                        ),
+                    ])
+                    ->setTableMetadata([
+                        'an.arbitrary.key' => 'Some value',
+                        'another.arbitrary.key' => 'Another value',
+                    ]),
             ],
         ];
     }
