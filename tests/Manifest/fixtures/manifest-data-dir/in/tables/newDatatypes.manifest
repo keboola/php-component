@@ -1,0 +1,51 @@
+{
+    "destination": "my-table",
+    "incremental": true,
+    "manifest_type": "output",
+    "has_header": true,
+    "description": "Best table",
+    "schema": [
+        {
+            "name": "id",
+            "data_type": {
+                "base": {
+                    "type": "INTEGER",
+                    "length": "11",
+                    "default": "123"
+                }
+            },
+            "nullable": false,
+            "primary_key": true,
+            "description": "This is a primary key",
+            "metadata": {
+                "yet.another.key": "Some other value"
+            }
+        },
+        {
+            "name": "number",
+            "data_type": {
+                "base": {
+                    "type": "VARCHAR",
+                    "length": "255"
+                }
+            },
+            "primary_key": false,
+            "nullable": true
+        },
+        {
+            "name": "other_column",
+            "data_type": {
+                "base": {
+                    "type": "VARCHAR",
+                    "length": "255"
+                }
+            },
+            "primary_key": false,
+            "nullable": true
+        }
+    ],
+    "table_metadata": {
+        "an.arbitrary.key": "Some value",
+        "another.arbitrary.key": "Another value"
+    }
+}

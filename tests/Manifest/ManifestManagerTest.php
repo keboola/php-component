@@ -119,6 +119,63 @@ class ManifestManagerTest extends TestCase
         $this->assertSame($expectedManifest, $manager->getTableManifest('products'));
     }
 
+    public function testLoadTableManifestAsObject(): void
+    {
+        $manager = new ManifestManager(__DIR__ . '/fixtures/manifest-data-dir');
+
+        $expectedManifest = (new ManifestOptions())
+            ->setDestination('my-table')
+            ->setIncremental(true)
+            ->setManifestType('output')
+            ->setHasHeader(true)
+            ->setDescription('Best table')
+            ->setSchema([
+                new ManifestOptionsSchema(
+                    'id',
+                    [
+                        'base' => [
+                            'type' => 'INTEGER',
+                            'length' => '11',
+                            'default' => '123',
+                        ],
+                    ],
+                    false,
+                    true,
+                    'This is a primary key',
+                    ['yet.another.key' => 'Some other value'],
+                ),
+                new ManifestOptionsSchema(
+                    'number',
+                    [
+                        'base' => [
+                            'type' => 'VARCHAR',
+                            'length' => '255',
+                        ],
+                    ],
+                    true,
+                ),
+                new ManifestOptionsSchema(
+                    'other_column',
+                    [
+                        'base' => [
+                            'type' => 'VARCHAR',
+                            'length' => '255',
+                        ],
+                    ],
+                    true,
+                ),
+            ])
+            ->setTableMetadata([
+                'an.arbitrary.key' => 'Some value',
+                'another.arbitrary.key' => 'Another value',
+            ]);
+
+        $this->assertEquals(
+            $expectedManifest,
+            $manager->getTableManifest('newDataTypes', true),
+        );
+    }
+
     /**
      * @return string[][]
      */

@@ -44,7 +44,7 @@ class ManifestOptionsSchema
             $data['nullable'],
             $data['primary_key'],
             $data['description'] ?? null,
-            $data['metadata'],
+            $data['metadata'] ?? null,
         );
     }
 

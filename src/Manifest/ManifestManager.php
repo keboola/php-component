@@ -61,11 +61,12 @@ class ManifestManager
     /**
      * @return mixed
      */
-    public function getTableManifest(string $tableName)
+    public function getTableManifest(string $tableName, bool $asObject = false)
     {
         $baseDir = implode('/', [$this->dataDir, 'in', 'tables']);
+        $manifestArray = $this->loadManifest($tableName, $baseDir);
 
-        return $this->loadManifest($tableName, $baseDir);
+        return $asObject ? ManifestOptions::fromArray($manifestArray) : $manifestArray;
     }
 
     /**
