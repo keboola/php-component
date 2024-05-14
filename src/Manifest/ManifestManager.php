@@ -65,6 +65,7 @@ class ManifestManager
     {
         $baseDir = implode('/', [$this->dataDir, 'in', 'tables']);
         $manifestArray = $this->loadManifest($tableName, $baseDir);
+        var_dump($manifestArray);
 
         return $asObject ? ManifestOptions::fromArray($manifestArray) : $manifestArray;
     }
