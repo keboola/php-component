@@ -208,7 +208,7 @@ class ManifestManagerTest extends TestCase
 
         $this->assertEquals(
             $expectedManifest,
-            $manager->getTableManifest('newDataTypes', true),
+            $manager->getTableManifest('newDatatypes', true),
         );
     }
 
