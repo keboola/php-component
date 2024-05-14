@@ -119,7 +119,43 @@ class ManifestManagerTest extends TestCase
         $this->assertSame($expectedManifest, $manager->getTableManifest('products'));
     }
 
-    public function testLoadTableManifestAsObject(): void
+    public function testLoadLegacyTableManifestAsObject(): void
+    {
+        $manager = new ManifestManager(__DIR__ . '/fixtures/manifest-data-dir');
+
+        $expectedManifest = (new ManifestOptions())
+            ->setEnclosure('_')
+            ->setDelimiter('|')
+            ->setColumnMetadata([
+                'column1' => [
+                    [
+                        'key' => 'yet.another.key',
+                        'value' => 'Some other value',
+                    ],
+                ],
+            ])
+            ->setColumns(['id', 'number', 'other_column'])
+            ->setDestination('my.table')
+            ->setIncremental(true)
+            ->setMetadata([
+                [
+                    'key' => 'an.arbitrary.key',
+                    'value' => 'Some value',
+                ],
+                [
+                    'key' => 'another.arbitrary.key',
+                    'value' => 'A different value',
+                ],
+            ])
+            ->setPrimaryKeyColumns(['id']);
+
+        $this->assertEquals(
+            $expectedManifest,
+            $manager->getTableManifest('legacy', true),
+        );
+    }
+
+    public function testLoadNewDataTypesTableManifestAsObject(): void
     {
         $manager = new ManifestManager(__DIR__ . '/fixtures/manifest-data-dir');
 
