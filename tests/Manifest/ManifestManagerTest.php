@@ -206,7 +206,7 @@ class ManifestManagerTest extends TestCase
                 'another.arbitrary.key' => 'Another value',
             ]);
 
-        $this->assertEqualsCanonicalizing(
+        $this->assertEquals(
             $expectedManifest,
             $manager->getTableManifest('newDataTypes', true),
         );
