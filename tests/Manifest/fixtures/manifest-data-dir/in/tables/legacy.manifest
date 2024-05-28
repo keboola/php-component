@@ -22,7 +22,7 @@
         }
     ],
     "column_metadata": {
-        "column1": [
+        "id": [
             {
                 "key": "yet.another.key",
                 "value": "Some other value"

@@ -1,10 +1,5 @@
 {
     "destination": "destination-table",
-    "columns": [
-        "id",
-        "number",
-        "name"
-    ],
     "primary_key": [
         "id",
         "number"

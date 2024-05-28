@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Keboola\Component\Tests\Manifest;
 
 use Keboola\Component\Manifest\ManifestManager;
+use Keboola\Component\Manifest\ManifestManager\Options\OptionsValidationException;
 use Keboola\Component\Manifest\ManifestManager\Options\OutFileManifestOptions;
 use Keboola\Component\Manifest\ManifestManager\Options\OutTable\ManifestOptions;
 use Keboola\Component\Manifest\ManifestManager\Options\OutTable\ManifestOptionsSchema;
@@ -90,19 +91,38 @@ class ManifestManagerTest extends TestCase
 
         $expectedManifest = [
             'destination' => 'destination-table',
+            'columns' => [
+                'id',
+                'number',
+                'name',
+                'description',
+                'created_at',
+                'updated_at',
+            ],
             'primary_key' => [
                 'id',
                 'number',
             ],
         ];
-        $this->assertSame($expectedManifest, $manager->getTableManifest('people.csv'));
+
+        $this->assertSame($expectedManifest, $manager->getTableManifest('people.csv')->toArray());
+    }
+
+    public function testManifestWithOnlyPrimaryKeysSpecified(): void
+    {
+        $manager = new ManifestManager(__DIR__ . '/fixtures/manifest-data-dir');
+
+        $this->expectException(OptionsValidationException::class);
+        $this->expectExceptionMessage('Columns must be specified when primary key is specified.');
+
+        $manager->getTableManifest('onlyPrimaryKeys.csv');
     }
 
     public function testNonexistentManifestReturnsEmptyArray(): void
     {
         $manager = new ManifestManager(__DIR__ . '/fixtures/manifest-data-dir');
 
-        $this->assertSame([], $manager->getTableManifest('manifest-does-not-exist'));
+        $this->assertSame([], $manager->getTableManifest('manifest-does-not-exist')->toArray());
     }
 
     public function testWillLoadTableManifestWithoutCsv(): void
@@ -111,12 +131,18 @@ class ManifestManagerTest extends TestCase
 
         $expectedManifest = [
             'destination' => 'destination-table',
+            'columns' => [
+                'id',
+                'number',
+                'name',
+            ],
             'primary_key' => [
                 'id',
                 'number',
             ],
         ];
-        $this->assertSame($expectedManifest, $manager->getTableManifest('products'));
+
+        $this->assertSame($expectedManifest, $manager->getTableManifest('products')->toArray());
     }
 
     public function testLoadLegacyTableManifestAsObject(): void
@@ -126,32 +152,37 @@ class ManifestManagerTest extends TestCase
         $expectedManifest = (new ManifestOptions())
             ->setEnclosure('_')
             ->setDelimiter('|')
-            ->setColumnMetadata([
-                'column1' => [
-                    [
-                        'key' => 'yet.another.key',
-                        'value' => 'Some other value',
-                    ],
-                ],
-            ])
-            ->setColumns(['id', 'number', 'other_column'])
             ->setDestination('my.table')
             ->setIncremental(true)
-            ->setMetadata([
-                [
-                    'key' => 'an.arbitrary.key',
-                    'value' => 'Some value',
-                ],
-                [
-                    'key' => 'another.arbitrary.key',
-                    'value' => 'A different value',
-                ],
+            ->setManifestType(ManifestOptions::MANIFEST_TYPE_OUTPUT)
+            ->setTableMetadata([
+                'an.arbitrary.key' => 'Some value',
+                'another.arbitrary.key' => 'A different value',
             ])
-            ->setPrimaryKeyColumns(['id']);
+            ->setSchema([
+                new ManifestOptionsSchema(
+                    'id',
+                    [],
+                    true,
+                    true,
+                    null,
+                    [
+                        'yet.another.key' => 'Some other value',
+                    ],
+                ),
+                new ManifestOptionsSchema(
+                    'number',
+                    [],
+                ),
+                new ManifestOptionsSchema(
+                    'other_column',
+                    [],
+                ),
+            ]);
 
         $this->assertEquals(
             $expectedManifest,
-            $manager->getTableManifest('legacy', true),
+            $manager->getTableManifest('legacy'),
         );
     }
 
@@ -162,7 +193,7 @@ class ManifestManagerTest extends TestCase
         $expectedManifest = (new ManifestOptions())
             ->setDestination('my-table')
             ->setIncremental(true)
-            ->setManifestType('output')
+            ->setManifestType(ManifestOptions::MANIFEST_TYPE_OUTPUT)
             ->setHasHeader(true)
             ->setDescription('Best table')
             ->setSchema([
@@ -208,7 +239,7 @@ class ManifestManagerTest extends TestCase
 
         $this->assertEquals(
             $expectedManifest,
-            $manager->getTableManifest('newDatatypes', true),
+            $manager->getTableManifest('newDatatypes'),
         );
     }
 
@@ -248,7 +279,8 @@ class ManifestManagerTest extends TestCase
     }
 
     /**
-     * @return mixed[][]
+     * @return array<string, array{string, ManifestOptions}>
+     * @throws \Keboola\Component\Manifest\ManifestManager\Options\OptionsValidationException
      */
     public function provideWriteManifestOptions(): array
     {
@@ -264,15 +296,15 @@ class ManifestManagerTest extends TestCase
                 (new ManifestOptions())
                     ->setEnclosure('_')
                     ->setDelimiter('|')
+                    ->setColumns(['id', 'number', 'other_column'])
                     ->setColumnMetadata([
-                        'column1' => [
+                        'id' => [
                             [
                                 'key' => 'yet.another.key',
                                 'value' => 'Some other value',
                             ],
                         ],
                     ])
-                    ->setColumns(['id', 'number', 'other_column'])
                     ->setDestination('my.table')
                     ->setIncremental(true)
                     ->setMetadata([
@@ -292,7 +324,7 @@ class ManifestManagerTest extends TestCase
                 (new ManifestOptions())
                     ->setDestination('my-table')
                     ->setIncremental(true)
-                    ->setManifestType('output')
+                    ->setManifestType(ManifestOptions::MANIFEST_TYPE_OUTPUT)
                     ->setHasHeader(true)
                     ->setDescription('Best table')
                     ->setSchema([
@@ -337,5 +369,107 @@ class ManifestManagerTest extends TestCase
                     ]),
             ],
         ];
+    }
+
+    public function testConvertLegacyManifestToNewManifestObject(): void
+    {
+        $manager = new ManifestManager(__DIR__ . '/fixtures/manifest-data-dir');
+
+        $expectedManifest = (new ManifestOptions())
+            ->setDestination('my.table')
+            ->setDelimiter('|')
+            ->setEnclosure('_')
+            ->setIncremental(true)
+            ->setManifestType(ManifestOptions::MANIFEST_TYPE_OUTPUT)
+            ->setSchema([
+                new ManifestOptionsSchema(
+                    'id',
+                    null,
+                    true,
+                    true,
+                    null,
+                    ['yet.another.key' => 'Some other value'],
+                ),
+                new ManifestOptionsSchema(
+                    'number',
+                ),
+                new ManifestOptionsSchema(
+                    'other_column',
+                ),
+            ])
+            ->setTableMetadata([
+                'an.arbitrary.key' => 'Some value',
+                'another.arbitrary.key' => 'A different value',
+            ]);
+
+        $this->assertEquals(
+            $expectedManifest,
+            $manager->getTableManifest('legacy'),
+        );
+    }
+
+    public function testConvertNewDataTypesManifestToLegacyArray(): void
+    {
+        $manager = new ManifestManager(__DIR__ . '/fixtures/manifest-data-dir');
+
+        $expectedManifestArray = [
+            'destination' => 'my-table',
+            'incremental' => true,
+            'primary_key' => ['id'],
+            'metadata' => [
+                [
+                    'key' => 'an.arbitrary.key',
+                    'value' => 'Some value',
+                ],
+                [
+                    'key' => 'another.arbitrary.key',
+                    'value' => 'Another value',
+                ],
+            ],
+            'columns' => ['id', 'number', 'other_column'],
+            'column_metadata' => [
+                'id' => [
+                    [
+                        'key' => 'yet.another.key',
+                        'value' => 'Some other value',
+                    ],
+                ],
+            ],
+        ];
+
+        $this->assertEquals(
+            $expectedManifestArray,
+            $manager->getTableManifest('newDatatypes')->toArray(),
+        );
+    }
+
+    public function testCompareSnflkExampleNewDataTypesManifestWithLegacyOneAsObjects(): void
+    {
+        $manager = new ManifestManager(__DIR__ . '/fixtures/manifest-data-dir');
+
+        $this->assertEquals(
+            $manager->getTableManifest('snfklExampleNewDatatypes'),
+            $manager->getTableManifest('snflkExampleLegacy'),
+        );
+    }
+
+    public function testCompareSnflkExampleNewDataTypesManifestWithLegacyOneAsArraysInLegacyFromats(): void
+    {
+        $manager = new ManifestManager(__DIR__ . '/fixtures/manifest-data-dir');
+
+        $this->assertEqualsCanonicalizing(
+            $manager->getTableManifest('snfklExampleNewDatatypes')->toArray(),
+            $manager->getTableManifest('snflkExampleLegacy')->toArray(),
+        );
+    }
+
+    public function testCompareSnflkExampleNewDataTypesManifestWithLegacyOneAsArraysInNewFormats(): void
+    {
+        $manager = new ManifestManager(__DIR__ . '/fixtures/manifest-data-dir');
+
+        $this->assertEquals(
+            $manager->getTableManifest('snfklExampleNewDatatypes')->toArray(false),
+            $manager->getTableManifest('snflkExampleLegacy')->toArray(false),
+        );
     }
 }

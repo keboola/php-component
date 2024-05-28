@@ -17,7 +17,7 @@ class OutTableManifestOptionsTest extends TestCase
      */
     public function testToArray(array $expected, ManifestOptions $options): void
     {
-        $this->assertEquals($expected, $options->toArray());
+        $this->assertEquals($expected, $options->toArray(false));
     }
 
     /**
@@ -39,52 +39,48 @@ class OutTableManifestOptionsTest extends TestCase
                 [
                     'delimiter' => '|',
                     'enclosure' => '_',
+                    'manifest_type' => ManifestOptions::MANIFEST_TYPE_OUTPUT,
 
                 ],
                 (new ManifestOptions())
                     ->setDelimiter('|')
-                    ->setEnclosure('_'),
+                    ->setEnclosure('_')
+                    ->setManifestType(ManifestOptions::MANIFEST_TYPE_OUTPUT),
             ],
             'all options' => [
                 [
                     'destination' => 'my.table',
-                    'primary_key' => ['id'],
+                    'manifest_type' => ManifestOptions::MANIFEST_TYPE_OUTPUT,
                     'delimiter' => '|',
                     'enclosure' => '_',
-                    'columns' => [
-                        'id',
-                        'number',
-                        'other_column',
-                    ],
                     'incremental' => true,
-                    'metadata' => [
+                    'schema' => [
                         [
-                            'key' => 'an.arbitrary.key',
-                            'value' => 'Some value',
+                            'nullable' => true,
+                            'primary_key' => true,
+                            'name' => 'id',
                         ],
                         [
-                            'key' => 'another.arbitrary.key',
-                            'value' => 'A different value',
+                            'nullable' => true,
+                            'primary_key' => false,
+                            'name' => 'number',
+                        ],
+                        [
+                            'nullable' => true,
+                            'primary_key' => false,
+                            'name' => 'other_column',
                         ],
                     ],
-                    'column_metadata' => (object) [
-                        '123456' => [
-                            [
-                                'key' => 'int.column.name',
-                                'value' => 'Int column name',
-                            ],
-                        ],
-                        'column1' => [
-                            [
-                                'key' => 'yet.another.key',
-                                'value' => 'Some other value',
-                            ],
-                        ],
+                    'table_metadata' => [
+                        'an.arbitrary.key' => 'Some value',
+                        'another.arbitrary.key' => 'A different value',
                     ],
                 ],
                 (new ManifestOptions())
+                    ->setManifestType(ManifestOptions::MANIFEST_TYPE_OUTPUT)
                     ->setEnclosure('_')
                     ->setDelimiter('|')
+                    ->setColumns(['id', 'number', 'other_column'])
                     ->setColumnMetadata((object) [
                         '123456' => [
                             [
@@ -99,7 +95,6 @@ class OutTableManifestOptionsTest extends TestCase
                             ],
                         ],
                     ])
-                    ->setColumns(['id', 'number', 'other_column'])
                     ->setDestination('my.table')
                     ->setIncremental(true)
                     ->setMetadata([
@@ -119,7 +114,7 @@ class OutTableManifestOptionsTest extends TestCase
                     'destination' => 'my.table',
                     'delimiter' => '|',
                     'enclosure' => '_',
-                    'manifest_type' => 'output',
+                    'manifest_type' => ManifestOptions::MANIFEST_TYPE_OUTPUT,
                     'schema' => [
                         [
                             'name' => 'id',
@@ -139,7 +134,7 @@ class OutTableManifestOptionsTest extends TestCase
                 (new ManifestOptions())
                     ->setEnclosure('_')
                     ->setDelimiter('|')
-                    ->setManifestType('output')
+                    ->setManifestType(ManifestOptions::MANIFEST_TYPE_OUTPUT)
                     ->addSchema(new ManifestOptionsSchema(
                         'id',
                         [
@@ -258,94 +253,24 @@ class OutTableManifestOptionsTest extends TestCase
                     ]);
                 },
             ],
-            'Metadata item #0 must be an array, found "string"' => [
-                'Metadata item #0 must be an array, found "string"',
-                function (): void {
-                    (new ManifestOptions())->setMetadata([
-                        'one',
-                        'two',
-                    ]);
-                },
-            ],
-            'Metadata item #0 must have only "key" and "value" keys' => [
-                'Metadata item #0 must have only "key" and "value" keys',
-                function (): void {
-                    (new ManifestOptions())->setMetadata([
-                        [
-                            'key' => 'my-key',
-                            'value' => 'my-value',
-                            'extra' => 'should not be here',
-                        ],
-                    ]);
-                },
-            ],
-            'Each column metadata item must be an array' => [
-                'Each column metadata item must be an array',
-                function (): void {
-                    (new ManifestOptions())->setColumnMetadata([
-                        'x',
-                    ]);
-                },
-            ],
-            'Cannot set columns when schema is set' => [
-                'Cannot set columns when schema is set',
-                function (): void {
-                    $schema = new ManifestOptionsSchema(
-                        'id',
-                        ['base' => ['type' => 'INTEGER', 'length' => '11', 'default' => '123']],
-                        false,
-                        true,
-                    );
-                    (new ManifestOptions())
-                        ->addSchema($schema)
-                        ->setColumns(['id', 'name']);
-                },
-            ],
-            'Cannot set schema when columns are set' => [
-                'Cannot set schema when columns are set',
+            'Cannot set column metadata before columns/schema' => [
+                'Set schema (or columns) first.',
                 function (): void {
                     (new ManifestOptions())
-                        ->setColumns(['id', 'name'])
-                        ->addSchema(new ManifestOptionsSchema(
-                            'id',
-                            ['base' => ['type' => 'INTEGER', 'length' => '11', 'default' => '123']],
-                            false,
-                            true,
-                        ));
-                },
-            ],
-            'Cannot set metadata when schema is set' => [
-                'Cannot set metadata when schema is set',
-                function (): void {
-                    $schema = new ManifestOptionsSchema(
-                        'id',
-                        ['base' => ['type' => 'INTEGER', 'length' => '11', 'default' => '123']],
-                        false,
-                        true,
-                    );
-                    (new ManifestOptions())
-                        ->addSchema($schema)
-                        ->setMetadata([
-                            ['key' => 'sample', 'value' => 'data'],
-                        ]);
-                },
-            ],
-            'Cannot set column metadata when schema is set' => [
-                'Cannot set column metadata when schema is set',
-                function (): void {
-                    $schema = new ManifestOptionsSchema(
-                        'id',
-                        ['base' => ['type' => 'INTEGER', 'length' => '11', 'default' => '123']],
-                        false,
-                        true,
-                    );
-                    (new ManifestOptions())
-                        ->addSchema($schema)
                         ->setColumnMetadata([
                             'id' => [
                                 ['key' => 'description', 'value' => 'ID column'],
                             ],
-                        ]);
+                        ])
+                        ->setColumns(['id']);
+                },
+            ],
+            'Cannot set primary keys before columns/schema' => [
+                'Set schema (or columns) first.',
+                function (): void {
+                    (new ManifestOptions())
+                        ->setPrimaryKeyColumns(['id'])
+                        ->setColumns(['id']);
                 },
             ],
             'The "unsupported_type" backendType is not supported' => [
@@ -381,34 +306,6 @@ class OutTableManifestOptionsTest extends TestCase
                         'Primary key column',
                         ['KBC.description' => 'Primary key column'],
                     );
-                },
-            ],
-            'primary key and schema primary key set together' => [
-                'Only one of "primary_key" or "schema[].primary_key" can be defined.',
-                function (): void {
-                    $schema = new ManifestOptionsSchema(
-                        'id',
-                        ['base' => ['type' => 'INTEGER', 'length' => '11', 'default' => '123']],
-                        false,
-                        true,
-                    );
-                    (new ManifestOptions())
-                        ->setPrimaryKeyColumns(['id'])
-                        ->addSchema($schema);
-                },
-            ],
-            'schema primary key and primary key set together' => [
-                'Only one of "primary_key" or "schema[].primary_key" can be defined.',
-                function (): void {
-                    $schema = new ManifestOptionsSchema(
-                        'id',
-                        ['base' => ['type' => 'INTEGER', 'length' => '11', 'default' => '123']],
-                        false,
-                        true,
-                    );
-                    (new ManifestOptions())
-                        ->addSchema($schema)
-                        ->setPrimaryKeyColumns(['id']);
                 },
             ],
         ];

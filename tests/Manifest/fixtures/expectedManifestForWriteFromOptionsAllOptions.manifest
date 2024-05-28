@@ -1,32 +1,30 @@
 {
-    "destination": "my.table",
-    "primary_key": [
-        "id"
-    ],
     "delimiter": "|",
+    "destination": "my.table",
     "enclosure": "_",
-    "columns": [
-        "id",
-        "number",
-        "other_column"
-    ],
     "incremental": true,
-    "metadata": [
+    "schema": [
         {
-            "key": "an.arbitrary.key",
-            "value": "Some value"
+            "metadata": {
+                "yet.another.key": "Some other value"
+            },
+            "name": "id",
+            "nullable": true,
+            "primary_key": true
         },
         {
-            "key": "another.arbitrary.key",
-            "value": "A different value"
+            "name": "number",
+            "nullable": true,
+            "primary_key": false
+        },
+        {
+            "name": "other_column",
+            "nullable": true,
+            "primary_key": false
         }
     ],
-    "column_metadata": {
-        "column1": [
-            {
-                "key": "yet.another.key",
-                "value": "Some other value"
-            }
-        ]
+    "table_metadata": {
+        "an.arbitrary.key": "Some value",
+        "another.arbitrary.key": "A different value"
     }
 }
