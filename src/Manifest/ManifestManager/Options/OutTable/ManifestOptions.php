@@ -7,36 +7,24 @@ namespace Keboola\Component\Manifest\ManifestManager\Options\OutTable;
 use Keboola\Component\Manifest\ManifestManager\Options\OptionsValidationException;
 use Keboola\Component\Manifest\ManifestManager\Options\OutTable\Serializer\LegacyManifestConverter;
 use Keboola\Component\Manifest\ManifestManager\Options\OutTable\Serializer\LegacyManifestNormalizer;
-use Keboola\Component\Manifest\ManifestManager\Options\OutTable\Serializer\NewNativeTypesManifestConverter;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
+use Symfony\Component\Serializer\NameConverter\CamelCaseToSnakeCaseNameConverter;
 use Symfony\Component\Serializer\Normalizer\AbstractObjectNormalizer;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Serializer;
-use function array_keys;
-use function gettype;
 use function is_array;
 
 class ManifestOptions
 {
-    private string $destination;
+    private const ALLOWED_MANIFEST_TYPES = [self::MANIFEST_TYPE_OUTPUT];
+    public const MANIFEST_TYPE_OUTPUT = 'output';
+    private ?string $destination = null;
 
-    /** @var string[] */
-    private array $primaryKeyColumns;
+    private ?bool $incremental = null;
 
-    /** @var string[] */
-    private ?array $columns = null;
+    private ?string $delimiter = null;
 
-    private bool $incremental;
-
-    /** @var mixed[][] */
-    private ?array $metadata = null;
-
-    /** @var mixed $columnMetadata */
-    private $columnMetadata = null;
-
-    private string $delimiter;
-
-    private string $enclosure;
+    private ?string $enclosure = null;
 
     /** @var ManifestOptionsSchema[]  */
     private ?array $schema = null;
@@ -62,13 +50,20 @@ class ManifestOptions
         );
         $encoders = [new JsonEncoder()];
 
-        return new Serializer([new LegacyManifestNormalizer($normalizer), $normalizer], $encoders);
+        return new Serializer([new LegacyManifestNormalizer, $normalizer], $encoders);
     }
 
     private static function getNewNativeTypesSerializer(): Serializer
     {
-        $nameConverter = new NewNativeTypesManifestConverter();
-        $normalizer = new ObjectNormalizer(null, $nameConverter);
+        $normalizer = new ObjectNormalizer(
+            null,
+            new CamelCaseToSnakeCaseNameConverter(),
+            null,
+            null,
+            null,
+            null,
+            [AbstractObjectNormalizer::SKIP_NULL_VALUES => true],
+        );
         $encoders = [new JsonEncoder()];
 
         return new Serializer([$normalizer], $encoders);
@@ -81,9 +76,9 @@ class ManifestOptions
         return (array) $serializer->normalize($this, null, [AbstractObjectNormalizer::SKIP_NULL_VALUES => true]);
     }
 
-    public static function fromArray(array $data, bool $legacy = true): ManifestOptions
+    public static function fromArray(array $data): ManifestOptions
     {
-        if ($legacy) {
+        if (!isset($data['manifest_type'])) {
             $serializer = self::getLegacySerializer();
         } else {
             $serializer = self::getNewNativeTypesSerializer();
@@ -109,49 +104,8 @@ class ManifestOptions
         return $this;
     }
 
-    /**
-     * @param string[] $primaryKeyColumns
-     */
-    public function setPrimaryKeyColumns(array $primaryKeyColumns): ManifestOptions
-    {
-        if ($this->schema) {
-            foreach ($this->schema as $schema) {
-                if ($schema->isPrimaryKey()) {
-                    throw new OptionsValidationException(
-                        'Only one of "primary_key" or "schema[].primary_key" can be defined.',
-                    );
-                }
-            }
-        }
-
-        $this->primaryKeyColumns = $primaryKeyColumns;
-        return $this;
-    }
-
-    /**
-     * @param string[] $columns
-     */
-    public function setColumns(array $columns): ManifestOptions
-    {
-        if ($this->schema) {
-            throw new OptionsValidationException('Cannot set columns when schema is set');
-        }
-        $this->columns = $columns;
-        return $this;
-    }
-
     public function addSchema(ManifestOptionsSchema $schema): ManifestOptions
     {
-        if ($this->columns) {
-            throw new OptionsValidationException('Cannot set schema when columns are set');
-        }
-
-        if (!empty($this->primaryKeyColumns) && $schema->isPrimaryKey()) {
-            throw new OptionsValidationException(
-                'Only one of "primary_key" or "schema[].primary_key" can be defined.',
-            );
-        }
-
         $this->schema[] = $schema;
         return $this;
     }
@@ -161,18 +115,6 @@ class ManifestOptions
      */
     public function setSchema(array $schemas): ManifestOptions
     {
-        if ($this->columns) {
-            throw new OptionsValidationException('Cannot set schema when columns are set');
-        }
-
-        foreach ($schemas as $schema) {
-            if (!empty($this->primaryKeyColumns) && $schema->isPrimaryKey()) {
-                throw new OptionsValidationException(
-                    'Only one of "primary_key" or "schema[].primary_key" can be defined.',
-                );
-            }
-        }
-
         $this->schema = $schemas;
         return $this;
     }
@@ -180,41 +122,6 @@ class ManifestOptions
     public function setIncremental(bool $incremental): ManifestOptions
     {
         $this->incremental = $incremental;
-        return $this;
-    }
-
-    public function setMetadata(array $metadata): ManifestOptions
-    {
-        if ($this->schema) {
-            throw new OptionsValidationException('Cannot set metadata when schema is set');
-        }
-        $this->validateMetadata($metadata);
-        $this->metadata = $metadata;
-        return $this;
-    }
-
-    /**
-     * @param mixed $columnsMetadata
-     */
-    public function setColumnMetadata($columnsMetadata): ManifestOptions
-    {
-        if ($this->schema) {
-            throw new OptionsValidationException('Cannot set column metadata when schema is set');
-        }
-        foreach ($columnsMetadata as $columnName => $columnMetadata) {
-            if (!is_array($columnMetadata)) {
-                throw new OptionsValidationException('Each column metadata item must be an array');
-            }
-            if (!is_string($columnName)) {
-                throw new OptionsValidationException('Each column metadata item must have string key');
-            }
-            try {
-                $this->validateMetadata($columnMetadata);
-            } catch (OptionsValidationException $e) {
-                throw new OptionsValidationException(sprintf('Column "%s": %s', $columnName, $e->getMessage()), 0, $e);
-            }
-        }
-        $this->columnMetadata = $columnsMetadata;
         return $this;
     }
 
@@ -232,6 +139,14 @@ class ManifestOptions
 
     public function setManifestType(string $manifestType): ManifestOptions
     {
+        if (!in_array($manifestType, self::ALLOWED_MANIFEST_TYPES, true)) {
+            throw new OptionsValidationException(sprintf(
+                'Manifest type "%s" is not allowed, allowed types are: %s',
+                $manifestType,
+                implode(', ', self::ALLOWED_MANIFEST_TYPES),
+            ));
+        }
+
         $this->manifestType = $manifestType;
         return $this;
     }
@@ -251,6 +166,152 @@ class ManifestOptions
     public function setTableMetadata(array $tableMetadata): ManifestOptions
     {
         $this->tableMetadata = $tableMetadata;
+        return $this;
+    }
+
+    public function getDestination(): ?string
+    {
+        return $this->destination;
+    }
+
+    public function isIncremental(): ?bool
+    {
+        return $this->incremental;
+    }
+
+    public function getDelimiter(): ?string
+    {
+        return $this->delimiter;
+    }
+
+    public function getEnclosure(): ?string
+    {
+        return $this->enclosure;
+    }
+
+    public function getManifestType(): ?string
+    {
+        return $this->manifestType;
+    }
+
+    public function getHasHeader(): ?bool
+    {
+        return $this->hasHeader;
+    }
+
+    public function getTableMetadata(): ?array
+    {
+        return $this->tableMetadata;
+    }
+
+    public function getSchema(): ?array
+    {
+        return $this->schema;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setColumns(array $columns): ManifestOptions
+    {
+        trigger_error(
+            'Method ' . __METHOD__ . ' is deprecated and will be removed in a future version. '
+            . 'Use addSchema() instead.',
+            E_USER_DEPRECATED,
+        );
+
+        foreach ($columns as $column) {
+            $this->addSchema(new ManifestOptionsSchema($column, []));
+        }
+        return $this;
+    }
+
+    /**
+     * @param array|object $columnsMetadata
+     * @throws \Keboola\Component\Manifest\ManifestManager\Options\OptionsValidationException
+     */
+    public function setColumnMetadata($columnsMetadata): ManifestOptions
+    {
+        trigger_error(
+            'Method ' . __METHOD__ . ' is deprecated and will be removed in a future version. '
+            . 'Use ManifestOptionsSchema::setMetadata() instead.',
+            E_USER_DEPRECATED,
+        );
+
+        foreach ($columnsMetadata as $columnName => $columnMetadata) {
+            if (!is_array($columnMetadata)) {
+                throw new OptionsValidationException('Each column metadata item must be an array');
+            }
+            if (!is_string($columnName)) {
+                throw new OptionsValidationException('Each column metadata item must have string key');
+            }
+
+            try {
+                $this->validateMetadata($columnMetadata);
+            } catch (OptionsValidationException $e) {
+                throw new OptionsValidationException(sprintf('Column "%s": %s', $columnName, $e->getMessage()), 0, $e);
+            }
+
+            if ($this->schema === null) {
+                throw new OptionsValidationException('Set schema (or columns) first.');
+            }
+
+            foreach ($this->schema as $schema) {
+                if ($schema->getName() === $columnName) {
+                    foreach ($columnMetadata as $metadata) {
+                        /** @var array{key: string, value: string} $metadata */
+                        $schema->setMetadata([$metadata['key'] => $metadata['value']]);
+                    }
+                }
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @throws \Keboola\Component\Manifest\ManifestManager\Options\OptionsValidationException
+     */
+    public function setMetadata(array $metadata): ManifestOptions
+    {
+        trigger_error(
+            'Method ' . __METHOD__ . ' is deprecated and will be removed in a future version. '
+            . 'Use setTableMetadata() instead.',
+            E_USER_DEPRECATED,
+        );
+
+        $this->validateMetadata($metadata);
+
+        $tableMetadata = [];
+        foreach ($metadata as $meta) {
+            $tableMetadata[$meta['key']] = $meta['value'];
+        }
+        $this->setTableMetadata($tableMetadata);
+        return $this;
+    }
+
+    /**
+     * @throws \Keboola\Component\Manifest\ManifestManager\Options\OptionsValidationException
+     */
+    public function setPrimaryKeyColumns(array $primaryKeyColumns): ManifestOptions
+    {
+        trigger_error(
+            'Method ' . __METHOD__ . ' is deprecated and will be removed in a future version. '
+            . 'Use ManifestOptionsSchema::setPrimaryKey() instead.',
+            E_USER_DEPRECATED,
+        );
+
+        if ($this->schema === null) {
+            throw new OptionsValidationException('Set schema (or columns) first.');
+        }
+
+        foreach ($this->schema as $schema) {
+            if (in_array($schema->getName(), $primaryKeyColumns)) {
+                $schema->setPrimaryKey(true);
+            }
+        }
         return $this;
     }
 
@@ -279,79 +340,6 @@ class ManifestOptions
                     $key,
                 ));
             }
-            if ($oneKeyAndValue['key'] === 'KBC.description' && isset($this->description)) {
-                throw new OptionsValidationException(
-                    'Only one of "description" or "metadata.KBC.description" can be defined.',
-                );
-            }
         }
-    }
-
-    public function getDestination(): string
-    {
-        return $this->destination;
-    }
-
-    public function isIncremental(): bool
-    {
-        return $this->incremental;
-    }
-
-    public function getMetadata(): ?array
-    {
-        return $this->metadata;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getColumnMetadata()
-    {
-        return $this->columnMetadata;
-    }
-
-    public function getDelimiter(): string
-    {
-        return $this->delimiter;
-    }
-
-    public function getEnclosure(): string
-    {
-        return $this->enclosure;
-    }
-
-    public function getManifestType(): ?string
-    {
-        return $this->manifestType;
-    }
-
-    public function getHasHeader(): ?bool
-    {
-        return $this->hasHeader;
-    }
-
-    public function getTableMetadata(): ?array
-    {
-        return $this->tableMetadata;
-    }
-
-    public function getSchema(): ?array
-    {
-        return $this->schema;
-    }
-
-    public function getPrimaryKeyColumns(): array
-    {
-        return $this->primaryKeyColumns;
-    }
-
-    public function getColumns(): ?array
-    {
-        return $this->columns;
-    }
-
-    public function getDescription(): ?string
-    {
-        return $this->description;
     }
 }

@@ -2,4 +2,4 @@ parameters:
     ignoreErrors:
         -
         			identifier: missingType.iterableValue
-        - '#Argument of an invalid type mixed supplied for foreach, only iterables are supported.#'
+        - '#Argument of an invalid type array\|object supplied for foreach, only iterables are supported.#'

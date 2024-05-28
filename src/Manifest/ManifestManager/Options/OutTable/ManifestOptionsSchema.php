@@ -10,7 +10,7 @@ class ManifestOptionsSchema
 {
     private string $name;
     /** @var ManifestOptionsSchemaDataType[] */
-    private array $dataType;
+    private ?array $dataType = null;
     private bool $nullable;
     private bool $primaryKey;
     private ?string $description;
@@ -20,16 +20,23 @@ class ManifestOptionsSchema
         'base', 'redshift', 'snowflake', 'synapse', 'bigquery', 'exasol',
     ];
 
+    /**
+     * @param array{}|array<string, array{type: string, length?: string, default?: string}> $dataTypes
+     * @param array<string, mixed>|null $metadata
+     * @throws \Keboola\Component\Manifest\ManifestManager\Options\OptionsValidationException
+     */
     public function __construct(
         string $name,
-        array $dataTypes,
+        ?array $dataTypes = null,
         bool $nullable = true,
         bool $primaryKey = false,
         ?string $description = null,
         ?array $metadata = null
     ) {
         $this->setName($name);
-        $this->setDataType($dataTypes);
+        if ($dataTypes !== null) {
+            $this->setDataType($dataTypes);
+        }
         $this->nullable = $nullable;
         $this->primaryKey = $primaryKey;
         $this->setDescription($description);
@@ -40,14 +47,18 @@ class ManifestOptionsSchema
     {
         return new self(
             $data['name'],
-            $data['data_type'],
-            $data['nullable'],
-            $data['primary_key'],
+            $data['data_type'] ?? [],
+            $data['nullable'] ?? true,
+            $data['primary_key'] ?? false,
             $data['description'] ?? null,
             $data['metadata'] ?? null,
         );
     }
 
+    /**
+     * @param array{}|array<string, array{type: string, length?: string, default?: string}> $dataTypes
+     * @throws \Keboola\Component\Manifest\ManifestManager\Options\OptionsValidationException
+     */
     public function setDataType(array $dataTypes): void
     {
         foreach ($dataTypes as $backendType => $config) {
@@ -64,6 +75,9 @@ class ManifestOptionsSchema
         }
     }
 
+    /**
+     * @throws \Keboola\Component\Manifest\ManifestManager\Options\OptionsValidationException
+     */
     public function setName(string $name): void
     {
         if (empty($name)) {
@@ -72,6 +86,9 @@ class ManifestOptionsSchema
         $this->name = $name;
     }
 
+    /**
+     * @throws \Keboola\Component\Manifest\ManifestManager\Options\OptionsValidationException
+     */
     public function setDescription(?string $description): void
     {
         if (isset($description) && isset($this->metadata['KBC.description'])) {
@@ -82,6 +99,9 @@ class ManifestOptionsSchema
         $this->description = $description;
     }
 
+    /**
+     * @throws \Keboola\Component\Manifest\ManifestManager\Options\OptionsValidationException
+     */
     public function setMetadata(?array $metadata): void
     {
         if (isset($this->description) && isset($metadata['KBC.description'])) {
@@ -118,7 +138,7 @@ class ManifestOptionsSchema
         return $this->name;
     }
 
-    public function getDataType(): array
+    public function getDataType(): ?array
     {
         return $this->dataType;
     }

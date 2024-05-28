@@ -42,11 +42,11 @@ class ManifestManager
         $this->internalWriteFileManifest($tableManifestName, $options->toArray());
     }
 
-    public function writeTableManifest(string $fileName, ManifestOptions $options): void
+    public function writeTableManifest(string $fileName, ManifestOptions $options, bool $legacyFormat = false): void
     {
         $manifestName = self::getManifestFilename($fileName);
 
-        $this->internalWriteTableManifest($manifestName, $options->toArray());
+        $this->internalWriteTableManifest($manifestName, $options->toArray($legacyFormat));
     }
 
     /**
@@ -58,15 +58,12 @@ class ManifestManager
         return $this->loadManifest($fileName, $baseDir);
     }
 
-    /**
-     * @return mixed
-     */
-    public function getTableManifest(string $tableName, bool $asObject = false)
+    public function getTableManifest(string $tableName): ManifestOptions
     {
         $baseDir = implode('/', [$this->dataDir, 'in', 'tables']);
         $manifestArray = $this->loadManifest($tableName, $baseDir);
 
-        return $asObject ? ManifestOptions::fromArray($manifestArray) : $manifestArray;
+        return ManifestOptions::fromArray($manifestArray);
     }
 
     /**
