@@ -112,7 +112,7 @@ class BaseConfig implements ConfigInterface
                 if ($default === null) {
                     throw new InvalidArgumentException(sprintf(
                         'Key "%s" does not exist',
-                        implode('.', $keys)
+                        implode('.', $keys),
                     ));
                 }
                 return $default;

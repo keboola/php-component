@@ -5,16 +5,13 @@ declare(strict_types=1);
 namespace Keboola\Component;
 
 use ErrorException;
-use Exception;
 use Keboola\Component\Config\BaseConfig;
 use Keboola\Component\Config\BaseConfigDefinition;
 use Keboola\Component\Exception\BaseComponentException;
 use Keboola\Component\Logger\AsyncActionLogging;
 use Keboola\Component\Logger\SyncActionLogging;
 use Keboola\Component\Manifest\ManifestManager;
-use Monolog\Handler\NullHandler;
 use Psr\Log\LoggerInterface;
-use Reflection;
 use ReflectionClass;
 use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
 use Symfony\Component\Filesystem\Exception\FileNotFoundException;
@@ -66,7 +63,7 @@ class BaseComponent
         error_reporting(E_ALL);
 
         set_error_handler(function (int $errno, string $errstr, string $errfile, int $errline): bool {
-            if (!(error_reporting() & $errno)) {
+            if (!(error_reporting() & $errno) || $errno === E_USER_DEPRECATED) {
                 // respect error_reporting() level
                 // libraries used in custom components may emit notices that cannot be fixed
                 return false;
@@ -88,7 +85,7 @@ class BaseComponent
             /** @var BaseConfig $config */
             $config = new $configClass(
                 $this->getRawConfig(),
-                new $configDefinitionClass()
+                new $configDefinitionClass(),
             );
             $this->config = $config;
         } catch (InvalidConfigurationException $e) {
@@ -139,7 +136,7 @@ class BaseComponent
     {
         JsonHelper::writeFile(
             $this->getDataDir() . '/out/state.json',
-            $state
+            $state,
         );
     }
 

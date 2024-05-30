@@ -7,7 +7,7 @@ namespace Keboola\Component\Manifest;
 use InvalidArgumentException;
 use Keboola\Component\JsonHelper;
 use Keboola\Component\Manifest\ManifestManager\Options\OutFileManifestOptions;
-use Keboola\Component\Manifest\ManifestManager\Options\OutTableManifestOptions;
+use Keboola\Component\Manifest\ManifestManager\Options\OutTable\ManifestOptions;
 use Symfony\Component\Filesystem\Filesystem;
 use function pathinfo;
 use const PATHINFO_EXTENSION;
@@ -42,11 +42,11 @@ class ManifestManager
         $this->internalWriteFileManifest($tableManifestName, $options->toArray());
     }
 
-    public function writeTableManifest(string $fileName, OutTableManifestOptions $options): void
+    public function writeTableManifest(string $fileName, ManifestOptions $options, bool $legacyFormat = false): void
     {
         $manifestName = self::getManifestFilename($fileName);
 
-        $this->internalWriteTableManifest($manifestName, $options->toArray());
+        $this->internalWriteTableManifest($manifestName, $options->toArray($legacyFormat));
     }
 
     /**
@@ -58,14 +58,12 @@ class ManifestManager
         return $this->loadManifest($fileName, $baseDir);
     }
 
-    /**
-     * @return mixed
-     */
-    public function getTableManifest(string $tableName)
+    public function getTableManifest(string $tableName): ManifestOptions
     {
         $baseDir = implode('/', [$this->dataDir, 'in', 'tables']);
+        $manifestArray = $this->loadManifest($tableName, $baseDir);
 
-        return $this->loadManifest($tableName, $baseDir);
+        return ManifestOptions::fromArray($manifestArray);
     }
 
     /**
@@ -80,7 +78,7 @@ class ManifestManager
                 throw new InvalidArgumentException(sprintf(
                     'Manifest source "%s" must be in the data directory (%s)!',
                     $fileName,
-                    $baseDir
+                    $baseDir,
                 ));
             }
 

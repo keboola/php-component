@@ -20,7 +20,7 @@ class JsonHelperTest extends TestCase
                 'key' => 'val',
                 'nums' => [2, 3],
             ],
-            JsonHelper::decode($json)
+            JsonHelper::decode($json),
         );
     }
 
@@ -41,7 +41,7 @@ class JsonHelperTest extends TestCase
 
         $this->assertSame(
             '{"key":"val","keys":[0,1,2]}',
-            JsonHelper::encode($array)
+            JsonHelper::encode($array),
         );
     }
 
@@ -61,7 +61,7 @@ class JsonHelperTest extends TestCase
         2
     ]
 }',
-            JsonHelper::encode($array, true)
+            JsonHelper::encode($array, true),
         );
     }
 
@@ -87,7 +87,7 @@ class JsonHelperTest extends TestCase
                 'key' => 'value',
                 'keys' => ['a', 'b'],
             ],
-            $array
+            $array,
         );
     }
 
@@ -102,7 +102,7 @@ class JsonHelperTest extends TestCase
 
         $this->assertSame(
             '{"key":"val","keys":[0,1,2]}',
-            file_get_contents($filePath)
+            file_get_contents($filePath),
         );
     }
 
@@ -124,7 +124,7 @@ class JsonHelperTest extends TestCase
         2
     ]
 }',
-            file_get_contents($filePath)
+            file_get_contents($filePath),
         );
         unlink($filePath);
     }

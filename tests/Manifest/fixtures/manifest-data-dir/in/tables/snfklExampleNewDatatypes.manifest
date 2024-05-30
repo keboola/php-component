@@ -1,0 +1,291 @@
+{
+  "destination": "in.c-main.sales",
+  "incremental": false,
+  "manifest_type": "output",
+  "table_metadata": {
+    "KBC.name": "sales",
+    "KBC.sanitizedName": "sales",
+    "KBC.schema": "replaceEnv",
+    "KBC.catalog": "replaceEnv",
+    "KBC.type": "TABLE",
+    "KBC.rowCount": 100
+  },
+  "schema": [
+    {
+      "name": "usergender",
+      "data_type": {
+        "base": {
+          "type": "STRING",
+          "length": "16777216",
+          "default": ""
+        },
+        "snowflake": {
+          "type": "TEXT",
+          "length": "16777216",
+          "default": ""
+        }
+      },
+      "nullable": true,
+      "primary_key": false,
+      "metadata": {
+        "KBC.uniqueKey": false,
+        "KBC.sourceName": "usergender",
+        "KBC.sanitizedName": "usergender",
+        "KBC.ordinalPosition": 1
+      }
+    },
+    {
+      "name": "usercity",
+      "data_type": {
+        "base": {
+          "type": "STRING",
+          "length": "16777216",
+          "default": ""
+        },
+        "snowflake": {
+          "type": "TEXT",
+          "length": "16777216",
+          "default": ""
+        }
+      },
+      "nullable": true,
+      "primary_key": false,
+      "metadata": {
+        "KBC.uniqueKey": false,
+        "KBC.sourceName": "usercity",
+        "KBC.sanitizedName": "usercity",
+        "KBC.ordinalPosition": 2
+      }
+    },
+    {
+      "name": "usersentiment",
+      "data_type": {
+        "base": {
+          "type": "STRING",
+          "length": "16777216",
+          "default": ""
+        },
+        "snowflake": {
+          "type": "TEXT",
+          "length": "16777216",
+          "default": ""
+        }
+      },
+      "nullable": true,
+      "primary_key": false,
+      "metadata": {
+        "KBC.uniqueKey": false,
+        "KBC.sourceName": "usersentiment",
+        "KBC.sanitizedName": "usersentiment",
+        "KBC.ordinalPosition": 3
+      }
+    },
+    {
+      "name": "zipcode",
+      "data_type": {
+        "base": {
+          "type": "STRING",
+          "length": "16777216",
+          "default": ""
+        },
+        "snowflake": {
+          "type": "TEXT",
+          "length": "16777216",
+          "default": ""
+        }
+      },
+      "nullable": true,
+      "primary_key": false,
+      "metadata": {
+        "KBC.uniqueKey": false,
+        "KBC.sourceName": "zipcode",
+        "KBC.sanitizedName": "zipcode",
+        "KBC.ordinalPosition": 4
+      }
+    },
+    {
+      "name": "sku",
+      "data_type": {
+        "base": {
+          "type": "STRING",
+          "length": "16777216",
+          "default": ""
+        },
+        "snowflake": {
+          "type": "TEXT",
+          "length": "16777216",
+          "default": ""
+        }
+      },
+      "nullable": true,
+      "primary_key": false,
+      "metadata": {
+        "KBC.uniqueKey": false,
+        "KBC.sourceName": "sku",
+        "KBC.sanitizedName": "sku",
+        "KBC.ordinalPosition": 5
+      }
+    },
+    {
+      "name": "createdat",
+      "data_type": {
+        "base": {
+          "type": "STRING",
+          "length": "64",
+          "default": ""
+        },
+        "snowflake": {
+          "type": "TEXT",
+          "length": "64",
+          "default": ""
+        }
+      },
+      "nullable": false,
+      "primary_key": false,
+      "metadata": {
+        "KBC.uniqueKey": false,
+        "KBC.sourceName": "createdat",
+        "KBC.sanitizedName": "createdat",
+        "KBC.ordinalPosition": 6
+      }
+    },
+    {
+      "name": "category",
+      "data_type": {
+        "base": {
+          "type": "STRING",
+          "length": "16777216",
+          "default": ""
+        },
+        "snowflake": {
+          "type": "TEXT",
+          "length": "16777216",
+          "default": ""
+        }
+      },
+      "nullable": true,
+      "primary_key": false,
+      "metadata": {
+        "KBC.uniqueKey": false,
+        "KBC.sourceName": "category",
+        "KBC.sanitizedName": "category",
+        "KBC.ordinalPosition": 7
+      }
+    },
+    {
+      "name": "price",
+      "data_type": {
+        "base": {
+          "type": "STRING",
+          "length": "16777216",
+          "default": ""
+        },
+        "snowflake": {
+          "type": "TEXT",
+          "length": "16777216",
+          "default": ""
+        }
+      },
+      "nullable": true,
+      "primary_key": false,
+      "metadata": {
+        "KBC.uniqueKey": false,
+        "KBC.sourceName": "price",
+        "KBC.sanitizedName": "price",
+        "KBC.ordinalPosition": 8
+      }
+    },
+    {
+      "name": "county",
+      "data_type": {
+        "base": {
+          "type": "STRING",
+          "length": "16777216",
+          "default": ""
+        },
+        "snowflake": {
+          "type": "TEXT",
+          "length": "16777216",
+          "default": ""
+        }
+      },
+      "nullable": true,
+      "primary_key": false,
+      "metadata": {
+        "KBC.uniqueKey": false,
+        "KBC.sourceName": "county",
+        "KBC.sanitizedName": "county",
+        "KBC.ordinalPosition": 9
+      }
+    },
+    {
+      "name": "countycode",
+      "data_type": {
+        "base": {
+          "type": "STRING",
+          "length": "16777216",
+          "default": ""
+        },
+        "snowflake": {
+          "type": "TEXT",
+          "length": "16777216",
+          "default": ""
+        }
+      },
+      "nullable": true,
+      "primary_key": false,
+      "metadata": {
+        "KBC.uniqueKey": false,
+        "KBC.sourceName": "countycode",
+        "KBC.sanitizedName": "countycode",
+        "KBC.ordinalPosition": 10
+      }
+    },
+    {
+      "name": "userstate",
+      "data_type": {
+        "base": {
+          "type": "STRING",
+          "length": "16777216",
+          "default": ""
+        },
+        "snowflake": {
+          "type": "TEXT",
+          "length": "16777216",
+          "default": ""
+        }
+      },
+      "nullable": true,
+      "primary_key": false,
+      "metadata": {
+        "KBC.uniqueKey": false,
+        "KBC.sourceName": "userstate",
+        "KBC.sanitizedName": "userstate",
+        "KBC.ordinalPosition": 11
+      }
+    },
+    {
+      "name": "categorygroup",
+      "data_type": {
+        "base": {
+          "type": "STRING",
+          "length": "16777216",
+          "default": ""
+        },
+        "snowflake": {
+          "type": "TEXT",
+          "length": "16777216",
+          "default": ""
+        }
+      },
+      "nullable": true,
+      "primary_key": false,
+      "metadata": {
+        "KBC.uniqueKey": false,
+        "KBC.sourceName": "categorygroup",
+        "KBC.sanitizedName": "categorygroup",
+        "KBC.ordinalPosition": 12
+      }
+    }
+  ]
+}

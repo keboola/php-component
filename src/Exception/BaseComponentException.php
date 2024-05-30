@@ -12,7 +12,7 @@ class BaseComponentException extends Exception
     {
         return new self(sprintf(
             'Unknown sync action "%s", method does not exist in class',
-            $action
+            $action,
         ));
     }
 
