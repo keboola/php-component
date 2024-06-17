@@ -251,7 +251,11 @@ class BaseConfigTest extends TestCase
     public function testEnvGetters(array $envs): void
     {
         foreach ($envs as $env => $value) {
-            putenv(sprintf('%s=%s', $env, $value));
+            if ($value === null) {
+                putenv($env);
+            } else {
+                putenv(sprintf('%s=%s', $env, $value));
+            }
         }
 
         $config = new BaseConfig([], new BaseConfigDefinition());
@@ -348,6 +352,7 @@ class BaseConfigTest extends TestCase
                 'KBC_COMPONENTID' => 'componentId',
                 'KBC_BRANCHID' => 'brancId',
                 'KBC_STAGING_FILE_PROVIDER' => 'staging_file_provider',
+                'KBC_DATA_TYPE_SUPPORT' => null,
             ],
         ];
 
