@@ -155,6 +155,7 @@ class BaseConfigTest extends TestCase
                 return $nodeDefinition;
             }
         };
+        putenv('KBC_DATA_TYPE_SUPPORT=authoritative');
         $config = new BaseConfig([
             'parameters' => [
                 'ipsum' => [
@@ -177,6 +178,7 @@ class BaseConfigTest extends TestCase
                     'tables' => [],
                 ],
                 'output' => [
+                    'data_type_support' => 'hint',
                     'files' => [],
                 ],
             ],
@@ -227,6 +229,7 @@ class BaseConfigTest extends TestCase
                     'tables' => [],
                 ],
                 'output' => [
+                    'data_type_support' => 'hint',
                     'files' => [],
                 ],
             ],
@@ -235,6 +238,10 @@ class BaseConfigTest extends TestCase
         $this->assertEquals(
             'value',
             $config->getValue(['parameters', 'ipsum', 'dolor']),
+        );
+        $this->assertEquals(
+            'hint',
+            $config->getDataTypeSupport(),
         );
     }
 
@@ -313,6 +320,17 @@ class BaseConfigTest extends TestCase
             Assert::assertEquals($envs['KBC_URL'], $config->getEnvKbcUrl());
         }
 
+        if (!isset($envs['KBC_DATA_TYPE_SUPPORT'])) {
+            try {
+                $config->getDataTypeSupport();
+                $this->fail('Should be fail.');
+            } catch (InvalidConfigurationException $e) {
+                Assert::assertEquals('The variable "KBC_DATA_TYPE_SUPPORT" is not allowed.', $e->getMessage());
+            }
+        } else {
+            Assert::assertEquals($envs['KBC_DATA_TYPE_SUPPORT'], $config->getDataTypeSupport());
+        }
+
         foreach ($envs as $env => $value) {
             putenv(sprintf('%s', $env));
         }
@@ -348,6 +366,7 @@ class BaseConfigTest extends TestCase
                 'KBC_TOKENDESC' => 'tokenDesc',
                 'KBC_TOKEN' => 'token',
                 'KBC_URL' => 'url',
+                'KBC_DATA_TYPE_SUPPORT' => 'authoritative',
             ],
         ];
     }
