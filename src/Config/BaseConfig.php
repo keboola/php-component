@@ -290,12 +290,12 @@ class BaseConfig implements ConfigInterface
         return (string) $env;
     }
 
-    public function getDataTypeSupport(): string
+    public function getDataTypeSupport(): DatatypeSupport
     {
         $env = getenv('KBC_DATA_TYPE_SUPPORT');
         if (!$env) {
-            return 'none';
+            return DatatypeSupport::NONE;
         }
-        return $this->getStringValue(['storage', 'output', 'data_type_support'], (string) $env);
+        return DatatypeSupport::from($this->getStringValue(['storage', 'output', 'data_type_support'], (string) $env));
     }
 }

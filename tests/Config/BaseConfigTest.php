@@ -7,6 +7,7 @@ namespace Keboola\Component\Tests\Config;
 use Generator;
 use Keboola\Component\Config\BaseConfig;
 use Keboola\Component\Config\BaseConfigDefinition;
+use Keboola\Component\Config\DatatypeSupport;
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
@@ -240,7 +241,7 @@ class BaseConfigTest extends TestCase
             $config->getValue(['parameters', 'ipsum', 'dolor']),
         );
         $this->assertEquals(
-            'hint',
+            DatatypeSupport::HINT,
             $config->getDataTypeSupport(),
         );
     }
@@ -325,9 +326,9 @@ class BaseConfigTest extends TestCase
         }
 
         if (!isset($envs['KBC_DATA_TYPE_SUPPORT'])) {
-            Assert::assertEquals('none', $config->getDataTypeSupport());
+            Assert::assertEquals(DatatypeSupport::NONE, $config->getDataTypeSupport());
         } else {
-            Assert::assertEquals($envs['KBC_DATA_TYPE_SUPPORT'], $config->getDataTypeSupport());
+            Assert::assertEquals(DatatypeSupport::from($envs['KBC_DATA_TYPE_SUPPORT']), $config->getDataTypeSupport());
         }
 
         foreach ($envs as $env => $value) {
