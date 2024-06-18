@@ -292,10 +292,10 @@ class BaseConfig implements ConfigInterface
 
     public function getDataTypeSupport(): string
     {
-        $env = getenv('KBC_DATA_TYPE_SUPPORT');
-        if (!$env) {
-            throw new InvalidConfigurationException('The variable "KBC_DATA_TYPE_SUPPORT" is not allowed.');
+        $dataTypeSupport = getenv('KBC_DATA_TYPE_SUPPORT');
+        if (!$dataTypeSupport) {
+            $dataTypeSupport = 'none';
         }
-        return $this->getStringValue(['storage', 'output', 'data_type_support'], (string) $env);
+        return $this->getStringValue(['storage', 'output', 'data_type_support'], (string) $dataTypeSupport);
     }
 }

@@ -325,12 +325,7 @@ class BaseConfigTest extends TestCase
         }
 
         if (!isset($envs['KBC_DATA_TYPE_SUPPORT'])) {
-            try {
-                $config->getDataTypeSupport();
-                $this->fail('Should be fail.');
-            } catch (InvalidConfigurationException $e) {
-                Assert::assertEquals('The variable "KBC_DATA_TYPE_SUPPORT" is not allowed.', $e->getMessage());
-            }
+            Assert::assertEquals('none', $config->getDataTypeSupport());
         } else {
             Assert::assertEquals($envs['KBC_DATA_TYPE_SUPPORT'], $config->getDataTypeSupport());
         }
