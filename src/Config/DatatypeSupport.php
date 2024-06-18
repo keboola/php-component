@@ -7,7 +7,7 @@ namespace Keboola\Component\Config;
 enum DatatypeSupport: string
 {
     case AUTHORITATIVE = 'authoritative';
-    case HINT = 'hint';
+    case HINTS = 'hints';
     case NONE = 'none';
 
     public function usingLegacyManifest(): bool

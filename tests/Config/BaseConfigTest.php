@@ -179,7 +179,7 @@ class BaseConfigTest extends TestCase
                     'tables' => [],
                 ],
                 'output' => [
-                    'data_type_support' => 'hint',
+                    'data_type_support' => DatatypeSupport::HINTS->value,
                     'files' => [],
                 ],
             ],
@@ -230,7 +230,7 @@ class BaseConfigTest extends TestCase
                     'tables' => [],
                 ],
                 'output' => [
-                    'data_type_support' => 'hint',
+                    'data_type_support' => DatatypeSupport::HINTS->value,
                     'files' => [],
                 ],
             ],
@@ -241,7 +241,7 @@ class BaseConfigTest extends TestCase
             $config->getValue(['parameters', 'ipsum', 'dolor']),
         );
         $this->assertEquals(
-            DatatypeSupport::HINT,
+            DatatypeSupport::HINTS,
             $config->getDataTypeSupport(),
         );
     }
@@ -277,7 +277,7 @@ class BaseConfigTest extends TestCase
         ], new BaseConfigDefinition);
 
         $this->assertEquals(
-            DatatypeSupport::NONE, // default when env not setZ
+            DatatypeSupport::NONE, // default when env not set
             $config->getDataTypeSupport(),
         );
     }
@@ -403,7 +403,7 @@ class BaseConfigTest extends TestCase
                 'KBC_TOKENDESC' => 'tokenDesc',
                 'KBC_TOKEN' => 'token',
                 'KBC_URL' => 'url',
-                'KBC_DATA_TYPE_SUPPORT' => 'authoritative',
+                'KBC_DATA_TYPE_SUPPORT' => DatatypeSupport::AUTHORITATIVE->value,
             ],
         ];
     }
