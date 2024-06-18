@@ -290,7 +290,7 @@ class BaseConfig implements ConfigInterface
         return (string) $env;
     }
 
-    public function getDataTypeSupport(): ?DatatypeSupport
+    public function getDataTypeSupport(): DatatypeSupport
     {
         $env = getenv('KBC_DATA_TYPE_SUPPORT');
         if (!$env) {
