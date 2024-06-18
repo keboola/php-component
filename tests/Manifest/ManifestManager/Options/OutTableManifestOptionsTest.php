@@ -51,6 +51,9 @@ class OutTableManifestOptionsTest extends TestCase
                 [
                     'destination' => 'my.table',
                     'manifest_type' => ManifestOptions::MANIFEST_TYPE_OUTPUT,
+                    'delete_where_column' => 'column1',
+                    'delete_where_values' => ['value1'],
+                    'delete_where_operator' => 'eq',
                     'delimiter' => '|',
                     'enclosure' => '_',
                     'incremental' => true,
@@ -78,6 +81,9 @@ class OutTableManifestOptionsTest extends TestCase
                 ],
                 (new ManifestOptions())
                     ->setManifestType(ManifestOptions::MANIFEST_TYPE_OUTPUT)
+                    ->setDeleteWhereColumn('column1')
+                    ->setDeleteWhereValues(['value1'])
+                    ->setDeleteWhereOperator('eq')
                     ->setEnclosure('_')
                     ->setDelimiter('|')
                     ->setColumns(['id', 'number', 'other_column'])

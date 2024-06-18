@@ -26,6 +26,12 @@ class ManifestOptions
 
     private ?string $enclosure = null;
 
+    private ?string $deleteWhereColumn = null;
+
+    private ?array $deleteWhereValues = null;
+
+    private ?string $deleteWhereOperator = null;
+
     /** @var ManifestOptionsSchema[]  */
     private ?array $schema = null;
 
@@ -341,5 +347,38 @@ class ManifestOptions
                 ));
             }
         }
+    }
+
+    public function getDeleteWhereColumn(): ?string
+    {
+        return $this->deleteWhereColumn;
+    }
+
+    public function getDeleteWhereValues(): ?array
+    {
+        return $this->deleteWhereValues;
+    }
+
+    public function getDeleteWhereOperator(): ?string
+    {
+        return $this->deleteWhereOperator;
+    }
+
+    public function setDeleteWhereColumn(?string $deleteWhereColumn): ManifestOptions
+    {
+        $this->deleteWhereColumn = $deleteWhereColumn;
+        return $this;
+    }
+
+    public function setDeleteWhereValues(?array $deleteWhereValues): ManifestOptions
+    {
+        $this->deleteWhereValues = $deleteWhereValues;
+        return $this;
+    }
+
+    public function setDeleteWhereOperator(?string $deleteWhereOperator): ManifestOptions
+    {
+        $this->deleteWhereOperator = $deleteWhereOperator;
+        return $this;
     }
 }

@@ -7,6 +7,7 @@ namespace Keboola\Component\Tests\Config;
 use Generator;
 use Keboola\Component\Config\BaseConfig;
 use Keboola\Component\Config\BaseConfigDefinition;
+use Keboola\Component\Config\DatatypeSupport;
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
@@ -155,6 +156,7 @@ class BaseConfigTest extends TestCase
                 return $nodeDefinition;
             }
         };
+        putenv('KBC_DATA_TYPE_SUPPORT=authoritative');
         $config = new BaseConfig([
             'parameters' => [
                 'ipsum' => [
@@ -177,6 +179,7 @@ class BaseConfigTest extends TestCase
                     'tables' => [],
                 ],
                 'output' => [
+                    'data_type_support' => DatatypeSupport::HINTS->value,
                     'files' => [],
                 ],
             ],
@@ -227,6 +230,7 @@ class BaseConfigTest extends TestCase
                     'tables' => [],
                 ],
                 'output' => [
+                    'data_type_support' => DatatypeSupport::HINTS->value,
                     'files' => [],
                 ],
             ],
@@ -236,6 +240,46 @@ class BaseConfigTest extends TestCase
             'value',
             $config->getValue(['parameters', 'ipsum', 'dolor']),
         );
+        $this->assertEquals(
+            DatatypeSupport::HINTS,
+            $config->getDataTypeSupport(),
+        );
+    }
+
+    public function testGetDataTypeSupportUserInvalidInput(): void
+    {
+        putenv('KBC_DATA_TYPE_SUPPORT=authoritative');
+        $config = new BaseConfig([
+            'storage' => [
+                'output' => [
+                    'data_type_support' => 'I\'m invalid',
+                    'files' => [],
+                ],
+            ],
+        ], new BaseConfigDefinition);
+
+        $this->assertEquals(
+            DatatypeSupport::AUTHORITATIVE, // from env
+            $config->getDataTypeSupport(),
+        );
+    }
+
+    public function testGetDataTypeSupportNoEnvUserInvalidInput(): void
+    {
+        putenv('KBC_DATA_TYPE_SUPPORT=');
+        $config = new BaseConfig([
+            'storage' => [
+                'output' => [
+                    'data_type_support' => 'I\'m invalid',
+                    'files' => [],
+                ],
+            ],
+        ], new BaseConfigDefinition);
+
+        $this->assertEquals(
+            DatatypeSupport::NONE, // default when env not set
+            $config->getDataTypeSupport(),
+        );
     }
 
     /**
@@ -244,7 +288,11 @@ class BaseConfigTest extends TestCase
     public function testEnvGetters(array $envs): void
     {
         foreach ($envs as $env => $value) {
-            putenv(sprintf('%s=%s', $env, $value));
+            if ($value === null) {
+                putenv($env);
+            } else {
+                putenv(sprintf('%s=%s', $env, $value));
+            }
         }
 
         $config = new BaseConfig([], new BaseConfigDefinition());
@@ -313,6 +361,12 @@ class BaseConfigTest extends TestCase
             Assert::assertEquals($envs['KBC_URL'], $config->getEnvKbcUrl());
         }
 
+        if (!isset($envs['KBC_DATA_TYPE_SUPPORT'])) {
+            Assert::assertEquals(DatatypeSupport::NONE, $config->getDataTypeSupport());
+        } else {
+            Assert::assertEquals(DatatypeSupport::from($envs['KBC_DATA_TYPE_SUPPORT']), $config->getDataTypeSupport());
+        }
+
         foreach ($envs as $env => $value) {
             putenv(sprintf('%s', $env));
         }
@@ -328,8 +382,9 @@ class BaseConfigTest extends TestCase
                 'KBC_CONFIGID' => 'configId',
                 'KBC_CONFIGROWID' => 'configRowId',
                 'KBC_COMPONENTID' => 'componentId',
-                'KBC_BRANCHID' => 'brancId',
+                'KBC_BRANCHID' => 'branchId',
                 'KBC_STAGING_FILE_PROVIDER' => 'staging_file_provider',
+                'KBC_DATA_TYPE_SUPPORT' => null,
             ],
         ];
 
@@ -341,13 +396,14 @@ class BaseConfigTest extends TestCase
                 'KBC_CONFIGID' => 'configId',
                 'KBC_CONFIGROWID' => 'configRowId',
                 'KBC_COMPONENTID' => 'componentId',
-                'KBC_BRANCHID' => 'brancId',
+                'KBC_BRANCHID' => 'branchId',
                 'KBC_STAGING_FILE_PROVIDER' => 'staging_file_provider',
                 'KBC_PROJECTNAME' => 'projectName',
                 'KBC_TOKENID' => 'tokenId',
                 'KBC_TOKENDESC' => 'tokenDesc',
                 'KBC_TOKEN' => 'token',
                 'KBC_URL' => 'url',
+                'KBC_DATA_TYPE_SUPPORT' => DatatypeSupport::AUTHORITATIVE->value,
             ],
         ];
     }
