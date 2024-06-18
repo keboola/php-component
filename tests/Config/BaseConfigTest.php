@@ -246,6 +246,42 @@ class BaseConfigTest extends TestCase
         );
     }
 
+    public function testGetDataTypeSupportUserInvalidInput(): void
+    {
+        putenv('KBC_DATA_TYPE_SUPPORT=authoritative');
+        $config = new BaseConfig([
+            'storage' => [
+                'output' => [
+                    'data_type_support' => 'I\'m invalid',
+                    'files' => [],
+                ],
+            ],
+        ], new BaseConfigDefinition);
+
+        $this->assertEquals(
+            DatatypeSupport::AUTHORITATIVE, // from env
+            $config->getDataTypeSupport(),
+        );
+    }
+
+    public function testGetDataTypeSupportNoEnvUserInvalidInput(): void
+    {
+        putenv('KBC_DATA_TYPE_SUPPORT=');
+        $config = new BaseConfig([
+            'storage' => [
+                'output' => [
+                    'data_type_support' => 'I\'m invalid',
+                    'files' => [],
+                ],
+            ],
+        ], new BaseConfigDefinition);
+
+        $this->assertEquals(
+            DatatypeSupport::NONE, // default when env not setZ
+            $config->getDataTypeSupport(),
+        );
+    }
+
     /**
      * @dataProvider envGettersDataProvider
      */
