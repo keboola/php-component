@@ -45,7 +45,8 @@ class Component extends \Keboola\Component\BaseComponent
             'data.csv',
             (new OutTableManifestOptions())
                 ->setPrimaryKeyColumns(['id'])
-                ->setDestination('out.report')
+                ->setDestination('out.report'),
+            true // legacy manifest format flag
         );
     }
 
