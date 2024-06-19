@@ -103,6 +103,44 @@ class ManifestManagerTest extends TestCase
                 'id',
                 'number',
             ],
+            'column_metadata' => [
+                'id' => [
+                    [
+                        'key' => 'KBC.datatype.nullable',
+                        'value' => true,
+                    ],
+                ],
+                'number' => [
+                    [
+                        'key' => 'KBC.datatype.nullable',
+                        'value' => true,
+                    ],
+                ],
+                'name' => [
+                    [
+                        'key' => 'KBC.datatype.nullable',
+                        'value' => true,
+                    ],
+                ],
+                'description' => [
+                    [
+                        'key' => 'KBC.datatype.nullable',
+                        'value' => true,
+                    ],
+                ],
+                'created_at' => [
+                    [
+                        'key' => 'KBC.datatype.nullable',
+                        'value' => true,
+                    ],
+                ],
+                'updated_at' => [
+                    [
+                        'key' => 'KBC.datatype.nullable',
+                        'value' => true,
+                    ],
+                ],
+            ],
         ];
 
         $this->assertSame($expectedManifest, $manager->getTableManifest('people.csv')->toArray());
@@ -139,6 +177,26 @@ class ManifestManagerTest extends TestCase
             'primary_key' => [
                 'id',
                 'number',
+            ],
+            'column_metadata' => [
+                'id' => [
+                    [
+                        'key' => 'KBC.datatype.nullable',
+                        'value' => true,
+                    ],
+                ],
+                'number' => [
+                    [
+                        'key' => 'KBC.datatype.nullable',
+                        'value' => true,
+                    ],
+                ],
+                'name' => [
+                    [
+                        'key' => 'KBC.datatype.nullable',
+                        'value' => true,
+                    ],
+                ],
             ],
         ];
 
@@ -430,8 +488,56 @@ class ManifestManagerTest extends TestCase
             'column_metadata' => [
                 'id' => [
                     [
+                        'key' => 'KBC.datatype.nullable',
+                        'value' => false,
+                    ],
+                    [
+                        'key' => 'KBC.description',
+                        'value' => 'This is a primary key',
+                    ],
+                    [
+                        'key' => 'KBC.datatype.basetype',
+                        'value' => 'INTEGER',
+                    ],
+                    [
+                        'key' => 'KBC.datatype.length',
+                        'value' => '11',
+                    ],
+                    [
+                        'key' => 'KBC.datatype.default',
+                        'value' => '123',
+                    ],
+                    [
                         'key' => 'yet.another.key',
                         'value' => 'Some other value',
+                    ],
+                ],
+                'number' => [
+                    [
+                        'key' => 'KBC.datatype.nullable',
+                        'value' => true,
+                    ],
+                    [
+                        'key' => 'KBC.datatype.basetype',
+                        'value' => 'VARCHAR',
+                    ],
+                    [
+                        'key' => 'KBC.datatype.length',
+                        'value' => '255',
+                    ],
+                ],
+                'other_column' => [
+                    [
+                        'key' => 'KBC.datatype.nullable',
+                        'value' => true,
+                    ],
+                    [
+                        'key' => 'KBC.datatype.basetype',
+                        'value' => 'VARCHAR',
+                    ],
+                    [
+                        'key' => 'KBC.datatype.length',
+                        'value' => '255',
                     ],
                 ],
             ],

@@ -1,8 +1,5 @@
 # Keboola PHP Component
 
-[![Build Status](https://travis-ci.com/keboola/php-component.svg?branch=master)](https://travis-ci.com/keboola/php-component)
-[![Code Climate](https://codeclimate.com/github/keboola/php-component/badges/gpa.svg)](https://codeclimate.com/github/keboola/php-component)
-
 General library for php component running in KBC. The library provides function related to [Docker Runner](https://github.com/keboola/docker-bundle).
 
 ## Installation
@@ -48,7 +45,8 @@ class Component extends \Keboola\Component\BaseComponent
             'data.csv',
             (new OutTableManifestOptions())
                 ->setPrimaryKeyColumns(['id'])
-                ->setDestination('out.report')
+                ->setDestination('out.report'),
+            true // legacy manifest format flag
         );
     }
 

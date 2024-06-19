@@ -65,6 +65,11 @@ class LegacyManifestNormalizer implements NormalizerInterface, DenormalizerInter
                     $data['primary_key'][] = $schema->getName();
                 }
 
+                $columnMetadata[] = ['key' => 'KBC.datatype.nullable', 'value' => $schema->isNullable()];
+                if ($schema->getDescription() !== null) {
+                    $columnMetadata[] = ['key' => 'KBC.description', 'value' => $schema->getDescription()];
+                }
+
                 $this->normalizeDataTypes($schema, $columnMetadata);
                 $this->normalizeColumnMetadata($schema, $columnMetadata);
 
@@ -79,9 +84,13 @@ class LegacyManifestNormalizer implements NormalizerInterface, DenormalizerInter
     {
         if ($schema->getDataType() !== null) {
             foreach ($schema->getDataType() as $backend => $typeInfo) {
-                foreach ($typeInfo as $key => $value) {
-                    $metaKey = ($backend === 'base' ? 'KBC.datatype.basetype' : 'KBC.datatype.' . $key);
-                    $columnMetadata[] = ['key' => $metaKey, 'value' => $value];
+                $typeMetaKey = ($backend === 'base' ? 'KBC.datatype.basetype' : 'KBC.datatype.type');
+                $columnMetadata[] = ['key' => $typeMetaKey, 'value' => $typeInfo->getType()];
+                if ($typeInfo->getLength() !== null) {
+                    $columnMetadata[] = ['key' => 'KBC.datatype.length', 'value' => $typeInfo->getLength()];
+                }
+                if ($typeInfo->getDefault() !== null) {
+                    $columnMetadata[] = ['key' => 'KBC.datatype.default', 'value' => $typeInfo->getDefault()];
                 }
             }
         }
@@ -176,7 +185,7 @@ class LegacyManifestNormalizer implements NormalizerInterface, DenormalizerInter
             $description = null;
 
             foreach ($columnMetadata as $meta) {
-                if (strpos($meta['key'], 'KBC.datatype.') === 0 && $meta['key'] !== 'KBC.datatype.nullable') {
+                if (str_starts_with($meta['key'], 'KBC.datatype.') && $meta['key'] !== 'KBC.datatype.nullable') {
                     $this->setDataType($meta, $dataTypes, $metadataBackend);
                 } else {
                     $this->setMetadata($meta, $metadata, $description, $primaryKey, $isNullable);
