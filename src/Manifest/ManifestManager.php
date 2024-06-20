@@ -20,7 +20,7 @@ class ManifestManager
     private string $dataDir;
 
     public function __construct(
-        string $dataDir
+        string $dataDir,
     ) {
         $this->dataDir = $dataDir;
     }
@@ -36,7 +36,7 @@ class ManifestManager
 
     public function writeFileManifest(
         string $fileName,
-        OutFileManifestOptions $options
+        OutFileManifestOptions $options,
     ): void {
         $tableManifestName = $this->getManifestFilename($fileName);
         $this->internalWriteFileManifest($tableManifestName, $options->toArray());
