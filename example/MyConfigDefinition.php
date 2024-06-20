@@ -15,10 +15,10 @@ class MyConfigDefinition extends BaseConfigDefinition
         $parametersNode
             ->isRequired()
             ->children()
-                ->arrayNode('errorCount')
+                ->arrayNode('customKey')
                     ->isRequired()
                     ->children()
-                        ->integerNode('maximumAllowed')
+                        ->integerNode('customSubKey')
                             ->isRequired();
         return $parametersNode;
     }

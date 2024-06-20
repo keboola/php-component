@@ -21,8 +21,8 @@ class Component extends \Keboola\Component\BaseComponent
         // get parameters
         $parameters = $this->getConfig()->getParameters();
 
-        // get value of customKey.customSubkey parameter and fail if missing
-        $customParameter = $this->getConfig()->getValue(['parameters', 'customKey', 'customSubkey']);
+        // get value of customKey.customSubKey parameter and fail if missing
+        $customParameter = $this->getConfig()->getValue(['parameters', 'customKey', 'customSubKey']);
 
         // get value with default value if not present
         $customParameterOrNull = $this->getConfig()->getValue(['parameters', 'customKey'], 'someDefaultValue');
@@ -109,17 +109,17 @@ To implement a sync action
 
 ### Custom getters in config
 
-You might want to add getter methods for custom parameters in the config. That way you don't need to remember exact keys (`parameters.errorCount.maximumAllowed`), but instead use a method to retrieve the value (`$config->getMaximumAllowedErrorCount()`).
+You might want to add getter methods for custom parameters in the config. That way you don't need to remember exact keys (`parameters.customKey.customSubKey`), but instead use a method to retrieve the value (`$config->getCustomSubKey()`).
 
 Simply create your own `Config` class, that extends `BaseConfig` and override `\Keboola\Component\BaseComponent::getConfigClass()` method to return your new class name. 
 
 ```php
 class MyConfig extends \Keboola\Component\Config\BaseConfig 
 {
-    public function getMaximumAllowedErrorCount()
+    public function getCustomSubKey()
     {
         $defaultValue = 0;
-        return $this->getValue(['parameters', 'errorCount', 'maximumAllowed'], $defaultValue);
+        return $this->getValue(['parameters', 'customKey', 'customSubKey'], $defaultValue);
     }
 }
 ```
@@ -149,10 +149,10 @@ class MyConfigDefinition extends \Keboola\Component\Config\BaseConfigDefinition
         $parametersNode
             ->isRequired()
             ->children()
-                ->arrayNode('errorCount')
+                ->arrayNode('customKey')
                     ->isRequired()
                     ->children()
-                        ->integerNode('maximumAllowed')
+                        ->integerNode('customSubKey')
                             ->isRequired();
         return $parametersNode;
     }

@@ -15,11 +15,11 @@ class Component extends BaseComponent
         // get parameters
         $parameters = $this->getConfig()->getParameters();
 
-        // get value of customKey.customSubkey parameter and fail if missing
-        $customParameter = $this->getConfig()->getValue(['parameters', 'customKey', 'customSubkey']);
+        // get value of customKey.customSubKey parameter and fail if missing
+        $customParameter = $this->getConfig()->getValue(['parameters', 'customKey', 'customSubKey']);
 
         // get value with default value if not present
-        $customParameterOrNull = $this->getConfig()->getValue(['parameters', 'customKey'], 'someDefaultValue');
+        $customParameterOrNull = $this->getConfig()->getValue(['parameters', 'anotherCustomKey'], 'someDefaultValue');
 
         // get manifest for input file
         $fileManifest = $this->getManifestManager()->getFileManifest('input-file.csv');
@@ -52,5 +52,15 @@ class Component extends BaseComponent
     protected function getSyncActions(): array
     {
         return ['custom' => 'customSyncAction'];
+    }
+
+    protected function getConfigDefinitionClass(): string
+    {
+        return MyConfigDefinition::class;
+    }
+
+    protected function getConfigClass(): string
+    {
+        return MyConfig::class;
     }
 }
