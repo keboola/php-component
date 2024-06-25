@@ -361,6 +361,10 @@ class ManifestManagerTest extends TestCase
                                 'key' => 'yet.another.key',
                                 'value' => 'Some other value',
                             ],
+                            [
+                                'key' => 'yet.another.key', //duplicated key should be removed
+                                'value' => 'Some other value',
+                            ],
                         ],
                     ])
                     ->setDestination('my.table')
