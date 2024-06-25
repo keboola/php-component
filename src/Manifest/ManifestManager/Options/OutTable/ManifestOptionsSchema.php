@@ -31,7 +31,7 @@ class ManifestOptionsSchema
         bool $nullable = true,
         bool $primaryKey = false,
         ?string $description = null,
-        ?array $metadata = null
+        ?array $metadata = null,
     ) {
         $this->setName($name);
         if ($dataTypes !== null) {

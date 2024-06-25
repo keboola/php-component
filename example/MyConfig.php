@@ -8,9 +8,9 @@ use Keboola\Component\Config\BaseConfig;
 
 class MyConfig extends BaseConfig
 {
-    public function getMaximumAllowedErrorCount(): int
+    public function getCustomSubKey(): int
     {
         $defaultValue = 0;
-        return $this->getIntValue(['parameters', 'errorCount', 'maximumAllowed'], $defaultValue);
+        return $this->getIntValue(['parameters', 'customKey', 'customSubKey'], $defaultValue);
     }
 }

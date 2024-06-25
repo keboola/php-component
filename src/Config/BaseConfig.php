@@ -31,7 +31,7 @@ class BaseConfig implements ConfigInterface
      */
     public function __construct(
         array $config,
-        ?ConfigurationInterface $configDefinition = null
+        ?ConfigurationInterface $configDefinition = null,
     ) {
         $this->setConfigDefinition($configDefinition);
         $this->setConfig($config);
