@@ -172,7 +172,7 @@ class LegacyManifestNormalizer implements NormalizerInterface, DenormalizerInter
     private function setSchema(
         ManifestOptions $manifestOptions,
         array $data,
-        ?string $metadataBackend
+        ?string $metadataBackend,
     ): void {
         $schema = [];
 
@@ -226,7 +226,7 @@ class LegacyManifestNormalizer implements NormalizerInterface, DenormalizerInter
         array &$metadata,
         ?string &$description,
         bool &$primaryKey,
-        bool &$isNullable
+        bool &$isNullable,
     ): void {
         if ($meta['key'] === 'KBC.description') {
             $description = $meta['value'];
