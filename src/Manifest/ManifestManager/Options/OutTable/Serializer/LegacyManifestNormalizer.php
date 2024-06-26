@@ -72,6 +72,7 @@ class LegacyManifestNormalizer implements NormalizerInterface, DenormalizerInter
 
                 $this->normalizeDataTypes($schema, $columnMetadata);
                 $this->normalizeColumnMetadata($schema, $columnMetadata);
+                $this->deduplicateMetadata($columnMetadata);
 
                 if (!empty($columnMetadata)) {
                     $data['column_metadata'][$schema->getName()] = $columnMetadata;
@@ -247,5 +248,24 @@ class LegacyManifestNormalizer implements NormalizerInterface, DenormalizerInter
     public function supportsDenormalization($data, $type, $format = null): bool
     {
         return $type === ManifestOptions::class;
+    }
+
+    private function deduplicateMetadata(array &$columnMetadata): void
+    {
+        $columnMetadata = array_values(array_reduce(
+            $columnMetadata,
+            /**
+             * @param array<string, array<string, mixed>> $carry
+             * @param array<string, mixed> $item
+             * @return array<string, array<string, mixed>>
+             */
+            function (array $carry, array $item): array {
+                if (isset($item['key']) && !isset($carry[$item['key']])) {
+                    $carry[$item['key']] = $item;
+                }
+                return $carry;
+            },
+            [],
+        ));
     }
 }
