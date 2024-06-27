@@ -16,7 +16,7 @@ class ManifestOptionsSchema
     private ?string $description;
     private ?array $metadata;
 
-    private const ALLOWED_DATA_TYPES_BACKEND = [
+    public const ALLOWED_DATA_TYPES_BACKEND = [
         'base', 'redshift', 'snowflake', 'synapse', 'bigquery', 'exasol',
     ];
 
