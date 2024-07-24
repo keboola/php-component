@@ -150,10 +150,21 @@ class ManifestManagerTest extends TestCase
     {
         $manager = new ManifestManager(__DIR__ . '/fixtures/manifest-data-dir');
 
-        $this->expectException(OptionsValidationException::class);
-        $this->expectExceptionMessage('Columns must be specified when primary key is specified.');
+        $expectedManifest = [
+            'destination' => 'destination-table',
+            'primary_key' => [
+                'id',
+                'number',
+            ],
+        ];
 
-        $manager->getTableManifest('onlyPrimaryKeys.csv');
+        $this->assertSame($expectedManifest, $manager->getTableManifest('onlyPrimaryKeys.csv')->toArray());
+
+        // Test that toArray(legacy: false) force fallbacks to the same result
+        $this->assertSame(
+            $expectedManifest,
+            $manager->getTableManifest('onlyPrimaryKeys.csv')->toArray(false),
+        );
     }
 
     public function testNonexistentManifestReturnsEmptyArray(): void

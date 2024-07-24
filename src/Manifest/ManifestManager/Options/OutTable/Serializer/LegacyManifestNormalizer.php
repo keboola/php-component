@@ -19,7 +19,11 @@ class LegacyManifestNormalizer implements NormalizerInterface, DenormalizerInter
         /** @var ManifestOptions $object */
         $this->normalizeBasicProperties($object, $data);
         $this->normalizeTableMetadata($object, $data);
-        $this->normalizeSchema($object, $data);
+        if ($object->getLegacyPrimaryKeys() !== null) {
+            $data['primary_key'] = $object->getLegacyPrimaryKeys();
+        } else {
+            $this->normalizeSchema($object, $data);
+        }
 
         return $data;
     }
@@ -119,7 +123,7 @@ class LegacyManifestNormalizer implements NormalizerInterface, DenormalizerInter
         $metadataBackend = $this->setTableMetadata($manifestOptions, $data);
 
         if (isset($data['primary_key']) && !isset($data['columns'])) {
-            throw new OptionsValidationException('Columns must be specified when primary key is specified.');
+            $manifestOptions->setLegacyPrimaryKeys($data['primary_key']);
         }
 
         if (isset($data['columns'])) {
