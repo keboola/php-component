@@ -43,6 +43,8 @@ class ManifestOptions
 
     private ?array $tableMetadata = null;
 
+    private ?array $legacyPrimaryKeys = null;
+
     private static function getLegacySerializer(): Serializer
     {
         $normalizer = new ObjectNormalizer(
@@ -78,6 +80,9 @@ class ManifestOptions
     public function toArray(bool $legacy = true): array
     {
         $serializer = $legacy ? self::getLegacySerializer() : self::getNewNativeTypesSerializer();
+        if ($this->getLegacyPrimaryKeys() !== null) {
+            $serializer = self::getLegacySerializer();
+        }
 
         return (array) $serializer->normalize($this, null, [AbstractObjectNormalizer::SKIP_NULL_VALUES => true]);
     }
@@ -380,5 +385,16 @@ class ManifestOptions
     {
         $this->deleteWhereOperator = $deleteWhereOperator;
         return $this;
+    }
+
+    public function setLegacyPrimaryKeys(array $primaryKey): ManifestOptions
+    {
+        $this->legacyPrimaryKeys = $primaryKey;
+        return $this;
+    }
+
+    public function getLegacyPrimaryKeys(): ?array
+    {
+        return $this->legacyPrimaryKeys;
     }
 }
