@@ -158,6 +158,30 @@ class OutTableManifestOptionsTest extends TestCase
         ];
     }
 
+    /** @dataProvider validNamesProvider */
+    public function testManifestOptionsSchemaValidNames(string $name): void
+    {
+        $manifestOptionsSchema = new ManifestOptionsSchema(
+            $name,
+            ['base' => ['type' => 'INTEGER', 'length' => '11', 'default' => '123']],
+            false,
+            true,
+        );
+
+        $this->assertSame($name, $manifestOptionsSchema->getName());
+    }
+
+    public function validNamesProvider(): array
+    {
+        return [
+            'simple name' => ['id'],
+            'numeric' => ['123'],
+            'zero' => ['0'],
+            'string null' => ['null'],
+            'space' => [' '],
+        ];
+    }
+
     /**
      * @dataProvider provideInvalidOptions
      */

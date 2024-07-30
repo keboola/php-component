@@ -80,7 +80,7 @@ class ManifestOptionsSchema
      */
     public function setName(string $name): void
     {
-        if (empty($name)) {
+        if ($name === '') {
             throw new OptionsValidationException('Name cannot be empty.');
         }
         $this->name = $name;
