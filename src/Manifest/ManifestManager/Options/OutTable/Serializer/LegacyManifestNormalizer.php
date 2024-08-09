@@ -7,6 +7,7 @@ namespace Keboola\Component\Manifest\ManifestManager\Options\OutTable\Serializer
 use Keboola\Component\Manifest\ManifestManager\Options\OptionsValidationException;
 use Keboola\Component\Manifest\ManifestManager\Options\OutTable\ManifestOptions;
 use Keboola\Component\Manifest\ManifestManager\Options\OutTable\ManifestOptionsSchema;
+use Keboola\Component\UserException;
 use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
@@ -181,6 +182,7 @@ class LegacyManifestNormalizer implements NormalizerInterface, DenormalizerInter
     ): void {
         $schema = [];
 
+        $primaryKeysSet = [];
         foreach ($data['columns'] as $columnName) {
             $columnMetadata = $data['column_metadata'][$columnName] ?? [];
             $dataTypes = [];
@@ -198,6 +200,9 @@ class LegacyManifestNormalizer implements NormalizerInterface, DenormalizerInter
             }
 
             $isPK = $primaryKey ?: (isset($data['primary_key']) && in_array($columnName, $data['primary_key']));
+            if ($isPK) {
+                $primaryKeysSet[] = $columnName;
+            }
             $schema[] = new ManifestOptionsSchema(
                 $columnName,
                 $dataTypes,
@@ -206,6 +211,13 @@ class LegacyManifestNormalizer implements NormalizerInterface, DenormalizerInter
                 $description,
                 empty($metadata) ? null : $metadata,
             );
+        }
+
+        if (isset($data['primary_key']) && count($primaryKeysSet) !== count($data['primary_key'])) {
+            throw new UserException(sprintf(
+                'Primary keys do not match columns. Missing columns: %s',
+                implode(', ', array_diff($data['primary_key'], $primaryKeysSet)),
+            ));
         }
 
         $manifestOptions->setSchema($schema);
