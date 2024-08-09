@@ -7,6 +7,7 @@ namespace Keboola\Component\Tests\Manifest\ManifestManager\Options;
 use Keboola\Component\Manifest\ManifestManager\Options\OptionsValidationException;
 use Keboola\Component\Manifest\ManifestManager\Options\OutTable\ManifestOptions;
 use Keboola\Component\Manifest\ManifestManager\Options\OutTable\ManifestOptionsSchema;
+use Keboola\Component\UserException;
 use PHPUnit\Framework\TestCase;
 
 class OutTableManifestOptionsTest extends TestCase
@@ -180,6 +181,30 @@ class OutTableManifestOptionsTest extends TestCase
             'string null' => ['null'],
             'space' => [' '],
         ];
+    }
+
+    public function testFromArrayWithNonExistingPrimaryKey(): void
+    {
+        $this->expectException(UserException::class);
+        $this->expectExceptionMessage('Primary keys do not match columns. Missing columns: number');
+
+        ManifestOptions::fromArray([
+            'destination' => 'my.table',
+            'columns' => ['id', 'number #', 'other_column'],
+            'incremental' => true,
+            'primary_key' => ['id', 'number'],
+        ]);
+
+        $this->expectException(UserException::class);
+        $this->expectExceptionMessage('Primary keys do not match columns. ' .
+            'Missing columns: non-existing-column-1, non-existing-column-2');
+
+        ManifestOptions::fromArray([
+            'destination' => 'my.table',
+            'columns' => ['id', 'number', 'other_column'],
+            'incremental' => true,
+            'primary_key' => ['id', 'non-existing-column-1', 'non-existing-column-2'],
+        ]);
     }
 
     /**
