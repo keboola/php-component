@@ -27,6 +27,26 @@
                 "key": "yet.another.key",
                 "value": "Some other value"
             }
+        ],
+        "number": [
+            {
+                "key": "KBC.datatype.basetype",
+                "value": "INTEGER"
+            },
+            {
+                "key": "KBC.datatype.default",
+                "value": 0
+            }
+        ],
+        "other_column": [
+            {
+                "key": "KBC.datatype.basetype",
+                "value": "BOOLEAN"
+            },
+            {
+                "key": "KBC.datatype.default",
+                "value": false
+            }
         ]
     }
 }

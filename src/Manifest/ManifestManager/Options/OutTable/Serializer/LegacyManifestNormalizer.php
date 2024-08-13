@@ -221,8 +221,13 @@ class LegacyManifestNormalizer implements NormalizerInterface, DenormalizerInter
             $backend = $defaultBackend ?? 'base';
         }
         if (in_array($key, ['type', 'length', 'default'])) {
-            $dataTypes['base'][$key] = $meta['value'];
-            $dataTypes[$backend][$key] = $meta['value'];
+            if (is_bool($meta['value'])) {
+                $value = $meta['value'] ? 'true' : 'false';
+            } else {
+                $value = (string) $meta['value'];
+            }
+            $dataTypes['base'][$key] = $value;
+            $dataTypes[$backend][$key] = $value;
         }
     }
 

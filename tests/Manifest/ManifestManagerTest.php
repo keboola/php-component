@@ -9,6 +9,7 @@ use Keboola\Component\Manifest\ManifestManager\Options\OptionsValidationExceptio
 use Keboola\Component\Manifest\ManifestManager\Options\OutFileManifestOptions;
 use Keboola\Component\Manifest\ManifestManager\Options\OutTable\ManifestOptions;
 use Keboola\Component\Manifest\ManifestManager\Options\OutTable\ManifestOptionsSchema;
+use Keboola\Component\Manifest\ManifestManager\Options\OutTable\ManifestOptionsSchemaDataType;
 use Keboola\Temp\Temp;
 use PHPUnit\Framework\TestCase;
 
@@ -241,11 +242,11 @@ class ManifestManagerTest extends TestCase
                 ),
                 new ManifestOptionsSchema(
                     'number',
-                    [],
+                    ['base' => ['type' => 'INTEGER', 'default' =>'0']],
                 ),
                 new ManifestOptionsSchema(
                     'other_column',
-                    [],
+                    ['base' => ['type' => 'BOOLEAN', 'default' => 'false']],
                 ),
             ]);
 
@@ -465,9 +466,11 @@ class ManifestManagerTest extends TestCase
                 ),
                 new ManifestOptionsSchema(
                     'number',
+                    ['base' => ['type' => 'INTEGER', 'default' =>'0']],
                 ),
                 new ManifestOptionsSchema(
                     'other_column',
+                    ['base' => ['type' => 'BOOLEAN', 'default' => 'false']],
                 ),
             ])
             ->setTableMetadata([
