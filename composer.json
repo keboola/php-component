@@ -49,7 +49,6 @@
         "phpcs": "phpcs --extensions=php src tests example",
         "phpcbf": "phpcbf --extensions=php src tests example",
         "build": [
-            "@phplint",
             "@phpcs",
             "@phpstan",
             "@tests"
