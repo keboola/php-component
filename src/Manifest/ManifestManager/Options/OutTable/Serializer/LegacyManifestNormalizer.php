@@ -20,10 +20,12 @@ class LegacyManifestNormalizer implements NormalizerInterface, DenormalizerInter
         /** @var ManifestOptions $object */
         $this->normalizeBasicProperties($object, $data);
         $this->normalizeTableMetadata($object, $data);
+        $this->normalizeSchema($object, $data);
         if ($object->getLegacyPrimaryKeys() !== null) {
-            $data['primary_key'] = $object->getLegacyPrimaryKeys();
-        } else {
-            $this->normalizeSchema($object, $data);
+            if (!isset($data['primary_key'])) {
+                $data['primary_key'] = [];
+            }
+            $data['primary_key'] = array_unique(array_merge($data['primary_key'], $object->getLegacyPrimaryKeys()));
         }
 
         return $data;
