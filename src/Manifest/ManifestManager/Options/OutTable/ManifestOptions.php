@@ -387,7 +387,7 @@ class ManifestOptions
         return $this;
     }
 
-    public function setLegacyPrimaryKeys(array $primaryKey): ManifestOptions
+    public function setLegacyPrimaryKeys(?array $primaryKey): ManifestOptions
     {
         $this->legacyPrimaryKeys = $primaryKey;
         return $this;
