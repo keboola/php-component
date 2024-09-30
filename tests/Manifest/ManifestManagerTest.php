@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Keboola\Component\Tests\Manifest;
 
+use Generator;
 use Keboola\Component\Manifest\ManifestManager;
 use Keboola\Component\Manifest\ManifestManager\Options\OptionsValidationException;
 use Keboola\Component\Manifest\ManifestManager\Options\OutFileManifestOptions;
@@ -166,6 +167,166 @@ class ManifestManagerTest extends TestCase
             $expectedManifest,
             $manager->getTableManifest('onlyPrimaryKeys.csv')->toArray(false),
         );
+    }
+
+    /**
+     * @dataProvider legacyPrimaryKeysDataProvider
+     */
+    public function testManifestObjectWithExtraPrimaryKeysSpecified(
+        array $legacyPrimaryKeys,
+        array $schema,
+        array $expectedManifest,
+    ): void {
+        $manifest = (new ManifestOptions())
+            ->setDestination('destination-table')
+            ->setLegacyPrimaryKeys($legacyPrimaryKeys)
+            ->setSchema($schema);
+
+        $this->assertEqualsCanonicalizing($expectedManifest, $manifest->toArray());
+
+        // Test that toArray(legacy: false) force fallbacks to the same result
+        $this->assertEqualsCanonicalizing(
+            $expectedManifest,
+            $manifest->toArray(false),
+        );
+    }
+
+    public function legacyPrimaryKeysDataProvider(): Generator
+    {
+        yield 'two columns, three legacy primary keys merging with two non-legacy' => [
+            ['id', 'number', 'name'],
+            [
+                new ManifestOptionsSchema(
+                    'id',
+                    [],
+                    false,
+                    true,
+                ),
+                new ManifestOptionsSchema(
+                    'number',
+                    ['base' => ['type' => 'INTEGER', 'default' => '0']],
+                    false,
+                    true,
+                ),
+            ],
+            [
+                'destination' => 'destination-table',
+                'columns' => ['id', 'number'],
+                'primary_key' => ['id', 'number', 'name'],
+                'column_metadata' => [
+                    'id' => [
+                        [
+                            'key' => 'KBC.datatype.nullable',
+                            'value' => false,
+                        ],
+                    ],
+                    'number' => [
+                        [
+                            'key' => 'KBC.datatype.nullable',
+                            'value' => false,
+                        ],
+                        [
+                            'key' => 'KBC.datatype.basetype',
+                            'value' => 'INTEGER',
+                        ],
+                        [
+                            'key' => 'KBC.datatype.default',
+                            'value' => '0',
+                        ],
+                    ],
+                ],
+            ],
+        ];
+
+        yield 'two columns, one legacy primary key, two non-legacy' => [
+            ['name'],
+            [
+                new ManifestOptionsSchema(
+                    'id',
+                    [],
+                    false,
+                    true,
+                ),
+                new ManifestOptionsSchema(
+                    'number',
+                    ['base' => ['type' => 'INTEGER', 'default' => '0']],
+                    false,
+                    true,
+                ),
+            ],
+            [
+                'destination' => 'destination-table',
+                'columns' => ['id', 'number'],
+                'primary_key' => ['id', 'number', 'name'],
+                'column_metadata' => [
+                    'id' => [
+                        [
+                            'key' => 'KBC.datatype.nullable',
+                            'value' => false,
+                        ],
+                    ],
+                    'number' => [
+                        [
+                            'key' => 'KBC.datatype.nullable',
+                            'value' => false,
+                        ],
+                        [
+                            'key' => 'KBC.datatype.basetype',
+                            'value' => 'INTEGER',
+                        ],
+                        [
+                            'key' => 'KBC.datatype.default',
+                            'value' => '0',
+                        ],
+                    ],
+                ],
+            ],
+        ];
+
+        yield 'two columns, three legacy primary keys' => [
+            ['id', 'number', 'name'],
+            [
+                new ManifestOptionsSchema(
+                    'id',
+                    [],
+                    false,
+                    false,
+                ),
+                new ManifestOptionsSchema(
+                    'number',
+                    ['base' => ['type' => 'INTEGER', 'default' => '0']],
+                    false,
+                    false,
+                ),
+            ],
+            [
+                'destination' => 'destination-table',
+                'columns' => ['id', 'number'],
+                'primary_key' => ['id', 'number', 'name'],
+                'column_metadata' => [
+                    'id' => [
+                        [
+                            'key' => 'KBC.datatype.nullable',
+                            'value' => false,
+                        ],
+                    ],
+                    'number' => [
+                        [
+                            'key' => 'KBC.datatype.nullable',
+                            'value' => false,
+                        ],
+                        [
+                            'key' => 'KBC.datatype.basetype',
+                            'value' => 'INTEGER',
+                        ],
+                        [
+                            'key' => 'KBC.datatype.default',
+                            'value' => '0',
+                        ],
+                    ],
+                ],
+            ],
+        ];
     }
 
     public function testNonexistentManifestReturnsEmptyArray(): void
