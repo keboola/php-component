@@ -63,7 +63,7 @@ class BaseComponent
         error_reporting(E_ALL);
 
         set_error_handler(function (int $errno, string $errstr, string $errfile, int $errline): bool {
-            if (!(error_reporting() & $errno) || $errno === E_USER_DEPRECATED) {
+            if (!(error_reporting() & $errno) || $errno === E_USER_DEPRECATED || $errno === E_DEPRECATED) {
                 // respect error_reporting() level
                 // libraries used in custom components may emit notices that cannot be fixed
                 return false;
