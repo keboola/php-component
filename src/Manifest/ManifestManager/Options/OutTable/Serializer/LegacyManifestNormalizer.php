@@ -13,6 +13,13 @@ use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
 class LegacyManifestNormalizer implements NormalizerInterface, DenormalizerInterface
 {
+    public function getSupportedTypes(?string $format): array
+    {
+        return [
+            '*' => true,
+        ];
+    }
+
     public function normalize($object, ?string $format = null, array $context = []): array
     {
         $data = [];
@@ -263,12 +270,12 @@ class LegacyManifestNormalizer implements NormalizerInterface, DenormalizerInter
         }
     }
 
-    public function supportsNormalization($data, $format = null): bool
+    public function supportsNormalization($data, $format = null, array $context = []): bool
     {
         return $data instanceof ManifestOptions;
     }
 
-    public function supportsDenormalization($data, $type, $format = null): bool
+    public function supportsDenormalization($data, $type, $format = null, array $context = []): bool
     {
         return $type === ManifestOptions::class;
     }
