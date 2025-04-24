@@ -15,11 +15,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        phpVersion: [8.1, 8.2, 8.3, 8.4]
+        phpVersion: [8.2, 8.3, 8.4]
         symfonyVersion: ["5.4.*", "6.4.*", "7.2.*"]
-        exclude:
-          - phpVersion: 8.1
-            symfonyVersion: 7.2.*
 
     steps:
       -
