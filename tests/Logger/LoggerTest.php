@@ -8,6 +8,8 @@ use DateTimeImmutable;
 use Keboola\Component\Config\BaseConfig;
 use Keboola\Component\Logger;
 use Monolog\Handler\StreamHandler;
+use Monolog\Level;
+use Monolog\LogRecord;
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
 
@@ -25,7 +27,7 @@ class LoggerTest extends TestCase
         /** @var StreamHandler $streamHandler */
         $streamHandler = $handlers[0];
         $this->assertSame('php://stderr', $streamHandler->getUrl());
-        $this->assertSame(Logger::DEBUG, $streamHandler->getLevel());
+        $this->assertSame(Level::Debug, $streamHandler->getLevel());
     }
 
     public function testSetupSyncActionLogging(): void
@@ -40,32 +42,30 @@ class LoggerTest extends TestCase
         /** @var StreamHandler $streamHandler1 */
         $streamHandler1 = $handlers[0];
         $this->assertSame('php://stderr', $streamHandler1->getUrl());
-        $this->assertSame(Logger::CRITICAL, $streamHandler1->getLevel());
+        $this->assertSame(Level::Critical, $streamHandler1->getLevel());
 
         /** @var StreamHandler $streamHandler2 */
         $streamHandler2 = $handlers[1];
         $this->assertSame('php://stderr', $streamHandler2->getUrl());
-        $this->assertSame(Logger::ERROR, $streamHandler2->getLevel());
+        $this->assertSame(Level::Error, $streamHandler2->getLevel());
 
         // Init streams (stream is created with first message)
-        $streamHandler1->handle([
-            'level' => Logger::CRITICAL,
-            'message' => '',
-            'extra' => [],
-            'context' => [],
-            'datetime' => new DateTimeImmutable(),
-            'channel' => '',
-            'level_name' => Logger::getLevelName(Logger::CRITICAL),
-        ]);
-        $streamHandler2->handle([
-            'level' => Logger::ERROR,
-            'message' => '',
-            'extra' => [],
-            'context' => [],
-            'datetime' => new DateTimeImmutable(),
-            'channel' => '',
-            'level_name' => Logger::getLevelName(Logger::ERROR),
-        ]);
+        $streamHandler1->handle(new LogRecord(
+            datetime: new DateTimeImmutable(),
+            channel: '',
+            level: Level::Critical,
+            message: '',
+            context: [],
+            extra: [],
+        ));
+        $streamHandler2->handle(new LogRecord(
+            datetime: new DateTimeImmutable(),
+            channel: '',
+            level: Level::Error,
+            message: '',
+            context: [],
+            extra: [],
+        ));
 
         // Connect tester (logger) to the streams
         /** @var resource $stream1 */
@@ -143,10 +143,10 @@ class LoggerTest extends TestCase
             StreamTester::getContent(),
         );
 
-        $this->assertSame(Logger::CRITICAL, $handlerCritical->getLevel());
-        $this->assertSame(Logger::WARNING, $handlerError->getLevel());
-        $this->assertSame(Logger::INFO, $handlerLog->getLevel());
-        $this->assertSame(Logger::DEBUG, $handlerDebug->getLevel());
+        $this->assertSame(Level::Critical, $handlerCritical->getLevel());
+        $this->assertSame(Level::Warning, $handlerError->getLevel());
+        $this->assertSame(Level::Info, $handlerLog->getLevel());
+        $this->assertSame(Level::Debug, $handlerDebug->getLevel());
 
         $this->assertSame('php://stderr', $handlerCritical->getUrl());
         $this->assertSame('php://stderr', $handlerError->getUrl());

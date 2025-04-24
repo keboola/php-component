@@ -7,6 +7,7 @@ namespace Keboola\Component;
 use Keboola\Component\Config\BaseConfig;
 use Monolog\Formatter\LineFormatter;
 use Monolog\Handler\StreamHandler;
+use Monolog\Level;
 use Monolog\Logger as MonologLogger;
 
 class Logger extends MonologLogger implements Logger\SyncActionLogging, Logger\AsyncActionLogging
@@ -15,7 +16,7 @@ class Logger extends MonologLogger implements Logger\SyncActionLogging, Logger\A
     {
         $errorHandler = new StreamHandler('php://stderr');
         $errorHandler->setBubble(false);
-        $errorHandler->setLevel(MonologLogger::WARNING);
+        $errorHandler->setLevel(Level::Warning);
         $errorHandler->setFormatter(new LineFormatter("%message%\n"));
         return $errorHandler;
     }
@@ -24,7 +25,7 @@ class Logger extends MonologLogger implements Logger\SyncActionLogging, Logger\A
     {
         $logHandler = new StreamHandler('php://stdout');
         $logHandler->setBubble(false);
-        $logHandler->setLevel(MonologLogger::INFO);
+        $logHandler->setLevel(Level::Info);
         $logHandler->setFormatter(new LineFormatter("%message%\n"));
         return $logHandler;
     }
@@ -33,7 +34,7 @@ class Logger extends MonologLogger implements Logger\SyncActionLogging, Logger\A
     {
         $handler = new StreamHandler('php://stderr');
         $handler->setBubble(false);
-        $handler->setLevel(MonologLogger::CRITICAL);
+        $handler->setLevel(Level::Critical);
         $handler->setFormatter(new LineFormatter("[%datetime%] %level_name%: %message% %context% %extra%\n"));
         return $handler;
     }
@@ -42,7 +43,7 @@ class Logger extends MonologLogger implements Logger\SyncActionLogging, Logger\A
     {
         $handler = new StreamHandler('php://stdout');
         $handler->setBubble(false);
-        $handler->setLevel(MonologLogger::DEBUG);
+        $handler->setLevel(Level::Debug);
         $handler->setFormatter(new LineFormatter("[%datetime%] %level_name%: %message% %context% %extra%\n"));
         return $handler;
     }
@@ -51,7 +52,7 @@ class Logger extends MonologLogger implements Logger\SyncActionLogging, Logger\A
     {
         $logHandler = new StreamHandler('php://stderr');
         $logHandler->setBubble(false);
-        $logHandler->setLevel(MonologLogger::ERROR);
+        $logHandler->setLevel(Level::Error);
         $logHandler->setFormatter(new LineFormatter("%message%\n"));
         return $logHandler;
     }
@@ -60,7 +61,7 @@ class Logger extends MonologLogger implements Logger\SyncActionLogging, Logger\A
     {
         $logHandler = new StreamHandler('php://stderr');
         $logHandler->setBubble(false);
-        $logHandler->setLevel(MonologLogger::CRITICAL);
+        $logHandler->setLevel(Level::Critical);
         $logHandler->setFormatter(new LineFormatter("%message% %context% %extra%\n", null, false, true));
         return $logHandler;
     }
@@ -69,7 +70,7 @@ class Logger extends MonologLogger implements Logger\SyncActionLogging, Logger\A
     {
         $logHandler = new StreamHandler('php://stdout');
         $logHandler->setBubble(false);
-        $logHandler->setLevel(MonologLogger::DEBUG);
+        $logHandler->setLevel(Level::Debug);
         $logHandler->setFormatter(new LineFormatter("[%datetime%] %level_name%: %message% %context% %extra%\n"));
         return $logHandler;
     }
