@@ -159,6 +159,33 @@ class OutTableManifestOptionsTest extends TestCase
         ];
     }
 
+    public function testFromArrayWithPythonSdkManifestType(): void
+    {
+        $options = ManifestOptions::fromArray([
+            'delimiter' => ',',
+            'enclosure' => '"',
+            'manifest_type' => 'out',
+            'schema' => [
+                [
+                    'name' => 'id',
+                    'nullable' => true,
+                    'primary_key' => false,
+                ],
+            ],
+        ]);
+
+        $this->assertSame(ManifestOptions::MANIFEST_TYPE_OUTPUT, $options->getManifestType());
+
+        $array = $options->toArray(false);
+        $this->assertSame('output', $array['manifest_type']);
+    }
+
+    public function testSetManifestTypeOutIsNormalized(): void
+    {
+        $options = (new ManifestOptions())->setManifestType('out');
+        $this->assertSame(ManifestOptions::MANIFEST_TYPE_OUTPUT, $options->getManifestType());
+    }
+
     /** @dataProvider validNamesProvider */
     public function testManifestOptionsSchemaValidNames(string $name): void
     {
