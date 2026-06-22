@@ -186,6 +186,53 @@ class OutTableManifestOptionsTest extends TestCase
         $this->assertSame(ManifestOptions::MANIFEST_TYPE_OUTPUT, $options->getManifestType());
     }
 
+    public function testFromArrayWithPythonSdkInputManifestType(): void
+    {
+        $options = ManifestOptions::fromArray([
+            'delimiter' => ',',
+            'enclosure' => '"',
+            'manifest_type' => 'in',
+            'schema' => [
+                [
+                    'name' => 'id',
+                    'nullable' => true,
+                    'primary_key' => false,
+                ],
+            ],
+        ]);
+
+        $this->assertSame(ManifestOptions::MANIFEST_TYPE_INPUT, $options->getManifestType());
+
+        $array = $options->toArray(false);
+        $this->assertSame('input', $array['manifest_type']);
+    }
+
+    public function testSetManifestTypeInIsNormalized(): void
+    {
+        $options = (new ManifestOptions())->setManifestType('in');
+        $this->assertSame(ManifestOptions::MANIFEST_TYPE_INPUT, $options->getManifestType());
+    }
+
+    public function testSetManifestTypeCanonicalValuesArePreserved(): void
+    {
+        $this->assertSame(
+            ManifestOptions::MANIFEST_TYPE_OUTPUT,
+            (new ManifestOptions())->setManifestType('output')->getManifestType(),
+        );
+        $this->assertSame(
+            ManifestOptions::MANIFEST_TYPE_INPUT,
+            (new ManifestOptions())->setManifestType('input')->getManifestType(),
+        );
+    }
+
+    public function testSetManifestTypeRejectsUnknownValue(): void
+    {
+        $this->expectException(OptionsValidationException::class);
+        $this->expectExceptionMessage('Manifest type "invalid" is not allowed');
+
+        (new ManifestOptions())->setManifestType('invalid');
+    }
+
     /** @dataProvider validNamesProvider */
     public function testManifestOptionsSchemaValidNames(string $name): void
     {
