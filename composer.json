@@ -37,7 +37,6 @@
         "symfony/serializer": "^5.4|^6.0|^7.0"
     },
     "require-dev": {
-        "devedge/sami-github": "^1.0.6",
         "keboola/coding-standard": "^15.0.1",
         "keboola/php-temp": "^2.0.1",
         "phpstan/phpstan": "^1.12.24",

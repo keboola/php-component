@@ -16,8 +16,24 @@ use function is_array;
 
 class ManifestOptions
 {
-    private const ALLOWED_MANIFEST_TYPES = [self::MANIFEST_TYPE_OUTPUT];
     public const MANIFEST_TYPE_OUTPUT = 'output';
+    public const MANIFEST_TYPE_INPUT = 'input';
+    public const MANIFEST_TYPE_OUT = 'out';
+    public const MANIFEST_TYPE_IN = 'in';
+
+    private const ALLOWED_MANIFEST_TYPES = [
+        self::MANIFEST_TYPE_OUTPUT,
+        self::MANIFEST_TYPE_INPUT,
+        self::MANIFEST_TYPE_OUT,
+        self::MANIFEST_TYPE_IN,
+    ];
+
+    // The Python SDK writes the stage value ("in"/"out") into manifest_type, while the canonical
+    // values are "input"/"output". Accept the stage aliases and normalize them to the canonical form.
+    private const MANIFEST_TYPE_NORMALIZATION_MAP = [
+        self::MANIFEST_TYPE_OUT => self::MANIFEST_TYPE_OUTPUT,
+        self::MANIFEST_TYPE_IN => self::MANIFEST_TYPE_INPUT,
+    ];
     private ?string $destination = null;
 
     private ?bool $incremental = null;
@@ -158,7 +174,7 @@ class ManifestOptions
             ));
         }
 
-        $this->manifestType = $manifestType;
+        $this->manifestType = self::MANIFEST_TYPE_NORMALIZATION_MAP[$manifestType] ?? $manifestType;
         return $this;
     }
 
